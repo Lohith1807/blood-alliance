@@ -9,4 +9,13 @@ export default defineConfig({
       '@': '/src',
     },
   },
+  server: {
+    proxy: {
+      '/api': {
+        target: 'https://blood-alliance.vercel.app',
+        changeOrigin: true,
+        secure: false,
+      },
+    },
+  },
 })
