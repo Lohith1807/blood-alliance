@@ -31,15 +31,13 @@ const ClanCard = ({ clan, index, onClanSelect }) => {
             viewport={{ once: true, margin: "-50px" }}
             onClick={() => onClanSelect && onClanSelect(clan.tag)}
         >
-            <div className="card-top">
-                <div className="unit-tag">
-                    UNIT_{String(index + 1).padStart(2, '0')}
-                </div>
-                <div className="status-indicator">
-                    <div className="status-dot"></div>
-                    ACTIVE_OPS
-                </div>
+            <div className="unit-tag">
+                UNIT_{String(index + 1).padStart(2, '0')}
             </div>
+            {/* <div className="status-indicator">
+                <div className="status-dot"></div>
+                ACTIVE_OPS
+            </div> */}
 
             <div className="main-content">
                 <div className="badge-frame">
