@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CWL Tracker | Blood Alliance</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Bungee+Inline&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --primary: #8b5cf6;
+      --primary-glow: rgba(139, 92, 246, 0.4);
+      --secondary: #3b82f6;
+      --accent: #f43f5e;
+      --bg: #020617;
+      --card-bg: rgba(30, 41, 59, 0.6);
+      --border: rgba(255, 255, 255, 0.1);
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Outfit', sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    .ambient-glow {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at 10% 10%, rgba(124, 58, 237, 0.1) 0%, transparent 40%),
+        radial-gradient(circle at 90% 90%, rgba(37, 99, 235, 0.1) 0%, transparent 40%);
+    }
+
+    header {
+      position: fixed;
+      top: 0;
+      width: 100%;
+      padding: 1.25rem 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: rgba(2, 6, 23, 0.8);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: 'Bungee Inline', cursive;
+      font-size: 1.3rem;
+      background: linear-gradient(to right, #f43f5e, #8b5cf6);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      text-decoration: none;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 120px 5% 60px;
+    }
+
+    .page-header {
+      text-align: center;
+      margin-bottom: 4rem;
+    }
+
+    .page-header h1 {
+      font-family: 'Bungee Inline', cursive;
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(to right, #fff, #94a3b8);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .page-header p {
+      color: var(--text-muted);
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
+    /* Controls */
+    .controls {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 24px;
+      padding: 2rem;
+      backdrop-filter: blur(10px);
+      margin-bottom: 3rem;
+      display: grid;
+      grid-template-columns: 1fr 2fr auto;
+      gap: 1.5rem;
+      align-items: flex-end;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .control-group label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    input,
+    select {
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid var(--border);
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      color: white;
+      font-family: inherit;
+      font-size: 1rem;
+      outline: none;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus,
+    select:focus {
+      border-color: var(--primary);
+    }
+
+    .refresh-btn {
+      background: linear-gradient(135deg, var(--primary), var(--secondary));
+      color: white;
+      border: none;
+      padding: 0.8rem 1.5rem;
+      border-radius: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+
+    .refresh-btn:hover {
+      box-shadow: 0 0 20px var(--primary-glow);
+      transform: translateY(-2px);
+    }
+
+    .refresh-btn.loading {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    /* Grid */
+    .player-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .player-card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+    }
+
+    .player-card:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+    }
+
+    .player-info {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 1rem;
+    }
+
+    .player-name {
+      font-size: 1.25rem;
+      font-weight: 800;
+    }
+
+    .player-tag {
+      font-size: 0.85rem;
+      color: var(--primary);
+      font-weight: 600;
+      display: block;
+    }
+
+    .clan-badge-mini {
+      padding: 0.25rem 0.75rem;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 999px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .details {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+      font-size: 0.9rem;
+    }
+
+    .detail-item span {
+      display: block;
+      font-size: 0.75rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+    }
+
+    .detail-item strong {
+      display: block;
+      font-weight: 600;
+    }
+
+    .actions {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .btn-small {
+      flex: 1;
+      padding: 0.6rem;
+      text-align: center;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.05);
+      color: white;
+      border: 1px solid var(--border);
+    }
+
+    .btn-small:hover {
+      background: var(--primary);
+      border-color: var(--primary);
+    }
+
+    .btn-small.primary {
+      background: rgba(139, 92, 246, 0.1);
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .btn-small.primary:hover {
+      background: var(--primary);
+      color: white;
+    }
+
+    /* Status Bar */
+    .status-bar {
+      margin-bottom: 1.5rem;
+      display: flex;
+      justify-content: space-between;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+    }
+
+    #emptyState {
+      text-align: center;
+      padding: 4rem;
+      background: var(--card-bg);
+      border-radius: 24px;
+      grid-column: 1 / -1;
+    }
+
+    @media (max-width: 1024px) {
+      .controls {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .refresh-btn {
+        grid-column: span 2;
+        justify-content: center;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .controls {
+        grid-template-columns: 1fr;
+      }
+
+      .refresh-btn {
+        grid-column: span 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="ambient-glow"></div>
+
+  <header>
+    <a href="index.html" class="logo">BLOOD ALLIANCE</a>
+    <a href="https://discord.gg/gGGEs5SV9z" target="_blank" class="refresh-btn"
+      style="padding: 0.5rem 1rem; font-size: 0.8rem;">Join Discord</a>
+  </header>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>CWL REGISTRATIONS</h1>
+      <p>Real-time tracking for the Lazy CWL roster. Search your name or Discord handle to find your assigned squadron.
+      </p>
+    </div>
+
+    <section class="controls">
+      <div class="control-group">
+        <label>Filter by Clan</label>
+        <select id="filterClan">
+          <option value="all">All Squadrons</option>
+        </select>
+      </div>
+      <div class="control-group">
+        <label>Search Player</label>
+        <input type="text" id="searchInput" placeholder="Enter name, tag, or Discord ID...">
+      </div>
+      <button id="refreshBtn" class="refresh-btn">
+        <span>⟳</span> Refresh Intel
+      </button>
+    </section>
+
+    <div class="status-bar">
+      <div>Detected: <strong id="shownCount" style="color: var(--primary);">0</strong> Operatives</div>
+      <div id="lastUpdatedText">Last sync: --</div>
+    </div>
+
+    <div class="player-grid" id="cardsGrid">
+      <!-- Injected by Intel Protocol -->
+    </div>
+
+    <div id="emptyState" style="display:none;">
+      <h3>No Operatives Found</h3>
+      <p>Adjust your search parameters or check back after registration sync.</p>
+    </div>
+  </div>
+
+  <script>
+    const API_URL = "https://sheet2api.com/v1/90H79qclQcqu/cwl_list";
+    const AUTO_REFRESH_INTERVAL = 60000; // 1 minute
+
+    let allPlayers = [];
+    let isLoading = false;
+
+    const filterClan = document.getElementById("filterClan");
+    const searchInput = document.getElementById("searchInput");
+    const refreshBtn = document.getElementById("refreshBtn");
+    const cardsGrid = document.getElementById("cardsGrid");
+    const emptyState = document.getElementById("emptyState");
+    const shownCount = document.getElementById("shownCount");
+    const lastUpdatedText = document.getElementById("lastUpdatedText");
+
+    async function fetchData() {
+      if (isLoading) return;
+      isLoading = true;
+      refreshBtn.classList.add('loading');
+      refreshBtn.querySelector('span').style.animation = 'spin 1s linear infinite';
+
+      try {
+        const res = await fetch(API_URL);
+        const data = await res.json();
+
+        allPlayers = (data || []).map(row => ({
+          playerName: row["Player Name"] || "",
+          playerTag: row["Player Tag"] || "",
+          userId: row["Discord User ID"] || "",
+          username: row["Discord Username"] || "",
+          assignedClan: row["Assigned Clan"] || "Pending",
+          assignedClanTag: row["Assigned Clan Tag"] || "",
+          registeredAt: row["Registered At"] || "---"
+        })).filter(p => p.playerName);
+
+        populateFilters();
+        renderList();
+        lastUpdatedText.textContent = `Last sync: ${new Date().toLocaleTimeString()}`;
+      } catch (err) {
+        console.error("Intel fetch failed:", err);
+      } finally {
+        isLoading = false;
+        refreshBtn.classList.remove('loading');
+        refreshBtn.querySelector('span').style.animation = 'none';
+      }
+    }
+
+    function populateFilters() {
+      const clans = [...new Set(allPlayers.map(p => p.assignedClanTag).filter(Boolean))];
+      const currentSelection = filterClan.value;
+
+      filterClan.innerHTML = '<option value="all">All Squadrons</option>';
+      clans.forEach(tag => {
+        const p = allPlayers.find(x => x.assignedClanTag === tag);
+        const opt = document.createElement('option');
+        opt.value = tag;
+        opt.textContent = `${p.assignedClan} (${tag})`;
+        filterClan.appendChild(opt);
+      });
+      filterClan.value = currentSelection;
+    }
+
+    function renderList() {
+      const q = searchInput.value.toLowerCase();
+      const clanFilter = filterClan.value;
+
+      const filtered = allPlayers.filter(p => {
+        const matchesClan = clanFilter === 'all' || p.assignedClanTag === clanFilter;
+        const matchesSearch = p.playerName.toLowerCase().includes(q) ||
+          p.playerTag.toLowerCase().includes(q) ||
+          p.username.toLowerCase().includes(q) ||
+          p.userId.toString().includes(q);
+        return matchesClan && matchesSearch;
+      });
+
+      cardsGrid.innerHTML = filtered.map(p => `
+        <div class="player-card">
+          <div class="player-info">
+            <div>
+              <span class="player-name">${escapeHtml(p.playerName)}</span>
+              <span class="player-tag">${escapeHtml(p.playerTag)}</span>
+            </div>
+            <div class="clan-badge-mini">${escapeHtml(p.assignedClan)}</div>
+          </div>
+          
+          <div class="details">
+            <div class="detail-item">
+              <span>Discord User</span>
+              <strong>${escapeHtml(p.username || 'N/A')}</strong>
+            </div>
+            <div class="detail-item">
+              <span>Registered</span>
+              <strong>${p.registeredAt}</strong>
+            </div>
+          </div>
+          
+          <div class="actions">
+            <a href="https://link.clashofclans.com/?action=OpenPlayerProfile&tag=${encodeURIComponent(p.playerTag)}" class="btn-small primary" target="_blank">Profile</a>
+            ${p.assignedClanTag ? `<a href="https://link.clashofclans.com/?action=OpenClanProfile&tag=${encodeURIComponent(p.assignedClanTag)}" class="btn-small" target="_blank">Clan</a>` : ''}
+          </div>
+        </div>
+      `).join('');
+
+      shownCount.textContent = filtered.length;
+      emptyState.style.display = filtered.length === 0 ? 'block' : 'none';
+    }
+
+    function escapeHtml(text) {
+      const div = document.createElement('div');
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    // Events
+    refreshBtn.addEventListener('click', fetchData);
+    searchInput.addEventListener('input', renderList);
+    filterClan.addEventListener('change', renderList);
+
+    // Initial
+    fetchData();
+    setInterval(fetchData, AUTO_REFRESH_INTERVAL);
+
+    // Spin animation for loader
+    const style = document.createElement('style');
+    style.innerHTML = `@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`;
+    document.head.appendChild(style);
+  </script>
+</body>
+
+</html>
