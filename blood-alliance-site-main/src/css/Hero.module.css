@@ -1,0 +1,124 @@
+.heroSection {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    position: relative;
+    background: radial-gradient(circle at 30% 50%, rgba(238, 0, 0, 0.05) 0%, transparent 50%);
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 3rem;
+    width: 100%;
+    flex-wrap: wrap;
+}
+
+.heroContent {
+    flex: 1 1 500px;
+    max-width: 600px;
+    padding: 2rem 0;
+}
+
+.tagline {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.heroTitle {
+    font-size: clamp(2rem, 5vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+    color: #fff;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+}
+
+.typingContainer {
+    display: inline-block;
+    min-height: 1.2em;
+}
+
+.cursor {
+    color: var(--rh-red);
+    font-weight: 100;
+    margin-left: 2px;
+}
+
+.description {
+    font-size: 0.9375rem;
+    color: var(--text-secondary);
+    margin-bottom: 2.5rem;
+    max-width: 560px;
+    line-height: 1.6;
+}
+
+.btnRow {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+}
+
+.btn {
+    padding: 0.625rem 1.5rem;
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    gap: 8px;
+}
+
+.statusBox {
+    display: flex;
+    gap: 1.5rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+    flex-wrap: wrap;
+}
+
+.statusItem {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--text-muted);
+}
+
+.statusLabel {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+}
+
+.pulsingDot {
+    width: 6px;
+    height: 6px;
+    background-color: #10b981;
+    border-radius: 50%;
+    box-shadow: 0 0 8px #10b981;
+    animation: pulse 2s infinite;
+}
+
+.carouselSection {
+    flex: 1 1 400px;
+    min-width: 300px;
+    max-width: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.loadingContainer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 280px;
+}

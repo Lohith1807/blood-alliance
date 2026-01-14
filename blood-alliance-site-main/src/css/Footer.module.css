@@ -1,0 +1,27 @@
+.footer {
+    padding: 1.5rem 0;
+    background: #111;
+    border-top: 1px solid var(--border-color);
+    margin-top: 4rem;
+}
+
+.footerWrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.brand {
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}
+
+.brandHighlight {
+    color: var(--rh-red);
+    font-weight: 800;
+}
+
+.copy {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}

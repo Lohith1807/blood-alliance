@@ -1,8 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Import the local cached data as fallback
-import cachedClanData from '../../clan_data.json';
-
 // Create the Clan Context
 const ClanContext = createContext();
 
@@ -15,14 +12,10 @@ export const ClanProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedClan, setSelectedClan] = useState(null);
-    const [dataSource, setDataSource] = useState('loading'); // 'mongodb' | 'cache' | 'loading'
+    const [dataSource, setDataSource] = useState('loading'); // 'mongodb' | 'loading'
 
     // Fetch clans from serverless API (MongoDB)
     const fetchFromAPI = async () => {
-        // Skip API fetch in local Vite dev to avoid noisy console errors
-        // When running via 'npm run dev', /api/clans is served as a text file
-        if (import.meta.env.DEV) return null;
-
         try {
             const response = await fetch(API_ENDPOINT);
 
@@ -36,7 +29,8 @@ export const ClanProvider = ({ children }) => {
             if (data.success && data.clans) return data.clans;
             return null;
         } catch (err) {
-            return null; // Silently fail in dev
+            console.error('API Fetch Error:', err);
+            return null;
         }
     };
 
@@ -46,7 +40,7 @@ export const ClanProvider = ({ children }) => {
             setLoading(true);
             setError(null);
 
-            // 1. Try API first (Production/Vercel)
+            // Always try API (DB source)
             const apiData = await fetchFromAPI();
 
             if (apiData && apiData.length > 0) {
@@ -54,15 +48,8 @@ export const ClanProvider = ({ children }) => {
                 setDataSource('mongodb');
                 console.log(`✅ Loaded ${apiData.length} clans via MONGODB`);
             } else {
-                // 2. Fallback to cached JSON file (Local/Dev)
-                if (Array.isArray(cachedClanData) && cachedClanData.length > 0) {
-                    setClans(cachedClanData);
-                    setDataSource('cache');
-                    console.log(`✅ Loaded ${cachedClanData.length} clans via LOCAL_CACHE`);
-                } else {
-                    setError('No clan data available');
-                    setClans([]);
-                }
+                setError('Failed to load clan data from database');
+                setClans([]);
             }
 
             setLoading(false);

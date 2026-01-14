@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ShieldAlert, Zap, Award, Target, MessageSquare, Scale, Users, ExternalLink } from 'lucide-react';
+import { Zap, Award, Target, MessageSquare, Users, ExternalLink } from 'lucide-react';
+import styles from '@/css/Rules.module.css';
 
 const Rules = () => {
     const sectionVariants = {
@@ -27,14 +28,14 @@ const Rules = () => {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={sectionVariants}
-                style={sectionWrapper}
+                className={styles.sectionWrapper}
             >
-                <div style={sectionHeader}>
-                    <div style={techLabel}>MODULE_01: CWL_PROTOCOLS</div>
-                    <h2 style={sectionTitle}>Lazy CWL Operational Standards</h2>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.techLabel}>MODULE_01: CWL_PROTOCOLS</div>
+                    <h2 className={styles.sectionTitle}>Lazy CWL Operational Standards</h2>
                 </div>
 
-                <div style={rulesGrid}>
+                <div className={styles.rulesGrid}>
                     <RuleModule
                         icon={<Zap size={18} />}
                         title="PROTOCOL_DEFINITION"
@@ -69,8 +70,8 @@ const Rules = () => {
                     />
                 </div>
 
-                <div style={ctaBox}>
-                    <a href="https://discord.gg/gGGEs5SV9z" target="_blank" rel="noopener noreferrer" className="btn btn-secondary" style={ctaBtnStyle}>
+                <div className={styles.ctaBox}>
+                    <a href="https://discord.gg/gGGEs5SV9z" target="_blank" rel="noopener noreferrer" className={`btn btn-secondary ${styles.ctaBtn}`}>
                         JOIN_CWL_DISCUSSION <ExternalLink size={12} style={{ marginLeft: '8px' }} />
                     </a>
                 </div>
@@ -83,14 +84,15 @@ const Rules = () => {
                 whileInView="visible"
                 viewport={{ once: true, margin: "-100px" }}
                 variants={sectionVariants}
-                style={{ ...sectionWrapper, marginTop: '6rem', borderTop: '1px solid var(--border-color)', paddingTop: '6rem' }}
+                className={styles.sectionWrapper}
+                style={{ marginTop: '6rem', borderTop: '1px solid var(--border-color)', paddingTop: '6rem' }}
             >
-                <div style={sectionHeader}>
-                    <div style={techLabel}>MODULE_02: GLOBAL_ALLIANCE_GOVERNANCE</div>
-                    <h2 style={sectionTitle}>Alliance & Server Protocols</h2>
+                <div className={styles.sectionHeader}>
+                    <div className={styles.techLabel}>MODULE_02: GLOBAL_ALLIANCE_GOVERNANCE</div>
+                    <h2 className={styles.sectionTitle}>Alliance & Server Protocols</h2>
                 </div>
 
-                <div style={rulesGrid}>
+                <div className={styles.rulesGrid}>
                     <RuleModule
                         icon={<Users size={18} />}
                         title="CLAN_GOVERNANCE"
@@ -119,8 +121,8 @@ const Rules = () => {
                     />
                 </div>
 
-                <div style={ctaBox}>
-                    <a href="https://discord.gg/gGGEs5SV9z" target="_blank" rel="noopener noreferrer" className="btn btn-primary" style={ctaBtnStylePrimary}>
+                <div className={styles.ctaBox}>
+                    <a href="https://discord.gg/gGGEs5SV9z" target="_blank" rel="noopener noreferrer" className={`btn btn-primary ${styles.ctaBtn} ${styles.ctaBtnPrimary}`}>
                         JOIN_OUR_DISCORD <ExternalLink size={12} style={{ marginLeft: '8px' }} />
                     </a>
                 </div>
@@ -132,134 +134,30 @@ const Rules = () => {
 const RuleModule = ({ icon, title, rules, fullWidth, variants }) => (
     <motion.div
         variants={variants}
-        className="protocol-item"
+        className={styles.card}
         style={{
-            ...cardStyle,
             gridColumn: fullWidth ? '1 / -1' : 'auto'
         }}
     >
-        <div style={cardHeader}>
-            <div style={iconBox}>{icon}</div>
-            <h3 className="mono" style={cardTitle}>{title}</h3>
+        <div className={styles.cardHeader}>
+            <div className={styles.iconBox}>{icon}</div>
+            <h3 className={`mono ${styles.cardTitle}`}>{title}</h3>
         </div>
-        <ul style={listStyle}>
+        <ul className={styles.list}>
             {rules.map((rule, i) => (
                 <motion.li
                     key={i}
-                    style={listItem}
+                    className={styles.listItem}
                     initial={{ opacity: 0 }}
                     whileInView={{ opacity: 1 }}
                     transition={{ delay: i * 0.05 }}
                 >
-                    <span style={bullet}>{String(i + 1).padStart(2, '0')}</span>
+                    <span className={styles.bullet}>{String(i + 1).padStart(2, '0')}</span>
                     <span>{rule}</span>
                 </motion.li>
             ))}
         </ul>
     </motion.div>
 );
-
-const sectionWrapper = {
-    marginBottom: '2rem',
-};
-
-const sectionHeader = {
-    marginBottom: '3rem',
-    textAlign: 'center',
-};
-
-const techLabel = {
-    fontFamily: 'JetBrains Mono, monospace',
-    fontSize: '0.7rem',
-    color: 'var(--rh-red)',
-    fontWeight: '700',
-    letterSpacing: '0.15em',
-    marginBottom: '0.5rem',
-};
-
-const sectionTitle = {
-    fontSize: '1.5rem',
-    fontWeight: '700',
-    color: '#fff',
-    letterSpacing: '-0.02em',
-};
-
-const rulesGrid = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))',
-    gap: '1.5rem',
-};
-
-const cardStyle = {
-    padding: '1.5rem',
-    borderRadius: '2px',
-    background: 'linear-gradient(135deg, #212121 0%, #1a1a1a 100%)',
-    border: '1px solid var(--border-color)',
-};
-
-const cardHeader = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    marginBottom: '1.25rem',
-    borderBottom: '1px solid var(--border-color)',
-    paddingBottom: '0.75rem',
-};
-
-const iconBox = {
-    color: 'var(--rh-red)',
-    opacity: 0.9,
-};
-
-const cardTitle = {
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    letterSpacing: '0.1em',
-    color: 'var(--text-primary)',
-};
-
-const listStyle = {
-    listStyle: 'none',
-};
-
-const listItem = {
-    fontSize: '0.8125rem',
-    color: 'var(--text-secondary)',
-    marginBottom: '0.75rem',
-    display: 'flex',
-    gap: '0.75rem',
-    lineHeight: '1.5',
-};
-
-const bullet = {
-    color: 'var(--rh-red)',
-    fontWeight: '700',
-    fontFamily: 'JetBrains Mono, monospace',
-    fontSize: '0.7rem',
-    opacity: 0.8,
-    paddingTop: '2px',
-};
-
-const ctaBox = {
-    marginTop: '2.5rem',
-    display: 'flex',
-    justifyContent: 'center',
-};
-
-const ctaBtnStyle = {
-    fontSize: '0.75rem',
-    padding: '0.625rem 1.25rem',
-    letterSpacing: '1px',
-    fontWeight: '700',
-    fontFamily: 'JetBrains Mono, monospace',
-    borderRadius: '2px',
-};
-
-const ctaBtnStylePrimary = {
-    ...ctaBtnStyle,
-    background: 'var(--rh-red)',
-    color: '#fff',
-    border: 'none',
-};
 
 export default Rules;

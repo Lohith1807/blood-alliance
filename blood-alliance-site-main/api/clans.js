@@ -1,21 +1,22 @@
-import { MongoClient } from 'mongodb';
-
-const MONGO_URL = process.env.MONGO_URL || 'mongodb+srv://lohithreddy1819april_db_user:nHYI3nUFGWztAPwR@clansdata.auhlwu2.mongodb.net/?appName=ClansData';
-let cachedClient = null;
-
-async function connectToDatabase() {
-    if (cachedClient) return cachedClient;
-    const client = new MongoClient(MONGO_URL);
-    await client.connect();
-    cachedClient = client;
-    return client;
-}
+import clientPromise from '../lib/mongodb';
 
 export default async function handler(req, res) {
-    // Enable CORS
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    // 1. CORS & Security Headers
+    const origin = req.headers.origin;
+    const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
+
+    if (isDev && origin && (origin.includes('localhost') || origin.includes('127.0.0.1'))) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    } else if (process.env.ALLOWED_ORIGIN && origin === process.env.ALLOWED_ORIGIN) {
+        res.setHeader('Access-Control-Allow-Origin', origin);
+    }
+
+    if (origin) {
+        res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    }
+
+    res.setHeader('Cache-Control', 's-maxage=300, stale-while-revalidate=59');
 
     if (req.method === 'OPTIONS') {
         return res.status(200).end();
@@ -26,28 +27,30 @@ export default async function handler(req, res) {
     }
 
     try {
-        const client = await connectToDatabase();
+        // 2. Safe Database Connection
+        const client = await clientPromise;
         const db = client.db('ClansData');
         const collection = db.collection('clans');
 
         const { tag } = req.query;
 
         if (tag) {
-            // Fetch single clan from MongoDB
-            const clanTag = tag.startsWith('#') ? tag : `#${tag}`;
+            // 3. Input Sanitization: Force string type to prevent NoSQL injection
+            const cleanTag = String(tag).trim();
+            const clanTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`;
+
             const clan = await collection.findOne({ _id: clanTag });
 
             if (!clan) {
-                return res.status(404).json({ error: 'Clan not found in database' });
+                return res.status(404).json({ error: 'Clan not found' });
             }
             return res.status(200).json(clan);
         }
 
-        // Fetch all clans from MongoDB
+        // Fetch all clans
+        // Use projection to only fetch needed fields if possible, to save bandwidth
+        // For now, we fetch everything as the schema is small
         const clans = await collection.find({}).toArray();
-
-        // Remove MongoDB internal _id if you want to keep CoC API structure clean
-        // (but we're using tag as the _id, so it's fine)
 
         return res.status(200).json({
             success: true,
@@ -56,7 +59,8 @@ export default async function handler(req, res) {
             clans: clans
         });
     } catch (error) {
-        console.error('MongoDB API Error:', error);
-        return res.status(500).json({ error: 'Failed to fetch clan data from database' });
+        console.error('Database Error:', error);
+        // Do not return actual error details to client for security
+        return res.status(500).json({ error: 'Internal Server Error' });
     }
 }

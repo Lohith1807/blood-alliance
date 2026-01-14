@@ -2,7 +2,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, ExternalLink, ShieldCheck, Activity, BarChart3, Database, Loader2 } from 'lucide-react';
 import { useClans } from '../context/ClanContext';
-import './ClanList.css';
+import '@/css/ClanList.css';
 
 // Helper to get leader/co-leaders from memberList
 const getLeaders = (memberList) => {

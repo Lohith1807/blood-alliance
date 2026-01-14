@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ChevronRight, Database, Shield, Terminal, Loader2 } from 'lucide-react';
 import { useClans } from '../context/ClanContext';
 import ClanCarousel from './ClanCarousel';
+import styles from '@/css/Hero.module.css';
 
 const Hero = ({ setActiveTab }) => {
     const { clans, loading } = useClans();
@@ -43,18 +44,17 @@ const Hero = ({ setActiveTab }) => {
     };
 
     return (
-        <section id="home" style={heroLayout}>
-            <div className="container" style={containerStyle}>
+        <section id="home" className={styles.heroSection}>
+            <div className={`container ${styles.container}`}>
                 {/* LEFT Side - Content */}
                 <motion.div
-                    className="hero-content"
+                    className={styles.heroContent}
                     variants={containerVariants}
                     initial="hidden"
                     animate="visible"
-                    style={contentBox}
                 >
                     {/* Technical Tagline */}
-                    <motion.div variants={itemVariants} style={tagline}>
+                    <motion.div variants={itemVariants} className={styles.tagline}>
                         <Terminal size={14} style={{ color: 'var(--rh-red)' }} />
                         <span style={{ color: 'var(--rh-red)' }}>PROTOCOL_INIT:</span>
                         <span className="mono"> ALLIANCE_SQUADRON_v2.0.4</span>
@@ -62,14 +62,14 @@ const Hero = ({ setActiveTab }) => {
 
                     {/* Animated Hero Title with Typing Effect */}
                     <motion.div variants={itemVariants}>
-                        <h1 style={titleStyle}>
+                        <h1 className={styles.heroTitle}>
                             Clash With <br />
-                            <span style={typingContainer}>
+                            <span className={styles.typingContainer}>
                                 <span style={{ color: 'var(--rh-red)' }}>
                                     {displayText}
                                 </span>
                                 <motion.span
-                                    style={cursor}
+                                    className={styles.cursor}
                                     animate={{ opacity: isTypingComplete ? [1, 0] : 1 }}
                                     transition={{ duration: 0.5, repeat: isTypingComplete ? Infinity : 0 }}
                                 >
@@ -80,43 +80,41 @@ const Hero = ({ setActiveTab }) => {
                     </motion.div>
 
                     {/* Body Text */}
-                    <motion.p variants={itemVariants} style={descStyle}>
+                    <motion.p variants={itemVariants} className={styles.description}>
                         Strategic distributed warfare unit specializing in synchronized FWA protocols
                         and CWL registration management. Unified systems, absolute victory.
                     </motion.p>
 
                     {/* CTAs */}
-                    <motion.div variants={itemVariants} style={btnRow}>
+                    <motion.div variants={itemVariants} className={styles.btnRow}>
                         <button
                             onClick={() => document.getElementById('clans')?.scrollIntoView({ behavior: 'smooth' })}
-                            className="btn btn-primary"
-                            style={mainBtn}
+                            className={`btn btn-primary ${styles.btn}`}
                         >
                             EXPLORE_CLANS <ChevronRight size={16} />
                         </button>
                         <button
                             onClick={() => setActiveTab('players')}
-                            className="btn btn-secondary"
-                            style={subBtn}
+                            className={`btn btn-secondary ${styles.btn}`}
                         >
                             CWL_REGISTRY <Database size={14} style={{ marginLeft: '8px' }} />
                         </button>
                     </motion.div>
 
                     {/* System Status Mockup */}
-                    <motion.div variants={itemVariants} style={statusBox}>
-                        <div style={statusItem}>
+                    <motion.div variants={itemVariants} className={styles.statusBox}>
+                        <div className={styles.statusItem}>
                             <Shield size={12} />
-                            <span style={statusLabel}>CORE_SECURE</span>
+                            <span className={styles.statusLabel}>CORE_SECURE</span>
                         </div>
-                        <div style={statusItem}>
-                            <div style={pulsingDot}></div>
-                            <span style={statusLabel}>
+                        <div className={styles.statusItem}>
+                            <div className={styles.pulsingDot}></div>
+                            <span className={styles.statusLabel}>
                                 {loading ? 'FETCHING...' : 'UPLINK_ACTIVE'}
                             </span>
                         </div>
-                        <div style={statusItem}>
-                            <span style={{ ...statusLabel, color: 'var(--rh-red)' }}>
+                        <div className={styles.statusItem}>
+                            <span className={styles.statusLabel} style={{ color: 'var(--rh-red)' }}>
                                 {loading ? 'LOADING...' : `${clans.length} CLANS_ONLINE`}
                             </span>
                         </div>
@@ -124,10 +122,10 @@ const Hero = ({ setActiveTab }) => {
                 </motion.div>
 
                 {/* RIGHT Side - Clan Carousel */}
-                <div style={carouselSection}>
+                <div className={styles.carouselSection}>
                     {loading ? (
                         <motion.div
-                            style={loadingContainer}
+                            className={styles.loadingContainer}
                             animate={{ rotate: 360 }}
                             transition={{ duration: 2, repeat: Infinity, ease: "linear" }}
                         >
@@ -140,135 +138,6 @@ const Hero = ({ setActiveTab }) => {
             </div>
         </section>
     );
-};
-
-const heroLayout = {
-    minHeight: '100vh',
-    display: 'flex',
-    alignItems: 'center',
-    position: 'relative',
-    background: 'radial-gradient(circle at 30% 50%, rgba(238, 0, 0, 0.05) 0%, transparent 50%)',
-    overflow: 'hidden',
-};
-
-const containerStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    gap: '3rem',
-    width: '100%',
-    flexWrap: 'wrap',
-};
-
-const carouselSection = {
-    flex: '1 1 400px',
-    minWidth: '300px',
-    maxWidth: '500px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-};
-
-const loadingContainer = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '280px',
-};
-
-const contentBox = {
-    flex: '1 1 500px',
-    maxWidth: '600px',
-    padding: '2rem 0',
-};
-
-const tagline = {
-    fontFamily: 'JetBrains Mono, monospace',
-    fontSize: '0.75rem',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    marginBottom: '1.25rem',
-    fontWeight: '600',
-    letterSpacing: '0.5px',
-};
-
-const titleStyle = {
-    fontSize: 'clamp(2rem, 5vw, 3rem)',
-    lineHeight: '1.1',
-    marginBottom: '1.5rem',
-    color: '#fff',
-    fontWeight: '700',
-    letterSpacing: '-0.03em',
-};
-
-const typingContainer = {
-    display: 'inline-block',
-    minHeight: '1.2em',
-};
-
-const cursor = {
-    color: 'var(--rh-red)',
-    fontWeight: '100',
-    marginLeft: '2px',
-};
-
-const descStyle = {
-    fontSize: '0.9375rem',
-    color: 'var(--text-secondary)',
-    marginBottom: '2.5rem',
-    maxWidth: '560px',
-    lineHeight: '1.6',
-};
-
-const btnRow = {
-    display: 'flex',
-    gap: '1rem',
-    marginBottom: '3rem',
-    flexWrap: 'wrap',
-};
-
-const mainBtn = {
-    padding: '0.625rem 1.5rem',
-    fontSize: '0.8125rem',
-    textTransform: 'uppercase',
-    letterSpacing: '1px',
-    gap: '8px',
-};
-
-const subBtn = {
-    ...mainBtn,
-};
-
-const statusBox = {
-    display: 'flex',
-    gap: '1.5rem',
-    paddingTop: '2rem',
-    borderTop: '1px solid var(--border-color)',
-    flexWrap: 'wrap',
-};
-
-const statusItem = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '6px',
-    color: 'var(--text-muted)',
-};
-
-const statusLabel = {
-    fontFamily: 'JetBrains Mono, monospace',
-    fontSize: '0.65rem',
-    fontWeight: '600',
-    letterSpacing: '0.05em',
-};
-
-const pulsingDot = {
-    width: '6px',
-    height: '6px',
-    backgroundColor: '#10b981',
-    borderRadius: '50%',
-    boxShadow: '0 0 8px #10b981',
-    animation: 'pulse 2s infinite',
 };
 
 export default Hero;

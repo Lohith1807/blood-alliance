@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import styles from '@/css/ClanCarousel.module.css';
 
 const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,8 +54,6 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
 
         // Determine position and styles
         const isCenter = normalizedDiff === 0;
-        const isLeft = normalizedDiff < 0;
-        const isRight = normalizedDiff > 0;
         const absDistance = Math.abs(normalizedDiff);
 
         // Calculate transform values
@@ -77,14 +76,14 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
 
     if (!clans || clans.length === 0) {
         return (
-            <div style={emptyState}>
+            <div className={styles.emptyState}>
                 <span style={{ color: 'var(--text-muted)' }}>No clans available</span>
             </div>
         );
     }
 
     return (
-        <div style={carouselContainer}>
+        <div className={styles.carouselContainer}>
             {/* Navigation Arrows */}
             <motion.button
                 onClick={() => {
@@ -92,7 +91,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                     setIsAutoPlaying(false);
                     setTimeout(() => setIsAutoPlaying(true), 5000);
                 }}
-                style={{ ...navButton, left: '0' }}
+                className={`${styles.navButton} ${styles.navButtonLeft}`}
                 whileHover={{ scale: 1.1, backgroundColor: 'rgba(238, 0, 0, 0.2)' }}
                 whileTap={{ scale: 0.9 }}
             >
@@ -105,7 +104,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                     setIsAutoPlaying(false);
                     setTimeout(() => setIsAutoPlaying(true), 5000);
                 }}
-                style={{ ...navButton, right: '0' }}
+                className={`${styles.navButton} ${styles.navButtonRight}`}
                 whileHover={{ scale: 1.1, backgroundColor: 'rgba(238, 0, 0, 0.2)' }}
                 whileTap={{ scale: 0.9 }}
             >
@@ -113,7 +112,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
             </motion.button>
 
             {/* Cards Track */}
-            <div style={cardsTrack}>
+            <div className={styles.cardsTrack}>
                 {clans.map((clan, index) => {
                     const props = getCardProps(index);
 
@@ -122,8 +121,8 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                     return (
                         <motion.div
                             key={clan.tag}
+                            className={styles.cardWrapper}
                             style={{
-                                ...cardWrapper,
                                 zIndex: props.zIndex,
                             }}
                             animate={{
@@ -141,38 +140,39 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                             onClick={() => goToSlide(index)}
                             whileHover={!props.isCenter ? { scale: props.scale * 1.05 } : {}}
                         >
-                            <div style={{
-                                ...cardInner,
-                                boxShadow: props.isCenter
-                                    ? '0 0 40px rgba(238, 0, 0, 0.4), 0 20px 40px rgba(0, 0, 0, 0.5)'
-                                    : '0 10px 30px rgba(0, 0, 0, 0.3)',
-                                border: props.isCenter
-                                    ? '2px solid var(--rh-red)'
-                                    : '1px solid var(--border-color)',
-                            }}>
+                            <div
+                                className={styles.cardInner}
+                                style={{
+                                    boxShadow: props.isCenter
+                                        ? '0 0 40px rgba(238, 0, 0, 0.4), 0 20px 40px rgba(0, 0, 0, 0.5)'
+                                        : '0 10px 30px rgba(0, 0, 0, 0.3)',
+                                    border: props.isCenter
+                                        ? '2px solid var(--rh-red)'
+                                        : '1px solid var(--border-color)',
+                                }}>
                                 <img
                                     src={clan.badgeUrls?.large || clan.badgeUrls?.medium}
                                     alt={clan.name}
-                                    style={clanBadge}
+                                    className={styles.clanBadge}
                                 />
 
                                 {/* Clan info - only show on center card */}
                                 {props.isCenter && (
                                     <motion.div
-                                        style={cardInfo}
+                                        className={styles.cardInfo}
                                         initial={{ opacity: 0, y: 10 }}
                                         animate={{ opacity: 1, y: 0 }}
                                         transition={{ delay: 0.2 }}
                                     >
-                                        <span style={clanName}>{clan.name}</span>
-                                        <span style={clanStats}>
+                                        <span className={styles.clanName}>{clan.name}</span>
+                                        <span className={styles.clanStats}>
                                             LVL {clan.clanLevel} • {clan.members}/50
                                         </span>
                                     </motion.div>
                                 )}
 
                                 {/* Glow effect for center card */}
-                                {props.isCenter && <div style={glowEffect}></div>}
+                                {props.isCenter && <div className={styles.glowEffect}></div>}
                             </div>
                         </motion.div>
                     );
@@ -180,13 +180,13 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
             </div>
 
             {/* Dot Indicators */}
-            <div style={dotsContainer}>
+            <div className={styles.dotsContainer}>
                 {clans.map((_, index) => (
                     <motion.button
                         key={index}
                         onClick={() => goToSlide(index)}
+                        className={styles.dotButton}
                         style={{
-                            ...dotButton,
                             backgroundColor: index === currentIndex ? 'var(--rh-red)' : 'rgba(255, 255, 255, 0.2)',
                         }}
                         whileHover={{ scale: 1.3 }}
@@ -202,7 +202,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
             {/* Progress bar for auto-slide */}
             {isAutoPlaying && (
                 <motion.div
-                    style={progressBar}
+                    className={styles.progressBar}
                     initial={{ scaleX: 0 }}
                     animate={{ scaleX: 1 }}
                     transition={{ duration: autoSlideInterval / 1000, ease: 'linear' }}
@@ -211,145 +211,6 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
             )}
         </div>
     );
-};
-
-// Styles
-const carouselContainer = {
-    position: 'relative',
-    width: '100%',
-    height: '280px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    overflow: 'hidden',
-    padding: '20px 0',
-};
-
-const cardsTrack = {
-    position: 'relative',
-    width: '100%',
-    height: '100%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-};
-
-const cardWrapper = {
-    position: 'absolute',
-    cursor: 'pointer',
-    transformOrigin: 'center center',
-};
-
-const cardInner = {
-    position: 'relative',
-    width: '140px',
-    height: '160px',
-    background: 'linear-gradient(135deg, #1a1a1a 0%, #0d0d0d 100%)',
-    borderRadius: '8px',
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: '1rem',
-    overflow: 'hidden',
-    transition: 'box-shadow 0.3s ease, border 0.3s ease',
-};
-
-const clanBadge = {
-    width: '80px',
-    height: '80px',
-    objectFit: 'contain',
-    marginBottom: '0.5rem',
-};
-
-const cardInfo = {
-    textAlign: 'center',
-    marginTop: '0.25rem',
-};
-
-const clanName = {
-    display: 'block',
-    fontSize: '0.75rem',
-    fontWeight: '700',
-    color: '#fff',
-    marginBottom: '0.25rem',
-    whiteSpace: 'nowrap',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    maxWidth: '120px',
-};
-
-const clanStats = {
-    fontSize: '0.6rem',
-    color: 'var(--text-muted)',
-    fontFamily: 'JetBrains Mono, monospace',
-};
-
-const glowEffect = {
-    position: 'absolute',
-    top: '50%',
-    left: '50%',
-    width: '150%',
-    height: '150%',
-    background: 'radial-gradient(circle, rgba(238, 0, 0, 0.1) 0%, transparent 60%)',
-    transform: 'translate(-50%, -50%)',
-    pointerEvents: 'none',
-    zIndex: -1,
-};
-
-const navButton = {
-    position: 'absolute',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    zIndex: 20,
-    background: 'rgba(0, 0, 0, 0.5)',
-    border: '1px solid var(--border-color)',
-    borderRadius: '50%',
-    width: '36px',
-    height: '36px',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    color: '#fff',
-    transition: 'all 0.2s ease',
-};
-
-const dotsContainer = {
-    position: 'absolute',
-    bottom: '0',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    display: 'flex',
-    gap: '8px',
-    alignItems: 'center',
-};
-
-const dotButton = {
-    height: '8px',
-    borderRadius: '4px',
-    border: 'none',
-    cursor: 'pointer',
-    transition: 'all 0.3s ease',
-};
-
-const progressBar = {
-    position: 'absolute',
-    bottom: '20px',
-    left: '50%',
-    transform: 'translateX(-50%)',
-    width: '100px',
-    height: '2px',
-    background: 'var(--rh-red)',
-    transformOrigin: 'left center',
-    opacity: 0.5,
-};
-
-const emptyState = {
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: '200px',
 };
 
 export default ClanCarousel;
