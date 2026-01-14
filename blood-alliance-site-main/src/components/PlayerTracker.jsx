@@ -2,6 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, Filter, Database, Loader2 } from 'lucide-react';
 import styles from '@/css/PlayerTracker.module.css';
+import CONFIG from '@/config';
 
 const PlayerTracker = () => {
     const [players, setPlayers] = useState([]);
@@ -13,7 +14,7 @@ const PlayerTracker = () => {
     useEffect(() => {
         const fetchPlayers = async () => {
             try {
-                const response = await fetch('/api/players');
+                const response = await fetch(CONFIG.api.endpoints.players);
                 const data = await response.json();
                 if (data.success) {
                     setPlayers(data.players);
@@ -62,7 +63,7 @@ const PlayerTracker = () => {
         <div className="container" style={{ paddingTop: 'calc(var(--nav-height) + 2rem)' }}>
             <header className={styles.headerBox}>
                 <div className={styles.tagline}><Database size={14} /> SYSTEM_QUERY: CWL_REGISTRY</div>
-                <h1 className={styles.title}>Blood Alliance CWL Info</h1>
+                <h1 className={styles.title}>{CONFIG.meta.title} CWL Info</h1>
                 <p className={styles.subtitle}>
                     Check your Lazy CWL registration and assigned clan. Filtering active.
                 </p>

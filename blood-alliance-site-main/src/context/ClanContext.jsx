@@ -1,10 +1,8 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import CONFIG from '@/config';
 
 // Create the Clan Context
 const ClanContext = createContext();
-
-// API endpoint - Vercel serverless function fetching from MongoDB
-const API_ENDPOINT = '/api/clans';
 
 // Clan Context Provider
 export const ClanProvider = ({ children }) => {
@@ -17,7 +15,7 @@ export const ClanProvider = ({ children }) => {
     // Fetch clans from serverless API (MongoDB)
     const fetchFromAPI = async () => {
         try {
-            const response = await fetch(API_ENDPOINT);
+            const response = await fetch(CONFIG.api.endpoints.clans);
 
             // Validate content type
             const contentType = response.headers.get('content-type');

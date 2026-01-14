@@ -32,19 +32,9 @@ if (!MONGO_URL) {
     process.exit(1);
 }
 
-// List of clan tags (preserved for reference)
-const CLAN_TAGS = [
-    '#CYQVL002',    // Blood Bound
-    '#2L80LY0CP',   // CLASHING COBRAS
-    '#2PRJYL99P',   // Blood Lust
-    '#2L80RLGJ8',   // ☠️#Team☠Legend☠
-    '#2Y9G28C9Q',   // Impéríal_Kingz
-    '#2YUPCY9GV',   // dragon warriors
-];
-
 async function syncAllData() {
     console.log('='.repeat(50));
-    console.log('🔄 MongoDB Connection Test & Sync Utility');
+    console.log('🔄 MongoDB Dynamic Clan Loader');
     console.log('='.repeat(50));
 
     const mongoClient = new MongoClient(MONGO_URL);
@@ -55,10 +45,28 @@ async function syncAllData() {
         const db = mongoClient.db('ClansData');
         const collection = db.collection('clans');
 
-        // Example: logic to insert data manually could go here
-        // Since CoC API is removed, this script no longer fetches live data.
-        console.log('ℹ️  Clash of Clans API integration has been removed.');
-        console.log('ℹ️  Use Manual Upload via MongoDB Compass or scripts/storeClanData.js');
+        // Dynamic Fetch: Get all clan tags from the database
+        console.log('🔍 Fetching clan list from database...');
+        const clans = await collection.find({}, { projection: { _id: 1, name: 1 } }).toArray();
+
+        if (clans.length === 0) {
+            console.warn('⚠️ No clans found in database.');
+        } else {
+            console.log(`✅ Found ${clans.length} clans:`);
+            const clanTags = clans.map(c => c._id);
+
+            // Loop through dynamically fetched tags
+            for (const tag of clanTags) {
+                const clanName = clans.find(c => c._id === tag)?.name || 'Unknown';
+                console.log(`   🔸 Detected: ${clanName} (${tag})`);
+
+                // Placeholder for future logic
+                // e.g., await updateClan(tag);
+            }
+        }
+
+        console.log('\nℹ️  Note: Clash of Clans API integration is removed.');
+        console.log('ℹ️  This script now verifies database connectivity and lists existing clans.');
 
     } catch (error) {
         console.error('❌ Database connection failed:', error);
