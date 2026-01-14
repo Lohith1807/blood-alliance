@@ -1,6 +1,6 @@
-# Blood Alliance Ana: Design System & Developer Guide
+# Blood Alliance: Design System & Developer Guide
 
-This document serves as the "Source of Truth" for the **Blood Alliance Ana** platform. Use this as a reference for creating new pages, components, and maintaining the enterprise-tech (Red Hat/Ansible) aesthetic.
+This document serves as the "Source of Truth" for the **Blood Alliance** platform. Use this as a reference for creating new pages, components, and maintaining the enterprise-tech (Red Hat/Ansible) aesthetic.
 
 ---
 
@@ -41,7 +41,7 @@ This document serves as the "Source of Truth" for the **Blood Alliance Ana** pla
 
 ### Navbar Protocol
 - **Height**: `56px`
-- **Logo**: `BLOOD ALLIANCE ANA` (Inter Bold, Red/White split).
+- **Logo**: `Blood Alliance` (Inter Bold, Red/White split).
 - **Hover State**: Border-bottom (2px) in Red Hat Red.
 
 ### Data Grid/Table
@@ -83,4 +83,4 @@ This document serves as the "Source of Truth" for the **Blood Alliance Ana** pla
 - **Build**: `npm run build` generates the production-optimized dist folder.
 
 ---
-*Reference document protocol v1.0 | Blood Alliance Ana*
+*Reference document protocol v1.0 | Blood Alliance*

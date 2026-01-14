@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Import the cached clan data (fetched via node scripts/fetchClanData.js)
-import clanData from '../../clan_data.json';
+// Import the local cached data as fallback
+import cachedClanData from '../../clan_data.json';
 
 // Create the Clan Context
 const ClanContext = createContext();
+
+// API endpoint - Vercel serverless function fetching from MongoDB
+const API_ENDPOINT = '/api/clans';
 
 // Clan Context Provider
 export const ClanProvider = ({ children }) => {
@@ -12,25 +15,60 @@ export const ClanProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedClan, setSelectedClan] = useState(null);
+    const [dataSource, setDataSource] = useState('loading'); // 'mongodb' | 'cache' | 'loading'
 
-    // Load cached clan data on mount
-    useEffect(() => {
-        setLoading(true);
+    // Fetch clans from serverless API (MongoDB)
+    const fetchFromAPI = async () => {
+        // Skip API fetch in local Vite dev to avoid noisy console errors
+        // When running via 'npm run dev', /api/clans is served as a text file
+        if (import.meta.env.DEV) return null;
 
         try {
-            if (Array.isArray(clanData) && clanData.length > 0) {
-                setClans(clanData);
-                console.log(`✅ Loaded ${clanData.length} clans from cached data`);
-            } else {
-                throw new Error('No clan data available');
-            }
+            const response = await fetch(API_ENDPOINT);
+
+            // Validate content type
+            const contentType = response.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) return null;
+
+            if (!response.ok) return null;
+
+            const data = await response.json();
+            if (data.success && data.clans) return data.clans;
+            return null;
         } catch (err) {
-            console.error('Error loading clan data:', err);
-            setError(err.message);
-            setClans([]);
-        } finally {
-            setLoading(false);
+            return null; // Silently fail in dev
         }
+    };
+
+    // Load data on mount
+    useEffect(() => {
+        const loadClanData = async () => {
+            setLoading(true);
+            setError(null);
+
+            // 1. Try API first (Production/Vercel)
+            const apiData = await fetchFromAPI();
+
+            if (apiData && apiData.length > 0) {
+                setClans(apiData);
+                setDataSource('mongodb');
+                console.log(`✅ Loaded ${apiData.length} clans via MONGODB`);
+            } else {
+                // 2. Fallback to cached JSON file (Local/Dev)
+                if (Array.isArray(cachedClanData) && cachedClanData.length > 0) {
+                    setClans(cachedClanData);
+                    setDataSource('cache');
+                    console.log(`✅ Loaded ${cachedClanData.length} clans via LOCAL_CACHE`);
+                } else {
+                    setError('No clan data available');
+                    setClans([]);
+                }
+            }
+
+            setLoading(false);
+        };
+
+        loadClanData();
     }, []);
 
     // Get a specific clan by tag
@@ -38,10 +76,19 @@ export const ClanProvider = ({ children }) => {
         return clans.find(clan => clan.tag === tag) || null;
     };
 
-    // Note: To refresh data, run locally: node scripts/fetchClanData.js
-    const refreshClans = () => {
-        console.log('ℹ️ To refresh clan data, run: node scripts/fetchClanData.js');
-        console.log('Then commit and push the updated clan_data.json');
+    // Refresh clan data (re-fetches from MongoDB)
+    const refreshClans = async () => {
+        setLoading(true);
+        const apiData = await fetchFromAPI();
+
+        if (apiData && apiData.length > 0) {
+            setClans(apiData);
+            setDataSource('mongodb');
+            console.log('✅ Refreshed clan data from MongoDB');
+        } else {
+            console.log('⚠️ Could not refresh from API, keeping existing data');
+        }
+        setLoading(false);
     };
 
     const value = {
@@ -52,6 +99,7 @@ export const ClanProvider = ({ children }) => {
         setSelectedClan,
         getClanByTag,
         refreshClans,
+        dataSource,
     };
 
     return (

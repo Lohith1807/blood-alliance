@@ -207,3 +207,16 @@ section {
   letter-spacing: 0.1em;
   color: var(--text-muted);
 }
+
+/* Responsive Utilities */
+@media (max-width: 768px) {
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+@media (min-width: 769px) {
+  .show-mobile {
+    display: none !important;
+  }
+}
