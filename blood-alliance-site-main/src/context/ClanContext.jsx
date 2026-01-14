@@ -1,7 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 
-// Import the local cached data as fallback
-import cachedClanData from '../../clan_data.json';
+// Import the cached clan data (fetched via node scripts/fetchClanData.js)
+import clanData from '../../clan_data.json';
 
 // Create the Clan Context
 const ClanContext = createContext();
@@ -12,34 +12,25 @@ export const ClanProvider = ({ children }) => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
     const [selectedClan, setSelectedClan] = useState(null);
-    const [dataSource, setDataSource] = useState('loading'); // 'api' | 'cache' | 'loading'
 
-    // Load data on mount - use cached JSON data (API blocked by CORS)
+    // Load cached clan data on mount
     useEffect(() => {
-        const loadClanData = async () => {
-            setLoading(true);
-            setError(null);
+        setLoading(true);
 
-            try {
-                // The COC API blocks browser requests (CORS), so we use the cached data
-                // The cached data was previously fetched using the Node.js script
-                if (Array.isArray(cachedClanData) && cachedClanData.length > 0) {
-                    setClans(cachedClanData);
-                    setDataSource('cache');
-                    console.log(`✅ Loaded ${cachedClanData.length} clans from cached data`);
-                } else {
-                    throw new Error('No cached clan data available');
-                }
-            } catch (err) {
-                console.error('Error loading clan data:', err);
-                setError(err.message);
-                setClans([]);
-            } finally {
-                setLoading(false);
+        try {
+            if (Array.isArray(clanData) && clanData.length > 0) {
+                setClans(clanData);
+                console.log(`✅ Loaded ${clanData.length} clans from cached data`);
+            } else {
+                throw new Error('No clan data available');
             }
-        };
-
-        loadClanData();
+        } catch (err) {
+            console.error('Error loading clan data:', err);
+            setError(err.message);
+            setClans([]);
+        } finally {
+            setLoading(false);
+        }
     }, []);
 
     // Get a specific clan by tag
@@ -47,15 +38,10 @@ export const ClanProvider = ({ children }) => {
         return clans.find(clan => clan.tag === tag) || null;
     };
 
-    // Note: To refresh data, run the Node.js script:
-    // node scripts/fetchClanData.js
-    const refreshClans = async () => {
-        console.log('⚠️ To refresh clan data, run: node scripts/fetchClanData.js');
-        console.log('Browser cannot fetch directly from COC API due to CORS restrictions.');
-        // Reload from cached data
-        if (Array.isArray(cachedClanData)) {
-            setClans(cachedClanData);
-        }
+    // Note: To refresh data, run locally: node scripts/fetchClanData.js
+    const refreshClans = () => {
+        console.log('ℹ️ To refresh clan data, run: node scripts/fetchClanData.js');
+        console.log('Then commit and push the updated clan_data.json');
     };
 
     const value = {
@@ -66,7 +52,6 @@ export const ClanProvider = ({ children }) => {
         setSelectedClan,
         getClanByTag,
         refreshClans,
-        dataSource,
     };
 
     return (
