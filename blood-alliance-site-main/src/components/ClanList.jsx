@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import { Users, ExternalLink, ShieldCheck, Activity, BarChart3, Database, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import '@/css/ClanList.css';
 
@@ -15,8 +16,14 @@ const getLeaders = (memberList) => {
     };
 };
 
-const ClanCard = ({ clan, index, onClanSelect }) => {
+const ClanCard = ({ clan, index }) => {
     const { leader, coLeaders } = getLeaders(clan.memberList);
+    const navigate = useNavigate();
+
+    const handleClanClick = () => {
+        // Strip '#' from tag for cleaner URL
+        navigate(`/clan/${clan.tag.replace('#', '')}`);
+    };
 
     return (
         <motion.div
@@ -29,15 +36,11 @@ const ClanCard = ({ clan, index, onClanSelect }) => {
                 ease: [0.215, 0.61, 0.355, 1]
             }}
             viewport={{ once: true, margin: "-50px" }}
-            onClick={() => onClanSelect && onClanSelect(clan.tag)}
+            onClick={handleClanClick}
         >
             <div className="unit-tag">
                 UNIT_{String(index + 1).padStart(2, '0')}
             </div>
-            {/* <div className="status-indicator">
-                <div className="status-dot"></div>
-                ACTIVE_OPS
-            </div> */}
 
             <div className="main-content">
                 <div className="badge-frame">
@@ -87,7 +90,7 @@ const ClanCard = ({ clan, index, onClanSelect }) => {
                 className="view-btn"
                 onClick={(e) => {
                     e.stopPropagation();
-                    onClanSelect && onClanSelect(clan.tag);
+                    handleClanClick();
                 }}
             >
                 ANALYZE_UNIT <ExternalLink size={14} />
@@ -112,7 +115,7 @@ const SkeletonCard = ({ index }) => (
     </div>
 );
 
-const ClanList = ({ onClanSelect }) => {
+const ClanList = () => {
     const { clans, loading, error } = useClans();
 
     return (
@@ -124,7 +127,7 @@ const ClanList = ({ onClanSelect }) => {
                 <h2 className="section-title">Alliance Strategic Units</h2>
                 <p className="section-subtitle">
                     {loading
-                        ? 'Establishing persistent uplink with Clash of Clans API...'
+                        ? 'Establishing persistent uplink with Blood Alliance Database...'
                         : `Real-time synchronization of ${clans.length} active squadrons within the Blood Alliance network. Access unit profile for deep-dive intelligence.`
                     }
                 </p>
@@ -143,7 +146,7 @@ const ClanList = ({ onClanSelect }) => {
                     ))
                 ) : (
                     clans.map((clan, index) => (
-                        <ClanCard key={clan.tag} clan={clan} index={index} onClanSelect={onClanSelect} />
+                        <ClanCard key={clan.tag} clan={clan} index={index} />
                     ))
                 )}
             </div>

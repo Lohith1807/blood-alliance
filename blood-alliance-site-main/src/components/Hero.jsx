@@ -1,15 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight, Database, Shield, Terminal, Loader2 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import ClanCarousel from './ClanCarousel';
 import styles from '@/css/Hero.module.css';
 
-const Hero = ({ setActiveTab }) => {
+const Hero = () => {
     const { clans, loading } = useClans();
     const [displayText, setDisplayText] = useState('');
     const [isTypingComplete, setIsTypingComplete] = useState(false);
     const fullText = 'Blood Alliance';
+    const navigate = useNavigate();
 
     // Typing animation effect
     useEffect(() => {
@@ -41,6 +43,13 @@ const Hero = ({ setActiveTab }) => {
     const itemVariants = {
         hidden: { opacity: 0, y: 10 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+    };
+
+    const handleExploreClans = () => {
+        const element = document.getElementById('clans');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
     };
 
     return (
@@ -88,13 +97,13 @@ const Hero = ({ setActiveTab }) => {
                     {/* CTAs */}
                     <motion.div variants={itemVariants} className={styles.btnRow}>
                         <button
-                            onClick={() => document.getElementById('clans')?.scrollIntoView({ behavior: 'smooth' })}
+                            onClick={handleExploreClans}
                             className={`btn btn-primary ${styles.btn}`}
                         >
                             EXPLORE_CLANS <ChevronRight size={16} />
                         </button>
                         <button
-                            onClick={() => setActiveTab('players')}
+                            onClick={() => navigate('/tracker')}
                             className={`btn btn-secondary ${styles.btn}`}
                         >
                             CWL_REGISTRY <Database size={14} style={{ marginLeft: '8px' }} />

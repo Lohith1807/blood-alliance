@@ -1,6 +1,7 @@
 import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { ArrowLeft, Loader2, Database } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import styles from '@/css/ClanDetail.module.css';
 
@@ -9,13 +10,23 @@ import ClanHeader from './ClanDetailComponents/ClanHeader';
 import ClanStats from './ClanDetailComponents/ClanStats';
 import ClanMembersTable from './ClanDetailComponents/ClanMembersTable';
 
-const ClanDetail = ({ clanTag, onBack }) => {
+const ClanDetail = () => {
+    const { tag } = useParams();
+    const navigate = useNavigate();
     const { clans, loading, getClanByTag } = useClans();
+
+    // Reconstruct the full tag (add # back)
+    const clanTag = tag ? `#${tag}` : null;
 
     // Find the clan from context
     const clan = useMemo(() => {
+        if (!clanTag) return null;
         return getClanByTag(clanTag);
     }, [clanTag, clans, getClanByTag]);
+
+    const handleBack = () => {
+        navigate('/');
+    };
 
     // Loading state
     if (loading) {
@@ -30,7 +41,7 @@ const ClanDetail = ({ clanTag, onBack }) => {
                     </motion.div>
                     <h2 style={{ color: '#fff', marginBottom: '0.5rem', marginTop: '1rem' }}>FETCHING_DATA</h2>
                     <p style={{ color: 'var(--text-muted)' }}>
-                        Loading clan data from Clash of Clans API...
+                        Loading clan data from Blood Alliance Database...
                     </p>
                 </div>
             </section>
@@ -46,7 +57,7 @@ const ClanDetail = ({ clanTag, onBack }) => {
                     <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
                         Unable to retrieve data for clan tag: {clanTag}
                     </p>
-                    <button onClick={onBack} className={`btn btn-primary ${styles.backButton}`}>
+                    <button onClick={handleBack} className={`btn btn-primary ${styles.backButton}`}>
                         <ArrowLeft size={16} /> RETURN_TO_REGISTRY
                     </button>
                 </div>
@@ -58,7 +69,7 @@ const ClanDetail = ({ clanTag, onBack }) => {
         <section className="container" style={{ padding: '6rem 0', minHeight: 'calc(100vh - 56px)' }}>
             {/* Back Button */}
             <motion.button
-                onClick={onBack}
+                onClick={handleBack}
                 className={styles.backNav}
                 initial={{ opacity: 0, x: -20 }}
                 animate={{ opacity: 1, x: 0 }}

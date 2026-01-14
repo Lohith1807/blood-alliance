@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X } from 'lucide-react';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import styles from '@/css/Navbar.module.css';
 
-const Navbar = ({ activeTab, setActiveTab }) => {
+const Navbar = () => {
     const [activeSection, setActiveSection] = useState('home');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    // Check if we are on the home page
+    const isHomePage = location.pathname === '/';
 
     // Handle scroll to update active section highlighting
     useEffect(() => {
-        if (activeTab !== 'home') return;
+        if (!isHomePage) {
+            setActiveSection('');
+            return;
+        }
 
         const handleScroll = () => {
             const sections = ['home', 'clans', 'cwl-rules', 'rules'];
@@ -31,22 +40,50 @@ const Navbar = ({ activeTab, setActiveTab }) => {
         window.addEventListener('scroll', handleScroll, { passive: true });
         handleScroll(); // Initial check
         return () => window.removeEventListener('scroll', handleScroll);
-    }, [activeTab]);
+    }, [isHomePage]);
 
-    const handleNavClick = (tab, sectionId = null) => {
-        setActiveTab(tab);
-        setIsMenuOpen(false); // Close mobile menu on click
-
-        if (sectionId) {
-            setActiveSection(sectionId);
+    // Handle hash scrolling when location/hash changes
+    useEffect(() => {
+        if (location.hash && isHomePage) {
+            const id = location.hash.replace('#', '');
             setTimeout(() => {
-                const element = document.getElementById(sectionId);
+                const element = document.getElementById(id);
                 if (element) {
                     const yOffset = -56; // Navbar height
                     const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                    window.scrollTo({ top: sectionId === 'home' ? 0 : y, behavior: 'smooth' });
+                    window.scrollTo({ top: y, behavior: 'smooth' });
                 }
             }, 100);
+        } else if (isHomePage && !location.hash) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }, [location, isHomePage]);
+
+    const handleNavClick = (path, hash = '') => {
+        setIsMenuOpen(false); // Close mobile menu on click
+
+        if (path === '/') {
+            if (isHomePage) {
+                // If already on home, just scroll
+                if (hash) {
+                    const id = hash.replace('#', '');
+                    const element = document.getElementById(id);
+                    if (element) {
+                        const yOffset = -56;
+                        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                        window.scrollTo({ top: y, behavior: 'smooth' });
+                    }
+                } else {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+                // Update URL without reload if desired, or just let scroll handle it
+                // navigate(hash ? '/' + hash : '/'); // Optional
+            } else {
+                // Navigate to home (with hash)
+                navigate('/' + hash);
+            }
+        } else {
+            navigate(path);
         }
     };
 
@@ -57,7 +94,7 @@ const Navbar = ({ activeTab, setActiveTab }) => {
             <div className={`container ${styles.container}`}>
                 <motion.div
                     className={styles.logoContainer}
-                    onClick={() => handleNavClick('home', 'home')}
+                    onClick={() => handleNavClick('/')}
                     initial={{ opacity: 0, x: -10 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.5, ease: "easeOut" }}
@@ -78,43 +115,40 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                     <ul className={styles.ul}>
                         <li>
                             <NavItem
-                                active={activeTab === 'home' && activeSection === 'home'}
-                                onClick={() => handleNavClick('home', 'home')}
+                                active={isHomePage && activeSection === 'home'}
+                                onClick={() => handleNavClick('/', '#home')}
                             >
                                 Home
                             </NavItem>
                         </li>
                         <li>
                             <NavItem
-                                active={activeTab === 'home' && activeSection === 'clans'}
-                                onClick={() => handleNavClick('home', 'clans')}
+                                active={isHomePage && activeSection === 'clans'}
+                                onClick={() => handleNavClick('/', '#clans')}
                             >
                                 Clans
                             </NavItem>
                         </li>
                         <li>
                             <NavItem
-                                active={activeTab === 'home' && activeSection === 'cwl-rules'}
-                                onClick={() => handleNavClick('home', 'cwl-rules')}
+                                active={isHomePage && activeSection === 'cwl-rules'}
+                                onClick={() => handleNavClick('/', '#cwl-rules')}
                             >
                                 CWL Rules
                             </NavItem>
                         </li>
                         <li>
                             <NavItem
-                                active={activeTab === 'home' && activeSection === 'rules'}
-                                onClick={() => handleNavClick('home', 'rules')}
+                                active={isHomePage && activeSection === 'rules'}
+                                onClick={() => handleNavClick('/', '#rules')}
                             >
                                 Rules
                             </NavItem>
                         </li>
                         <li>
                             <NavItem
-                                active={activeTab === 'players'}
-                                onClick={() => {
-                                    setActiveTab('players');
-                                    setActiveSection('');
-                                }}
+                                active={location.pathname === '/tracker'}
+                                onClick={() => handleNavClick('/tracker')}
                             >
                                 CWL Players
                             </NavItem>
@@ -154,36 +188,32 @@ const Navbar = ({ activeTab, setActiveTab }) => {
                     >
                         <ul className={styles.mobileUl}>
                             <MobileNavItem
-                                active={activeTab === 'home' && activeSection === 'home'}
-                                onClick={() => handleNavClick('home', 'home')}
+                                active={isHomePage && activeSection === 'home'}
+                                onClick={() => handleNavClick('/', '#home')}
                             >
                                 Home
                             </MobileNavItem>
                             <MobileNavItem
-                                active={activeTab === 'home' && activeSection === 'clans'}
-                                onClick={() => handleNavClick('home', 'clans')}
+                                active={isHomePage && activeSection === 'clans'}
+                                onClick={() => handleNavClick('/', '#clans')}
                             >
                                 Clans
                             </MobileNavItem>
                             <MobileNavItem
-                                active={activeTab === 'home' && activeSection === 'cwl-rules'}
-                                onClick={() => handleNavClick('home', 'cwl-rules')}
+                                active={isHomePage && activeSection === 'cwl-rules'}
+                                onClick={() => handleNavClick('/', '#cwl-rules')}
                             >
                                 CWL Rules
                             </MobileNavItem>
                             <MobileNavItem
-                                active={activeTab === 'home' && activeSection === 'rules'}
-                                onClick={() => handleNavClick('home', 'rules')}
+                                active={isHomePage && activeSection === 'rules'}
+                                onClick={() => handleNavClick('/', '#rules')}
                             >
                                 Rules
                             </MobileNavItem>
                             <MobileNavItem
-                                active={activeTab === 'players'}
-                                onClick={() => {
-                                    setActiveTab('players');
-                                    setActiveSection('');
-                                    setIsMenuOpen(false);
-                                }}
+                                active={location.pathname === '/tracker'}
+                                onClick={() => handleNavClick('/tracker')}
                             >
                                 CWL Players
                             </MobileNavItem>
@@ -212,7 +242,8 @@ const NavItem = ({ children, active, onClick }) => (
         className={styles.link}
         style={{
             color: active ? 'var(--rh-red)' : 'var(--text-secondary)',
-            borderBottom: active ? '2px solid var(--rh-red)' : '2px solid transparent'
+            borderBottom: active ? '2px solid var(--rh-red)' : '2px solid transparent',
+            cursor: 'pointer'
         }}
     >
         {children}
