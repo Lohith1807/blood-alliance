@@ -6,9 +6,34 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Manually parse .env file
+const envPath = path.resolve(__dirname, '../.env');
+if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, 'utf-8');
+    envConfig.split('\n').forEach(line => {
+        let [key, ...valueParts] = line.split('=');
+        if (key && valueParts.length > 0) {
+            let value = valueParts.join('=');
+            key = key.trim();
+            value = value.trim();
+
+            // Remove quotes if present
+            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                value = value.slice(1, -1);
+            }
+
+            process.env[key] = value;
+        }
+    });
+}
+
 // MongoDB connection URL
-// It's better to use an environment variable for the connection string
-const MONGO_URL = process.env.MONGO_URL || 'mongodb+srv://lohithreddy1819april_db_user:nHYI3nUFGWztAPwR@clansdata.auhlwu2.mongodb.net/?appName=ClansData';
+const MONGO_URL = process.env.MONGO_URL;
+
+if (!MONGO_URL) {
+    console.error('❌ MONGO_URL is not defined in .env');
+    process.exit(1);
+}
 
 async function storeClanData() {
     const client = new MongoClient(MONGO_URL);

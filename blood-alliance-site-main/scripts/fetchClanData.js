@@ -6,12 +6,41 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Clash of Clans API configuration
-const API_KEY = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzUxMiIsImtpZCI6IjI4YTMxOGY3LTAwMDAtYTFlYi03ZmExLTJjNzQzM2M2Y2NhNSJ9.eyJpc3MiOiJzdXBlcmNlbGwiLCJhdWQiOiJzdXBlcmNlbGw6Z2FtZWFwaSIsImp0aSI6Ijk2YTcwMTE0LTZiYjUtNDdkNi04MzMyLTM1Y2ZjYjkxYTFhNCIsImlhdCI6MTc2ODQwMzQyNCwic3ViIjoiZGV2ZWxvcGVyL2U3ODVmM2M0LWZmNDQtODVlYS1hYzA2LTA0MGM5YzE3YjVlMiIsInNjb3BlcyI6WyJjbGFzaCJdLCJsaW1pdHMiOlt7InRpZXIiOiJkZXZlbG9wZXIvc2lsdmVyIiwidHlwZSI6InRocm90dGxpbmcifSx7ImNpZHJzIjpbIjQ5LjQzLjIwMy4xMjYiXSwidHlwZSI6ImNsaWVudCJ9XX0.CwdoRhI_cGbO_jsM4MXqYDABP5KYbgxOlTcAYV-JtR9wfJXMP9dKOSIFBxF3l6gbNLgu8rpa4QCyIe1FJA8kbA';
-const BASE_URL = 'https://api.clashofclans.com/v1';
+// Manually parse .env file
+const envPath = path.resolve(__dirname, '../.env');
+if (fs.existsSync(envPath)) {
+    const envConfig = fs.readFileSync(envPath, 'utf-8');
+    envConfig.split('\n').forEach(line => {
+        let [key, ...valueParts] = line.split('=');
+        if (key && valueParts.length > 0) {
+            let value = valueParts.join('=');
+            key = key.trim();
+            value = value.trim();
 
-// MongoDB connection URL
-const MONGO_URL = 'mongodb+srv://lohithreddy1819april_db_user:nHYI3nUFGWztAPwR@clansdata.auhlwu2.mongodb.net/?appName=ClansData';
+            // Remove quotes if present
+            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                value = value.slice(1, -1);
+            }
+
+            process.env[key] = value;
+        }
+    });
+}
+
+// Configuration
+const API_KEY = process.env.COC_API_KEY;
+const BASE_URL = 'https://api.clashofclans.com/v1';
+const MONGO_URL = process.env.MONGO_URL;
+
+if (!API_KEY) {
+    console.error('❌ COC_API_KEY is not defined in .env');
+    process.exit(1);
+}
+
+if (!MONGO_URL) {
+    console.error('❌ MONGO_URL is not defined in .env');
+    process.exit(1);
+}
 
 // List of clan tags to fetch
 const CLAN_TAGS = [
@@ -81,11 +110,6 @@ async function syncAllData() {
                 console.error(` ❌ Error syncing ${tag}:`, error.message);
             }
         }
-
-        // Still save a local backup just in case
-        const outputPath = path.join(__dirname, '..', 'clan_data.json');
-        fs.writeFileSync(outputPath, JSON.stringify(allClansData, null, 4), 'utf8');
-        console.log(`\n💾 Local backup saved to clan_data.json`);
 
     } catch (error) {
         console.error('❌ Database connection failed:', error);
