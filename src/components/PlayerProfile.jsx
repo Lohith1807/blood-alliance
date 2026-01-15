@@ -35,7 +35,6 @@ const PlayerProfile = () => {
             const data = await res.json();
 
             if (data.url) {
-                console.log('Backend Located:', data.url);
                 setApiBase(data.url);
 
                 // 2. Init Session directly with Backend
@@ -45,15 +44,13 @@ const PlayerProfile = () => {
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include'
                     });
-                    console.log('Session Init: SUCCESS');
                 } catch (e) {
-                    console.warn('Session init warning:', e);
+                    // Silent fail
                 }
             } else {
                 throw new Error("No URL returned from DB");
             }
         } catch (err) {
-            console.error('Failed to get backend URL:', err);
             setError("System Error: Cannot locate backend server.");
         } finally {
             if (force) setRefreshing(false);
@@ -94,7 +91,6 @@ const PlayerProfile = () => {
 
         try {
             // DIRECT call to Cloudflare Tunnel (Bypassing Vercel Proxy)
-            console.log('Fetching player data from:', apiBase);
             const response = await fetch(`${apiBase}/game/player/${encodedTag}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -114,7 +110,6 @@ const PlayerProfile = () => {
                 throw new Error(result.message || "Invalid Data Format");
             }
         } catch (err) {
-            console.error(err);
             setError(err.message || 'Player not found or system error.');
         } finally {
             setLoading(false);

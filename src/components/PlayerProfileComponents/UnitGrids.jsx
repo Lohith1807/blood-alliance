@@ -1,11 +1,8 @@
-import React from 'react';
-import Lottie from 'lottie-react';
 import { getUnitImage } from '../../utils/playerProfileUtils';
 import styles from '../../css/PlayerProfile.module.css';
 
 const UnitCard = ({ unit }) => {
     const isMax = unit.level === unit.maxLevel;
-    const fireAnimationUrl = "https://lottie.host/85a81e9f-85f2-4e01-9a75-23c280620fa6/mD5OQYtHyo.json";
 
     return (
         <div className={styles.troopCard} title={`${unit.name} (Lvl ${unit.level}/${unit.maxLevel})`}>
@@ -15,16 +12,6 @@ const UnitCard = ({ unit }) => {
                 <div className={styles.troopInitials}>{unit.name.substring(0, 2).toUpperCase()}</div>
             )}
 
-            {isMax && (
-                <div className={styles.lottieFireContainer}>
-                    <Lottie
-                        animationData={null}
-                        path={fireAnimationUrl}
-                        loop={true}
-                        className={styles.lottieFire}
-                    />
-                </div>
-            )}
 
             <div className={`${styles.troopLevel} ${isMax ? styles.troopLevelMax : ''}`}>
                 {unit.level}
