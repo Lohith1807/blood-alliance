@@ -2,7 +2,7 @@
     "rewrites": [
         {
             "source": "/coc-api/(.*)",
-            "destination": "/api/coc-proxy.js?path=$1"
+            "destination": "/api/coc-proxy?path=$1"
         },
         {
             "source": "/api/(.*)",
