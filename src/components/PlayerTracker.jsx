@@ -74,7 +74,7 @@ const PlayerTracker = () => {
                     <Search size={16} className={styles.searchIcon} />
                     <input
                         type="text"
-                        placeholder="Search operative..."
+                        placeholder="Search ..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className={styles.input}
@@ -88,7 +88,7 @@ const PlayerTracker = () => {
                         onChange={(e) => setClanFilter(e.target.value)}
                         className={styles.select}
                     >
-                        <option value="all">All Squadrons</option>
+                        <option value="all">All Clans</option>
                         {clans.filter(c => c !== 'all').map(tag => (
                             <option key={tag} value={tag}>{getClanName(tag)}</option>
                         ))}
@@ -102,9 +102,9 @@ const PlayerTracker = () => {
 
             <div className={styles.tableWrapper}>
                 <div className={styles.tableHeader}>
-                    <div style={{ flex: 2 }}>OPERATIVE</div>
-                    <div style={{ flex: 1.5 }}>SQUADRON / TAG</div>
-                    <div style={{ flex: 1.5 }}>DISCORD PROTOCOL</div>
+                    <div style={{ flex: 2 }}>PLAYER NAME/TAG</div>
+                    <div style={{ flex: 1.5 }}>PLAYER CLAN/TAG</div>
+                    <div style={{ flex: 1.5 }}>DISCORD ID</div>
                     <div style={{ flex: 1, textAlign: 'right' }}>ACTIONS</div>
                 </div>
 

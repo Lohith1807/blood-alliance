@@ -65,8 +65,8 @@ const Hero = () => {
                     {/* Technical Tagline */}
                     <motion.div variants={itemVariants} className={styles.tagline}>
                         <Terminal size={14} style={{ color: 'var(--rh-red)' }} />
-                        <span style={{ color: 'var(--rh-red)' }}>PROTOCOL_INIT:</span>
-                        <span className="mono"> ALLIANCE_SQUADRON_v2.0.4</span>
+                        <span style={{ color: 'var(--rh-red)' }}>INFO:</span>
+                        <span className="mono">Blood Alliance Farming Since ©2018..</span>
                     </motion.div>
 
                     {/* Animated Hero Title with Typing Effect */}
@@ -106,7 +106,7 @@ const Hero = () => {
                             onClick={() => navigate('/tracker')}
                             className={`btn btn-secondary ${styles.btn}`}
                         >
-                            CWL_REGISTRY <Database size={14} style={{ marginLeft: '8px' }} />
+                            CWL_REGISTRATIONS <Database size={14} style={{ marginLeft: '8px' }} />
                         </button>
                     </motion.div>
 

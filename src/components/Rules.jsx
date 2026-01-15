@@ -31,14 +31,14 @@ const Rules = () => {
                 className={styles.sectionWrapper}
             >
                 <div className={styles.sectionHeader}>
-                    <div className={styles.techLabel}>MODULE_01: CWL_PROTOCOLS</div>
-                    <h2 className={styles.sectionTitle}>Lazy CWL Operational Standards</h2>
+                    <div className={styles.techLabel}>CWL_PROTOCOLS</div>
+                    <h2 className={styles.sectionTitle}>Lazy CWL Rules</h2>
                 </div>
 
                 <div className={styles.rulesGrid}>
                     <RuleModule
                         icon={<Zap size={18} />}
-                        title="PROTOCOL_DEFINITION"
+                        title="WHAT IS A LAZY CWL?"
                         rules={[
                             "A relaxed CWL format for members who can’t commit to daily war attacks.",
                             "Focuses on enjoying CWL without the stress of perfect performance.",
@@ -88,14 +88,14 @@ const Rules = () => {
                 style={{ marginTop: '6rem', borderTop: '1px solid var(--border-color)', paddingTop: '6rem' }}
             >
                 <div className={styles.sectionHeader}>
-                    <div className={styles.techLabel}>MODULE_02: GLOBAL_ALLIANCE_GOVERNANCE</div>
+                    <div className={styles.techLabel}>BLOOD_ALLIANCE_PROTOCOL</div>
                     <h2 className={styles.sectionTitle}>Alliance & Server Protocols</h2>
                 </div>
 
                 <div className={styles.rulesGrid}>
                     <RuleModule
                         icon={<Users size={18} />}
-                        title="CLAN_GOVERNANCE"
+                        title="CLAN_RULES"
                         rules={[
                             "Be active daily and participate in wars and CWL.",
                             "Always use both war attacks — missing attacks may lead to demotion.",
@@ -108,7 +108,7 @@ const Rules = () => {
                     />
                     <RuleModule
                         icon={<MessageSquare size={18} />}
-                        title="SERVER_COMPLIANCE"
+                        title="SERVER_RULES"
                         rules={[
                             "Respect everyone — no harassment, hate speech, or spam.",
                             "Keep conversations in their appropriate channels.",

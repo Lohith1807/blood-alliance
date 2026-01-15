@@ -39,7 +39,7 @@ const ClanCard = ({ clan, index }) => {
             onClick={handleClanClick}
         >
             <div className="unit-tag">
-                UNIT_{String(index + 1).padStart(2, '0')}
+                CLAN_{String(index + 1).padStart(2, '0')}
             </div>
 
             <div className="main-content">
@@ -76,13 +76,13 @@ const ClanCard = ({ clan, index }) => {
 
             <div className="hierarchy-box">
                 <div className="hierarchy-label">
-                    <ShieldCheck size={12} /> COMMAND_HIERARCHY
+                    <ShieldCheck size={12} /> CLAN_HIERARCHY
                 </div>
                 <div className="commander-text">
                     <span className="metric-key" style={{ fontSize: '0.6rem' }}>LEADER:</span> <span className="commander-name">{leader}</span>
                 </div>
                 <div className="commander-text" style={{ marginTop: '0.25rem' }}>
-                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>OPS:</span> {coLeaders.slice(0, 1).join(', ')}{coLeaders.length > 1 ? ` +${coLeaders.length - 1}` : ''}
+                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>CO-LEADERS:</span> {coLeaders.slice(0, 1).join(', ')}{coLeaders.length > 1 ? ` +${coLeaders.length - 1}` : ''}
                 </div>
             </div>
 
@@ -93,7 +93,7 @@ const ClanCard = ({ clan, index }) => {
                     handleClanClick();
                 }}
             >
-                ANALYZE_UNIT <ExternalLink size={14} />
+                OPEN INGAME <ExternalLink size={14} />
             </button>
         </motion.div>
     );
@@ -122,13 +122,13 @@ const ClanList = () => {
         <section id="clans" className="container clan-list-section">
             <div className="section-header">
                 <div className="tech-label mono">
-                    <BarChart3 size={16} /> ANALYTICS_ENGINE // CLAN_REGISTRY
+                    <BarChart3 size={16} /> BLOOD_ALLIANCE // CLAN_INFO
                 </div>
-                <h2 className="section-title">Alliance Strategic Units</h2>
+                <h2 className="section-title">Alliance Clans</h2>
                 <p className="section-subtitle">
                     {loading
                         ? 'Establishing persistent uplink with Blood Alliance Database...'
-                        : `Real-time synchronization of ${clans.length} active squadrons within the Blood Alliance network. Access unit profile for deep-dive intelligence.`
+                        : `Blood Alliance has ${clans.length} active clans registered with FWA(Farm War Alliance)`
                     }
                 </p>
             </div>

@@ -58,7 +58,7 @@ const ClanDetail = () => {
                         Unable to retrieve data for clan tag: {clanTag}
                     </p>
                     <button onClick={handleBack} className={`btn btn-primary ${styles.backButton}`}>
-                        <ArrowLeft size={16} /> RETURN_TO_REGISTRY
+                        <ArrowLeft size={16} /> RETURN_TO_HOME
                     </button>
                 </div>
             </section>
@@ -76,7 +76,7 @@ const ClanDetail = () => {
                 whileHover={{ x: -5 }}
             >
                 <ArrowLeft size={16} />
-                <span>RETURN_TO_REGISTRY</span>
+                <span>RETURN_TO_HOME</span>
             </motion.button>
 
             <ClanHeader clan={clan} />
