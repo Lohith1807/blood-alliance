@@ -79,7 +79,10 @@ const PlayerProfile = () => {
             return;
         }
 
-        let tag = searchTerm.trim();
+        let tag = searchTerm.trim().toUpperCase();
+        // Auto-fix common typos: O -> 0
+        tag = tag.replace(/O/g, '0');
+
         if (!tag.startsWith('#')) tag = '#' + tag;
         // User reports "Player Not Found" -> likely double encoding issue
         // Direct call to Express needs proper encoding of # to %23
