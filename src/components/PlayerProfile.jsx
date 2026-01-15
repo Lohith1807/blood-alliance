@@ -23,45 +23,59 @@ const PlayerProfile = () => {
     const [playerData, setPlayerData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const API_BASE = "/coc-api";
+    const [apiBase, setApiBase] = useState(null); // Dynamic Base URL
 
-    // Initial Init to establish session/cookies
+    // 1. Fetch the Dynamic Tunnel URL on Mount
     useEffect(() => {
-        const initSession = async () => {
+        const getBackendUrl = async () => {
             try {
-                const response = await fetch(`${API_BASE}/api/init`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'
-                });
-                if (response.ok) {
-                    console.log('Session Init: SUCCESS');
-                } else {
-                    console.warn(`Session Init: Received status ${response.status}`);
+                const res = await fetch('/api/get-connection'); // Ask Vercel: "Where is the backend?"
+                const data = await res.json();
+                if (data.url) {
+                    console.log('Backend Located:', data.url);
+                    setApiBase(data.url);
+
+                    // 2. Init Session directly with Backend
+                    try {
+                        await fetch(`${data.url}/api/init`, {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            credentials: 'include' // Important for Cookies
+                        });
+                        console.log('Session Init: SUCCESS');
+                    } catch (e) {
+                        console.warn('Session init warning:', e);
+                    }
                 }
             } catch (err) {
-                console.error('Session Init Error:', err);
+                console.error('Failed to get backend URL:', err);
+                setError("System Error: Cannot locate backend server.");
             }
         };
-        initSession();
+        getBackendUrl();
     }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!searchTerm) return;
+        if (!apiBase) {
+            setError("Backend connecting... please wait.");
+            return;
+        }
 
         let tag = searchTerm.trim();
         if (!tag.startsWith('#')) tag = '#' + tag;
-        const encodedTag = tag.replace('#', '%23');
+        // User reports "Player Not Found" -> likely double encoding issue
+        // Direct call to Express needs proper encoding of # to %23
+        const encodedTag = encodeURIComponent(tag);
 
         setLoading(true);
         setError(null);
         setPlayerData(null);
 
         try {
-            const response = await fetch(`${API_BASE}/game/player/${encodedTag}`, {
+            // DIRECT call to Cloudflare Tunnel (Bypassing Vercel Proxy)
+            const response = await fetch(`${apiBase}/game/player/${encodedTag}`, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
