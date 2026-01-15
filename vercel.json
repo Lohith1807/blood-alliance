@@ -1,6 +1,10 @@
 {
     "rewrites": [
         {
+            "source": "/coc-api/(.*)",
+            "destination": "http://api-blood-alliance.duckdns.org:30267/$1"
+        },
+        {
             "source": "/api/(.*)",
             "destination": "/api/$1"
         },

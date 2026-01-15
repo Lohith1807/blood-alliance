@@ -23,7 +23,7 @@ const PlayerProfile = () => {
     const [playerData, setPlayerData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const API_BASE = "http://api-blood-alliance.duckdns.org:30267";
+    const API_BASE = "/coc-api";
 
     // Initial Init to establish session/cookies
     useEffect(() => {
