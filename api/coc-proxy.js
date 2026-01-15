@@ -78,18 +78,40 @@ export default async function handler(req, res) {
             },
         };
 
+        // Forward Cookies from Client to Backend (Critical for Session)
+        if (req.headers.cookie) {
+            fetchOptions.headers['Cookie'] = req.headers.cookie;
+        }
+
         if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
             fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
         }
 
         const response = await fetch(targetUrl, fetchOptions);
+
+        // Handle Setup-Cookie from Backend
+        const setCookieHeader = response.headers.get('set-cookie');
+        if (setCookieHeader) {
+            // Modify SameSite if needed, or just pass valid attributes
+            // Removing 'Secure' if localhost might be needed but Tunnel is HTTPS so it's fine.
+            res.setHeader('Set-Cookie', setCookieHeader);
+        }
+
         const data = await response.text();
 
         console.log(`[PROXY-SUCCESS] ${response.status} | URL: ${targetUrl}`);
 
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+        // CORS for Credentials
+        const origin = req.headers.origin || req.headers.host;
+        res.setHeader('Access-Control-Allow-Origin', origin || '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS,PUT,DELETE');
         res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+        // Forward Content-Type from backend
+        const contentType = response.headers.get('content-type');
+        if (contentType) {
+            res.setHeader('Content-Type', contentType);
+        }
 
         return res.status(response.status).send(data);
 
