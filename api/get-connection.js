@@ -12,8 +12,10 @@ const COLLECTION_NAME = "system_config";
 const CONFIG_KEY = "backend_tunnel_url";
 
 export default async function handler(req, res) {
-    // Return cached URL if fresh (< 60 seconds)
-    if (cachedBackendUrl && (Date.now() - cacheTime < 60000)) {
+    const { force } = req.query;
+
+    // Return cached URL if fresh (< 60 seconds) AND not forced
+    if (!force && cachedBackendUrl && (Date.now() - cacheTime < 60000)) {
         return res.status(200).json({ url: cachedBackendUrl });
     }
 

@@ -1,8 +1,7 @@
-import React from 'react';
-import { Search } from 'lucide-react';
+import { Search, RefreshCw } from 'lucide-react';
 import styles from '../../css/PlayerProfile.module.css';
 
-const SearchForm = ({ searchTerm, setSearchTerm, handleSearch }) => (
+const SearchForm = ({ searchTerm, setSearchTerm, handleSearch, onRefresh, refreshing }) => (
     <div className={styles.searchSection}>
         <div className={styles.searchWrapper}>
             <h1 className={styles.title}>
@@ -19,7 +18,18 @@ const SearchForm = ({ searchTerm, setSearchTerm, handleSearch }) => (
                 />
                 <button type="submit" className={styles.searchBtn}>Analyze</button>
             </form>
-            <div className={styles.systemStatus}>System Ready • v2.4.0</div>
+            <div className={styles.systemStatus}>
+                <span className={styles.statusText}>System Ready • v2.4.0</span>
+                <button
+                    onClick={onRefresh}
+                    className={styles.refreshBtn}
+                    title="Refresh Backend Connection"
+                    disabled={refreshing}
+                >
+                    <RefreshCw size={14} className={refreshing ? styles.spin : ''} />
+                    {refreshing ? ' Updating...' : ' Refresh Link'}
+                </button>
+            </div>
         </div>
     </div>
 );

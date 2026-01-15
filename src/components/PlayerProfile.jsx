@@ -24,36 +24,52 @@ const PlayerProfile = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [apiBase, setApiBase] = useState(null); // Dynamic Base URL
+    const [refreshing, setRefreshing] = useState(false); // New State for refresh UI
+
+    // Function to get/refresh backend URL
+    const getBackendUrl = async (force = false) => {
+        try {
+            if (force) setRefreshing(true);
+
+            const res = await fetch(`/api/get-connection${force ? '?force=true' : ''}`);
+            const data = await res.json();
+
+            if (data.url) {
+                console.log('Backend Located:', data.url);
+                setApiBase(data.url);
+
+                // 2. Init Session directly with Backend
+                try {
+                    await fetch(`${data.url}/api/init`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        credentials: 'include'
+                    });
+                    console.log('Session Init: SUCCESS');
+                } catch (e) {
+                    console.warn('Session init warning:', e);
+                }
+            } else {
+                throw new Error("No URL returned from DB");
+            }
+        } catch (err) {
+            console.error('Failed to get backend URL:', err);
+            setError("System Error: Cannot locate backend server.");
+        } finally {
+            if (force) setRefreshing(false);
+        }
+    };
 
     // 1. Fetch the Dynamic Tunnel URL on Mount
     useEffect(() => {
-        const getBackendUrl = async () => {
-            try {
-                const res = await fetch('/api/get-connection'); // Ask Vercel: "Where is the backend?"
-                const data = await res.json();
-                if (data.url) {
-                    console.log('Backend Located:', data.url);
-                    setApiBase(data.url);
-
-                    // 2. Init Session directly with Backend
-                    try {
-                        await fetch(`${data.url}/api/init`, {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            credentials: 'include' // Important for Cookies
-                        });
-                        console.log('Session Init: SUCCESS');
-                    } catch (e) {
-                        console.warn('Session init warning:', e);
-                    }
-                }
-            } catch (err) {
-                console.error('Failed to get backend URL:', err);
-                setError("System Error: Cannot locate backend server.");
-            }
-        };
         getBackendUrl();
     }, []);
+
+    // Manual Refresh Handler
+    const handleRefresh = (e) => {
+        e.preventDefault();
+        getBackendUrl(true);
+    };
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -167,6 +183,8 @@ const PlayerProfile = () => {
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 handleSearch={handleSearch}
+                onRefresh={handleRefresh}
+                refreshing={refreshing}
             />
 
             <AnimatePresence mode="wait">

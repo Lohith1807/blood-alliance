@@ -103,6 +103,52 @@
     color: #666;
     text-transform: uppercase;
     letter-spacing: 0.2em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.refreshBtn {
+    background: transparent;
+    border: none;
+    color: #444;
+    cursor: pointer;
+    font-size: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    margin-left: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 4px 8px;
+    border: 1px solid #333;
+    transition: all 0.2s;
+    font-family: 'JetBrains Mono', monospace;
+}
+
+.refreshBtn:hover {
+    color: #EE0000;
+    border-color: #EE0000;
+    background: rgba(238, 0, 0, 0.1);
+}
+
+.refreshBtn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.spin {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(360deg);
+    }
 }
 
 /* Profile Content Wrapper */
