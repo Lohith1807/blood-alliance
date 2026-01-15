@@ -1,71 +1,62 @@
 export default async function handler(req, res) {
-    const { path } = req.query;
+    const { path, ...queryParams } = req.query;
 
     if (!path) {
-        return res.status(400).json({ error: "Missing path parameter" });
+        return res.status(400).send("Missing path");
     }
 
     const BACKEND_URL = "http://api-blood-alliance.duckdns.org:30267";
 
-    // Reconstruct the full target URL
-    // We need to handle potential query string that was part of the original request
-    const urlObj = new URL(req.url, `http://${req.headers.host}`);
-    const searchParams = urlObj.searchParams;
-    searchParams.delete('path'); // Remove the bridge param
+    // Reconstruct query string from all params EXCEPT 'path'
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(queryParams)) {
+        searchParams.append(key, value);
+    }
     const queryString = searchParams.toString();
-
     const targetUrl = `${BACKEND_URL}/${path}${queryString ? '?' + queryString : ''}`;
 
-    console.log(`[PROXY] ${req.method} -> ${targetUrl}`);
+    console.log(`[PROXY-START] ${req.method} ${targetUrl}`);
 
     try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+
         const fetchOptions = {
             method: req.method,
             headers: {
-                // Sensitive headers like host are often blocked or restricted in serverless fetch
-                // We'll let fetch handle host/connection but keep others
-                'Accept': req.headers['accept'] || '*/*',
+                'Accept': 'application/json, text/plain, */*',
                 'Content-Type': req.headers['content-type'] || 'application/json',
-                'User-Agent': req.headers['user-agent'] || 'Vercel-Proxy',
+                'User-Agent': 'Vercel-Proxy-Agent',
             },
+            signal: controller.signal,
+            // Only set credentials if necessary, but backend might not support it well via proxy
+            // credentials: 'omit' 
         };
 
-        // Forward credentials if needed (cookies)
-        if (req.headers.cookie) {
-            fetchOptions.headers['cookie'] = req.headers.cookie;
-        }
-
-        // Handle Body
-        if (req.method !== 'GET' && req.method !== 'HEAD') {
-            if (req.body) {
-                fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
-            }
+        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
+            fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
         }
 
         const response = await fetch(targetUrl, fetchOptions);
+        clearTimeout(timeoutId);
+
         const data = await response.text();
+        console.log(`[PROXY-END] ${response.status} from ${targetUrl} (Size: ${data.length})`);
 
-        // Forward headers safely
-        response.headers.forEach((value, key) => {
-            // Skip problematic hop-by-hop headers
-            if (!['content-encoding', 'content-length', 'transfer-encoding', 'connection'].includes(key.toLowerCase())) {
-                res.setHeader(key, value);
-            }
-        });
-
-        // Ensure CORS for the client
-        res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
-        res.setHeader('Access-Control-Allow-Credentials', 'true');
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        // Forward headers
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
         res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Cookie');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
 
         return res.status(response.status).send(data);
     } catch (error) {
-        console.error('[PROXY] Fatal Error:', error);
-        return res.status(502).json({
-            success: false,
-            message: "Proxy failed to reach backend",
-            error: error.message
+        console.error(`[PROXY-ERROR] ${error.message} - URL: ${targetUrl}`);
+        const status = error.name === 'AbortError' ? 504 : 502;
+        return res.status(status).json({
+            error: "Proxy connection failed",
+            details: error.message,
+            url: targetUrl
         });
     }
 }
