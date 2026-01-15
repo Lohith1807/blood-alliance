@@ -1,14 +1,13 @@
 export default async function handler(req, res) {
-    const TARGET = "http://2.56.246.81:30267/api/init";
+    const TARGET = "http://2.56.246.81:30267/health";
 
     console.log("[TEST] Starting Direct Fetch to " + TARGET);
     const start = Date.now();
 
     try {
         const response = await fetch(TARGET, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({})
+            method: 'GET',
+            headers: { 'Content-Type': 'application/json' }
         });
 
         const text = await response.text();
