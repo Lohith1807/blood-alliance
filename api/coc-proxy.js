@@ -1,52 +1,70 @@
 export default async function handler(req, res) {
     const { path } = req.query;
 
-    // We strictly proxy only to our known backend
+    if (!path) {
+        return res.status(400).json({ error: "Missing path parameter" });
+    }
+
     const BACKEND_URL = "http://api-blood-alliance.duckdns.org:30267";
 
     // Reconstruct the full target URL
-    // req.query.path will contain the rest of the URL from the rewrite
-    const targetUrl = `${BACKEND_URL}/${path}`;
+    // We need to handle potential query string that was part of the original request
+    const urlObj = new URL(req.url, `http://${req.headers.host}`);
+    const searchParams = urlObj.searchParams;
+    searchParams.delete('path'); // Remove the bridge param
+    const queryString = searchParams.toString();
 
-    console.log(`[PROXY] Forwarding ${req.method} to: ${targetUrl}`);
+    const targetUrl = `${BACKEND_URL}/${path}${queryString ? '?' + queryString : ''}`;
+
+    console.log(`[PROXY] ${req.method} -> ${targetUrl}`);
 
     try {
         const fetchOptions = {
             method: req.method,
             headers: {
-                ...req.headers,
-                // Ensure host is correct for the target
-                'host': 'api-blood-alliance.duckdns.org:30267',
-                // Remove Vercel specific headers that might confuse the target
-                'x-vercel-id': undefined,
-                'x-real-ip': undefined,
-                'x-forwarded-for': undefined,
+                // Sensitive headers like host are often blocked or restricted in serverless fetch
+                // We'll let fetch handle host/connection but keep others
+                'Accept': req.headers['accept'] || '*/*',
+                'Content-Type': req.headers['content-type'] || 'application/json',
+                'User-Agent': req.headers['user-agent'] || 'Vercel-Proxy',
             },
         };
 
-        // Don't include body for GET/HEAD
-        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
-            fetchOptions.body = JSON.stringify(req.body);
+        // Forward credentials if needed (cookies)
+        if (req.headers.cookie) {
+            fetchOptions.headers['cookie'] = req.headers.cookie;
+        }
+
+        // Handle Body
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+            if (req.body) {
+                fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+            }
         }
 
         const response = await fetch(targetUrl, fetchOptions);
         const data = await response.text();
 
-        // Forward headers from backend
-        Object.entries(response.headers).forEach(([key, value]) => {
-            res.setHeader(key, value);
+        // Forward headers safely
+        response.headers.forEach((value, key) => {
+            // Skip problematic hop-by-hop headers
+            if (!['content-encoding', 'content-length', 'transfer-encoding', 'connection'].includes(key.toLowerCase())) {
+                res.setHeader(key, value);
+            }
         });
 
-        // Set security headers for Vercel
-        res.setHeader('Access-Control-Allow-Origin', '*');
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+        // Ensure CORS for the client
+        res.setHeader('Access-Control-Allow-Origin', req.headers.origin || '*');
+        res.setHeader('Access-Control-Allow-Credentials', 'true');
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Cookie');
 
         return res.status(response.status).send(data);
     } catch (error) {
-        console.error('[PROXY] Error:', error);
+        console.error('[PROXY] Fatal Error:', error);
         return res.status(502).json({
             success: false,
-            message: "Proxy Gateway Error",
+            message: "Proxy failed to reach backend",
             error: error.message
         });
     }
