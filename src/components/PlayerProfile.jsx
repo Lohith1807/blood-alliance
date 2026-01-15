@@ -75,6 +75,7 @@ const PlayerProfile = () => {
 
         try {
             // DIRECT call to Cloudflare Tunnel (Bypassing Vercel Proxy)
+            console.log('Fetching player data from:', apiBase);
             const response = await fetch(`${apiBase}/game/player/${encodedTag}`, {
                 headers: {
                     'Content-Type': 'application/json',
