@@ -153,6 +153,14 @@ const Navbar = () => {
                                 CWL Players
                             </NavItem>
                         </li>
+                        <li>
+                            <NavItem
+                                active={location.pathname === '/player'}
+                                onClick={() => handleNavClick('/player')}
+                            >
+                                Search
+                            </NavItem>
+                        </li>
                     </ul>
                 </nav>
 
@@ -216,6 +224,12 @@ const Navbar = () => {
                                 onClick={() => handleNavClick('/tracker')}
                             >
                                 CWL Players
+                            </MobileNavItem>
+                            <MobileNavItem
+                                active={location.pathname === '/player'}
+                                onClick={() => handleNavClick('/player')}
+                            >
+                                Search
                             </MobileNavItem>
                             <li style={{ marginTop: '1rem' }}>
                                 <a

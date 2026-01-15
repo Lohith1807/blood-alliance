@@ -1,0 +1,563 @@
+/* PlayerProfile.module.css */
+
+.container {
+    padding-top: 50px;
+    width: 100%;
+    max-width: var(--container-max-width);
+    margin: 0 auto;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+}
+
+/* Search Section */
+.searchSection {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 3rem;
+}
+
+.searchWrapper {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.title {
+    font-family: 'Inter', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    letter-spacing: -0.02em;
+}
+
+.highlight {
+    color: var(--rh-red);
+}
+
+.form {
+    position: relative;
+    width: 100%;
+}
+
+.inputIcon {
+    position: absolute;
+    left: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    pointer-events: none;
+}
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 1rem 1rem 1rem 3rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    letter-spacing: 0.05em;
+    border-radius: 2px;
+    transition: all var(--transition-speed);
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--rh-red);
+    box-shadow: 0 0 0 1px var(--rh-red);
+}
+
+.searchBtn {
+    position: absolute;
+    right: 0.5rem;
+    top: 0.5rem;
+    bottom: 0.5rem;
+    background-color: var(--rh-red);
+    color: white;
+    padding: 0 1.5rem;
+    border: none;
+    border-radius: 2px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    transition: background-color var(--transition-speed);
+}
+
+.searchBtn:hover {
+    background-color: var(--rh-red-hover);
+}
+
+.systemStatus {
+    margin-top: 0.75rem;
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+}
+
+/* Loading & Error */
+.loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 4rem 0;
+    animation: pulse 2s infinite;
+}
+
+.loadingText {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    margin-top: 1rem;
+}
+
+.error {
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    background-color: rgba(238, 0, 0, 0.1);
+    border: 1px solid rgba(238, 0, 0, 0.4);
+    color: #ff6b6b;
+    padding: 1rem;
+    border-radius: 2px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.875rem;
+}
+
+/* Profile Grid */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+    animation: fadeIn 0.5s ease-out;
+}
+
+@media (min-width: 1024px) {
+    .grid {
+        grid-template-columns: 4fr 8fr;
+    }
+}
+
+.colStack {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.card {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    padding: 1.5rem;
+}
+
+.cardRelative {
+    position: relative;
+    overflow: hidden;
+}
+
+.cardIconBg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 1rem;
+    opacity: 0.1;
+    color: var(--border-color);
+}
+
+/* Identity Section */
+.identityHeader {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.leagueIconBox {
+    position: relative;
+    width: 60px;
+    height: 60px;
+}
+
+.leagueIconWrapper {
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    /* Ensure high res TH doesn't overflow */
+}
+
+.leagueImg {
+    width: 90%;
+    height: 90%;
+    object-fit: contain;
+}
+
+.thLabel {
+    position: absolute;
+    bottom: -8px;
+    right: -8px;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    padding: 2px 4px;
+    border-radius: 2px;
+}
+
+/* Corner Badge Style (now for League Tier) */
+.thIconWrapper {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 32px;
+    height: 32px;
+    z-index: 10;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.thIcon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.playerName {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: white;
+    line-height: 1.2;
+}
+
+.playerTag {
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.playerRole {
+    color: var(--rh-red);
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    margin-top: 0.5rem;
+    letter-spacing: 0.05em;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    border-top: 1px solid var(--border-color);
+    padding-top: 1rem;
+}
+
+/* Clan Section */
+.sectionTitleSmall {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.clanFlex {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.clanBadge {
+    width: 3.5rem;
+    height: 3.5rem;
+}
+
+.clanName {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: white;
+}
+
+.clanInfo {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.donationGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.donationBox {
+    background-color: rgba(0, 0, 0, 0.2);
+    padding: 0.5rem;
+    border-radius: 2px;
+    text-align: center;
+}
+
+.donationLabel {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.donationValue {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: white;
+}
+
+.donationValue.accent {
+    color: var(--rh-red);
+}
+
+/* Heroes & Equipment */
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    padding-bottom: 0.25rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sectionHeaderIcon {
+    color: var(--rh-red);
+}
+
+.sectionHeaderTitle {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+}
+
+.heroGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1rem;
+}
+
+@media (min-width: 768px) {
+    .heroGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.heroCard {
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 2px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    transition: border-color var(--transition-speed);
+}
+
+.heroCard:hover {
+    border-color: var(--rh-red);
+}
+
+.heroHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+
+.heroName {
+    font-weight: 700;
+    font-size: 0.875rem;
+    color: white;
+}
+
+.heroLevel {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--rh-red);
+    font-size: 0.875rem;
+}
+
+.equipRow {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.equipBox {
+    flex: 1;
+    background-color: rgba(0, 0, 0, 0.3);
+    padding: 0.5rem;
+    border-radius: 2px;
+    text-align: center;
+}
+
+.equipName {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 80px;
+    margin: 0 auto;
+}
+
+.equipLevel {
+    color: var(--rh-red);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+}
+
+.noEquip {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    font-style: italic;
+    padding: 0.5rem 0;
+    text-align: center;
+    width: 100%;
+}
+
+/* Spells & Achievements Split */
+.splitGrid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .splitGrid {
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+.spellsWrapper {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.spellTag {
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--border-color);
+    padding: 0.25rem 0.5rem;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.spellName {
+    font-size: 0.65rem;
+    color: var(--text-secondary);
+}
+
+.spellLevel {
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--rh-red);
+    font-weight: 700;
+}
+
+.achievementList {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.achievementItem {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.75rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.25rem;
+}
+
+.achievementItem:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.achievementName {
+    color: var(--text-secondary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 70%;
+}
+
+.stars {
+    display: flex;
+    color: var(--rh-red);
+    gap: 1px;
+}
+
+/* Common Components */
+.statBox {
+    text-align: center;
+}
+
+.statLabel {
+    font-size: 0.65rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.125rem;
+}
+
+.statValue {
+    font-size: 1.125rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    color: white;
+}
+
+.statValue.red {
+    color: var(--rh-red);
+}
+
+/* Animations */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.5;
+    }
+}

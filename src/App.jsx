@@ -11,6 +11,7 @@ import { Loader2 } from 'lucide-react';
 const ClanList = lazy(() => import('./components/ClanList'));
 const PlayerTracker = lazy(() => import('./components/PlayerTracker'));
 const ClanDetail = lazy(() => import('./components/ClanDetail'));
+const PlayerProfile = lazy(() => import('./components/PlayerProfile'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -54,6 +55,9 @@ function App() {
 
                 {/* CLAN DETAIL ROUTE */}
                 <Route path="/clan/:tag" element={<ClanDetail />} />
+
+                {/* PLAYER PROFILE ROUTE */}
+                <Route path="/player" element={<PlayerProfile />} />
 
                 {/* FALLBACK */}
                 <Route path="*" element={<Navigate to="/" replace />} />
