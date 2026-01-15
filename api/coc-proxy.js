@@ -28,10 +28,6 @@ export default async function handler(req, res) {
     console.log(`[PROXY-INVOKE] ${req.method} -> ${targetUrl}`);
 
     try {
-        const controller = new AbortController();
-        // Short timeout for initial debugging to avoid Vercel 10s ceiling
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-
         const fetchOptions = {
             method: req.method,
             headers: {
@@ -39,16 +35,16 @@ export default async function handler(req, res) {
                 'Content-Type': 'application/json',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0',
             },
-            signal: controller.signal,
         };
 
         if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
             fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
         }
 
+        // Vercel Limit: 10 Seconds (Free Tier)
+        // We let it run until Vercel kills it.
         const response = await fetch(targetUrl, fetchOptions);
         const data = await response.text();
-        clearTimeout(timeoutId);
 
         console.log(`[PROXY-SUCCESS] ${response.status} | URL: ${targetUrl}`);
 
@@ -59,15 +55,10 @@ export default async function handler(req, res) {
         return res.status(response.status).send(data);
     } catch (error) {
         console.error(`[PROXY-ERROR] ${error.name}: ${error.message} (Target: ${targetUrl})`);
-
-        const isTimeout = error.name === 'AbortError';
-        return res.status(isTimeout ? 504 : 502).json({
-            error: isTimeout ? "GATEWAY_TIMEOUT" : "CONNECTION_FAILED",
+        return res.status(502).json({
+            error: "CONNECTION_FAILED",
             message: error.message,
-            diagnostic: {
-                target: targetUrl,
-                proxyTime: new Date().toISOString()
-            }
+            target: targetUrl
         });
     }
 }
