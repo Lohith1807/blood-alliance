@@ -1,3 +1,43 @@
+import { MongoClient } from 'mongodb';
+
+// Cache the connection & URL globally (Lambda Freeze)
+let cachedClient = null;
+let cachedBackendUrl = null;
+let cacheTime = 0;
+
+// Configuration
+const MONGO_URL = process.env.MONGO_URL;
+const DB_NAME = "ClansData";
+const COLLECTION_NAME = "system_config";
+const CONFIG_KEY = "backend_tunnel_url";
+
+async function getBackendUrl() {
+    // Return cached URL if fresh (< 60 seconds)
+    if (cachedBackendUrl && (Date.now() - cacheTime < 60000)) {
+        return cachedBackendUrl;
+    }
+
+    if (!cachedClient) {
+        cachedClient = new MongoClient(MONGO_URL);
+        await cachedClient.connect();
+    }
+
+    const db = cachedClient.db(DB_NAME);
+    const collection = db.collection(COLLECTION_NAME);
+
+    const doc = await collection.findOne({ key: CONFIG_KEY });
+
+    if (doc && doc.value) {
+        cachedBackendUrl = doc.value;
+        cacheTime = Date.now();
+        console.log(`[PROXY-CONFIG] Refreshed Backend URL: ${cachedBackendUrl}`);
+        return cachedBackendUrl;
+    }
+
+    console.warn(`[PROXY-CONFIG] No URL found in DB, falling back to IP`);
+    return "http://2.56.246.81:30267"; // Fallback
+}
+
 export default async function handler(req, res) {
     const { path, ...queryParams } = req.query;
 
@@ -15,20 +55,20 @@ export default async function handler(req, res) {
         return res.status(400).send("Missing path - Usage: /coc-api/[target-path]");
     }
 
-    // Switched to Direct IP to bypass DNS issues
-    const BACKEND_URL = "http://2.56.246.81:30267";
-
-    const searchParams = new URLSearchParams();
-    for (const [key, value] of Object.entries(queryParams)) {
-        if (key !== 'path') searchParams.append(key, value);
-    }
-    const queryString = searchParams.toString();
-    const normalizedPath = path.startsWith('/') ? path : '/' + path;
-    const targetUrl = `${BACKEND_URL}${normalizedPath}${queryString ? '?' + queryString : ''}`;
-
-    console.log(`[PROXY-INVOKE] ${req.method} -> ${targetUrl}`);
-
     try {
+        // Dynamic URL Discovery
+        const BACKEND_URL = await getBackendUrl();
+
+        const searchParams = new URLSearchParams();
+        for (const [key, value] of Object.entries(queryParams)) {
+            if (key !== 'path') searchParams.append(key, value);
+        }
+        const queryString = searchParams.toString();
+        const normalizedPath = path.startsWith('/') ? path : '/' + path;
+        const targetUrl = `${BACKEND_URL}${normalizedPath}${queryString ? '?' + queryString : ''}`;
+
+        console.log(`[PROXY-INVOKE] ${req.method} -> ${targetUrl}`);
+
         const fetchOptions = {
             method: req.method,
             headers: {
@@ -42,8 +82,6 @@ export default async function handler(req, res) {
             fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
         }
 
-        // Vercel Limit: 10 Seconds (Free Tier)
-        // We let it run until Vercel kills it.
         const response = await fetch(targetUrl, fetchOptions);
         const data = await response.text();
 
@@ -54,12 +92,12 @@ export default async function handler(req, res) {
         res.setHeader('Access-Control-Allow-Credentials', 'true');
 
         return res.status(response.status).send(data);
+
     } catch (error) {
-        console.error(`[PROXY-ERROR] ${error.name}: ${error.message} (Target: ${targetUrl})`);
+        console.error(`[PROXY-ERROR] ${error.name}: ${error.message}`);
         return res.status(502).json({
             error: "CONNECTION_FAILED",
-            message: error.message,
-            target: targetUrl
+            message: error.message
         });
     }
 }
