@@ -28,6 +28,95 @@ const getTownHallImage = (level) => {
     return townHallImages[level] ? `${baseProxy}${townHallImages[level]}` : null;
 };
 
+// Unit image mapping
+const getUnitImage = (name) => {
+    const baseProxy = 'https://images.weserv.nl/?url=';
+    const images = {
+        // Heroes
+        'Barbarian King': 'static.wikia.nocookie.net/clashofclans/images/2/26/Avatar_Hero_Barbarian_King.png',
+        'Archer Queen': 'static.wikia.nocookie.net/clashofclans/images/b/b6/Avatar_Hero_Archer_Queen.png',
+        'Grand Warden': 'static.wikia.nocookie.net/clashofclans/images/1/1d/Avatar_Hero_Grand_Warden.png',
+        'Royal Champion': 'static.wikia.nocookie.net/clashofclans/images/8/8e/Avatar_Hero_Royal_Champion.png',
+        'Minion Prince': 'static.wikia.nocookie.net/clashofclans/images/1/17/Avatar_Hero_Minion_Prince.png',
+
+        // Troops
+        'Barbarian': 'static.wikia.nocookie.net/clashofclans/images/8/87/Avatar_Barbarian.png',
+        'Archer': 'static.wikia.nocookie.net/clashofclans/images/6/68/Avatar_Archer.png',
+        'Giant': 'static.wikia.nocookie.net/clashofclans/images/7/7d/Avatar_Giant.png',
+        'Goblin': 'static.wikia.nocookie.net/clashofclans/images/6/68/Avatar_Goblin.png',
+        'Wall Breaker': 'static.wikia.nocookie.net/clashofclans/images/3/36/Avatar_Wall_Breaker.png',
+        'Balloon': 'static.wikia.nocookie.net/clashofclans/images/8/80/Avatar_Balloon.png',
+        'Wizard': 'static.wikia.nocookie.net/clashofclans/images/9/97/Avatar_Wizard.png',
+        'Healer': 'static.wikia.nocookie.net/clashofclans/images/9/9c/Avatar_Healer.png',
+        'Dragon': 'static.wikia.nocookie.net/clashofclans/images/9/9c/Avatar_Dragon.png',
+        'P.E.K.K.A': 'static.wikia.nocookie.net/clashofclans/images/1/1a/Avatar_P.E.K.K.A.png',
+        'Baby Dragon': 'static.wikia.nocookie.net/clashofclans/images/7/7a/Avatar_Baby_Dragon.png',
+        'Miner': 'static.wikia.nocookie.net/clashofclans/images/7/7a/Avatar_Miner.png',
+        'Electro Dragon': 'static.wikia.nocookie.net/clashofclans/images/9/97/Avatar_Electro_Dragon.png',
+        'Yeti': 'static.wikia.nocookie.net/clashofclans/images/b/be/Avatar_Yeti.png',
+        'Dragon Rider': 'static.wikia.nocookie.net/clashofclans/images/5/50/Avatar_Dragon_Rider.png',
+        'Electro Titan': 'static.wikia.nocookie.net/clashofclans/images/6/67/Avatar_Electro_Titan.png',
+        'Root Rider': 'static.wikia.nocookie.net/clashofclans/images/0/0b/Avatar_Root_Rider.png',
+        'Thrower': 'static.wikia.nocookie.net/clashofclans/images/d/da/Avatar_Thrower.png',
+        'Meteor Golem': 'static.wikia.nocookie.net/clashofclans/images/0/01/Avatar_Meteor_Golem.png',
+        'Minion': 'static.wikia.nocookie.net/clashofclans/images/3/3b/Avatar_Minion.png',
+        'Hog Rider': 'static.wikia.nocookie.net/clashofclans/images/e/e9/Avatar_Hog_Rider.png',
+        'Valkyrie': 'static.wikia.nocookie.net/clashofclans/images/3/31/Avatar_Valkyrie.png',
+        'Golem': 'static.wikia.nocookie.net/clashofclans/images/4/44/Avatar_Golem.png',
+        'Witch': 'static.wikia.nocookie.net/clashofclans/images/9/90/Avatar_Witch.png',
+        'Lava Hound': 'static.wikia.nocookie.net/clashofclans/images/1/1b/Avatar_Lava_Hound.png',
+        'Bowler': 'static.wikia.nocookie.net/clashofclans/images/2/24/Avatar_Bowler.png',
+        'Ice Golem': 'static.wikia.nocookie.net/clashofclans/images/7/79/Avatar_Ice_Golem.png',
+        'Headhunter': 'static.wikia.nocookie.net/clashofclans/images/8/80/Avatar_Headhunter.png',
+        'Apprentice Warden': 'static.wikia.nocookie.net/clashofclans/images/8/8b/Avatar_Apprentice_Warden.png',
+        'Druid': 'static.wikia.nocookie.net/clashofclans/images/4/43/Avatar_Druid.png',
+        'Furnace': 'static.wikia.nocookie.net/clashofclans/images/e/e0/Avatar_Furnace.png',
+
+        // Spells
+        'Lightning Spell': 'static.wikia.nocookie.net/clashofclans/images/c/c0/Lightning_Spell_info.png',
+        'Healing Spell': 'static.wikia.nocookie.net/clashofclans/images/f/f2/Healing_Spell_info.png',
+        'Rage Spell': 'static.wikia.nocookie.net/clashofclans/images/8/8a/Rage_Spell_info.png',
+        'Jump Spell': 'static.wikia.nocookie.net/clashofclans/images/3/38/Jump_Spell_info.png',
+        'Freeze Spell': 'static.wikia.nocookie.net/clashofclans/images/e/ef/Freeze_Spell_info.png',
+        'Invisibility Spell': 'static.wikia.nocookie.net/clashofclans/images/a/a3/Invisibility_Spell_info.png',
+        'Recall Spell': 'static.wikia.nocookie.net/clashofclans/images/7/73/Recall_Spell_info.png',
+        'Revive Spell': 'static.wikia.nocookie.net/clashofclans/images/5/5f/Revive_Spell_info.png',
+        'Totem Spell': 'static.wikia.nocookie.net/clashofclans/images/d/d1/Totem_Spell_info.png',
+        'Clone Spell': 'static.wikia.nocookie.net/clashofclans/images/9/91/Clone_Spell_info.png',
+        'Poison Spell': 'static.wikia.nocookie.net/clashofclans/images/4/49/Poison_Spell_info.png',
+        'Earthquake Spell': 'static.wikia.nocookie.net/clashofclans/images/3/3f/Earthquake_Spell_info.png',
+        'Haste Spell': 'static.wikia.nocookie.net/clashofclans/images/b/be/Haste_Spell_info.png',
+        'Skeleton Spell': 'static.wikia.nocookie.net/clashofclans/images/0/0f/Skeleton_Spell_info.png',
+        'Bat Spell': 'static.wikia.nocookie.net/clashofclans/images/3/3d/Bat_Spell_info.png',
+        'Overgrowth Spell': 'static.wikia.nocookie.net/clashofclans/images/a/a6/Overgrowth_Spell_info.png',
+        'Ice Block Spell': 'static.wikia.nocookie.net/clashofclans/images/6/66/Ice_Block_Spell_info.png',
+
+        // Siege Machines
+        'Wall Wrecker': 'static.wikia.nocookie.net/clashofclans/images/f/f3/Avatar_Wall_Wrecker.png',
+        'Battle Blimp': 'static.wikia.nocookie.net/clashofclans/images/2/2f/Avatar_Battle_Blimp.png',
+        'Stone Slammer': 'static.wikia.nocookie.net/clashofclans/images/a/ad/Avatar_Stone_Slammer.png',
+        'Siege Barracks': 'static.wikia.nocookie.net/clashofclans/images/f/fe/Avatar_Siege_Barracks.png',
+        'Log Launcher': 'static.wikia.nocookie.net/clashofclans/images/7/73/Avatar_Log_Launcher.png',
+        'Flame Flinger': 'static.wikia.nocookie.net/clashofclans/images/e/e4/Avatar_Flame_Flinger.png',
+        'Battle Drill': 'static.wikia.nocookie.net/clashofclans/images/9/99/Avatar_Battle_Drill.png',
+        'Troop Launcher': 'static.wikia.nocookie.net/clashofclans/images/0/08/Avatar_Troop_Launcher.png',
+
+        // Pets
+        'L.A.S.S.I': 'static.wikia.nocookie.net/clashofclans/images/6/62/Avatar_L.A.S.S.I.png',
+        'Electro Owl': 'static.wikia.nocookie.net/clashofclans/images/6/6e/Avatar_Electro_Owl.png',
+        'Mighty Yak': 'static.wikia.nocookie.net/clashofclans/images/0/03/Avatar_Mighty_Yak.png',
+        'Unicorn': 'static.wikia.nocookie.net/clashofclans/images/a/ac/Avatar_Unicorn.png',
+        'Frosty': 'static.wikia.nocookie.net/clashofclans/images/e/e6/Avatar_Frosty.png',
+        'Diggy': 'static.wikia.nocookie.net/clashofclans/images/6/6b/Avatar_Diggy.png',
+        'Poison Lizard': 'static.wikia.nocookie.net/clashofclans/images/a/aa/Avatar_Poison_Lizard.png',
+        'Phoenix': 'static.wikia.nocookie.net/clashofclans/images/4/4f/Avatar_Phoenix.png',
+        'Spirit Fox': 'static.wikia.nocookie.net/clashofclans/images/5/52/Avatar_Spirit_Fox.png',
+        'Angry Jelly': 'static.wikia.nocookie.net/clashofclans/images/3/3a/Avatar_Angry_Jelly.png',
+        'Sneezy': 'static.wikia.nocookie.net/clashofclans/images/9/96/Avatar_Sneezy.png',
+    };
+    return images[name] ? `${baseProxy}${images[name]}/revision/latest/scale-to-width-down/120` : null;
+};
+
 // Utility for key mapping if needed
 const cleanTag = (tag) => tag?.replace('#', '');
 
@@ -51,10 +140,7 @@ const PlayerProfile = () => {
 
         try {
             await new Promise(resolve => setTimeout(resolve, 600));
-
-            // Load new mock data structure
             const mockModule = await import('../data/profile_data.json');
-
             if (mockModule.default && mockModule.default.success) {
                 setPlayerData(mockModule.default.data);
             } else {
@@ -68,32 +154,52 @@ const PlayerProfile = () => {
         }
     };
 
+    if (!playerData && !loading && !error) {
+        return (
+            <div className={styles.container}>
+                <SearchForm searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} />
+            </div>
+        );
+    }
+
+    // Category Lists & Filtering
+    const siegeMachineNames = ['Wall Wrecker', 'Battle Blimp', 'Stone Slammer', 'Siege Barracks', 'Log Launcher', 'Flame Flinger', 'Battle Drill', 'Troop Launcher', 'Root Rider']; // Siege/Special
+    const petNames = ['L.A.S.S.I', 'Electro Owl', 'Mighty Yak', 'Unicorn', 'Frosty', 'Diggy', 'Poison Lizard', 'Phoenix', 'Spirit Fox', 'Angry Jelly', 'Sneezy'];
+
+    const heroesList = playerData?.heroes?.filter(h => h.village === 'home') || [];
+    const spellsList = playerData?.spells?.filter(s => s.village === 'home') || [];
+    const siegeList = playerData?.troops?.filter(t => t.village === 'home' && siegeMachineNames.includes(t.name)) || [];
+    const petsList = playerData?.troops?.filter(t => t.village === 'home' && petNames.includes(t.name)) || [];
+    const troopsList = playerData?.troops?.filter(t =>
+        t.village === 'home' &&
+        !t.name.startsWith('Super ') &&
+        !siegeMachineNames.includes(t.name) &&
+        !petNames.includes(t.name) &&
+        !['Sneaky Goblin', 'Rocket Balloon', 'Inferno Dragon', 'Ice Hound'].includes(t.name) &&
+        !t.superTroopIsActive
+    ) || [];
+
+    // Derive Progress (Mocked for VISUALS as per reference image)
+    const getProgress = (list) => {
+        if (!list || list.length === 0) return 0;
+        const maxed = list.filter(i => i.level === i.maxLevel).length;
+        return Math.round((maxed / list.length) * 100);
+    };
+
+    const progressStats = [
+        { label: 'Buildings', value: 85 }, // Mocked or derived from TH
+        { label: 'Supercharges', value: 30 },
+        { label: 'Crafted Defenses', value: 60 },
+        { label: 'Laboratory', value: getProgress(troopsList) },
+        { label: 'Heroes', value: getProgress(heroesList) },
+        { label: 'Equipment', value: 45 },
+        { label: 'Pets', value: getProgress(petsList) },
+        { label: 'Walls', value: 92 },
+    ];
+
     return (
         <div className={styles.container}>
-
-            {/* SEARCH SECTION */}
-            <div className={styles.searchSection}>
-                <div className={styles.searchWrapper}>
-                    <h1 className={styles.title}>
-                        PLAYER <span className={styles.highlight}>LOOKUP</span>
-                    </h1>
-
-                    <form onSubmit={handleSearch} className={styles.form}>
-                        <Search className={styles.inputIcon} size={20} />
-                        <input
-                            type="text"
-                            placeholder="ENTER PLAYER TAG (e.g. #P0LYUQPLC)"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value.toUpperCase())}
-                            className={styles.input}
-                        />
-                        <button type="submit" className={styles.searchBtn}>Analyze</button>
-                    </form>
-                    <div className={styles.systemStatus}>
-                        System Ready • Secure Connection • v2.4.0
-                    </div>
-                </div>
-            </div>
+            <SearchForm searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} />
 
             {loading && (
                 <div className={styles.loading}>
@@ -103,190 +209,123 @@ const PlayerProfile = () => {
             )}
 
             {error && (
-                <div className={styles.error}>
-                    [ERROR] {error}
-                </div>
+                <div className={styles.error}>[ERROR] {error}</div>
             )}
 
             {playerData && (
-                <div className={styles.grid}>
-
-                    {/* LEFT COLUMN: Identity & Clan */}
-                    <div className={styles.colStack}>
-
-                        {/* Profile Card */}
-                        <div className={`${styles.card} ${styles.cardRelative}`}>
-                            <div className={styles.cardIconBg}>
-                                <Hash size={64} />
-                            </div>
-
-                            <div className={styles.identityHeader}>
-                                <div className={styles.leagueIconBox}>
-                                    {/* MAIN PHOTO: Now the Town Hall */}
-                                    <div className={styles.leagueIconWrapper}>
-                                        {getTownHallImage(playerData.townHallLevel) ? (
-                                            <img
-                                                src={getTownHallImage(playerData.townHallLevel)}
-                                                alt={`Town Hall ${playerData.townHallLevel}`}
-                                                className={styles.leagueImg}
-                                            />
-                                        ) : (
-                                            <Shield color="var(--text-muted)" size={40} />
-                                        )}
-                                    </div>
-
-                                    {/* SECONDARY BADGE: Now the League Tier */}
-                                    {playerData.leagueTier?.iconUrls?.medium ? (
-                                        <div className={styles.thIconWrapper} title={playerData.leagueTier.name}>
-                                            <img
-                                                src={playerData.leagueTier.iconUrls.medium}
-                                                alt={playerData.leagueTier.name}
-                                                className={styles.thIcon}
-                                            />
-                                        </div>
-                                    ) : (
-                                        <div className={styles.thLabel}>
-                                            TH{playerData.townHallLevel}
-                                        </div>
-                                    )}
-                                </div>
-                                <div>
-                                    <h2 className={styles.playerName}>{playerData.name}</h2>
-                                    <div className={styles.playerTag}>{playerData.tag}</div>
-                                    <div className={styles.playerRole}>
-                                        {playerData.role === 'leader' ? 'Leader' :
-                                            playerData.role === 'coLeader' ? 'Co-Leader' :
-                                                playerData.role === 'admin' ? 'Elder' : 'Member'}
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div className={styles.statsGrid}>
-                                <StatBox label="Level" value={playerData.expLevel} />
-                                <StatBox label="Trophies" value={playerData.trophies} />
-                                <StatBox label="Best" value={playerData.bestTrophies} />
-                                <StatBox label="War Stars" value={playerData.warStars} highlight />
-                            </div>
-                        </div>
-
-                        {/* Clan Card */}
-                        <div className={styles.card}>
-                            <h3 className={styles.sectionTitleSmall}>
-                                <Shield size={14} /> Clan Alignment
-                            </h3>
-                            {playerData.clan ? (
-                                <div className={styles.clanFlex}>
-                                    <img src={playerData.clan.badgeUrls?.medium} alt="Clan" className={styles.clanBadge} />
-                                    <div>
-                                        <div className={styles.clanName}>{playerData.clan.name}</div>
-                                        <div className={styles.clanInfo}>
-                                            Lvl {playerData.clan.clanLevel} • {playerData.clan.tag}
-                                        </div>
-                                    </div>
-                                </div>
-                            ) : (
-                                <div className={styles.clanInfo} style={{ fontStyle: 'italic' }}>No Clan Affiliation</div>
-                            )}
-
-                            <div className={styles.donationGrid}>
-                                <div className={styles.donationBox}>
-                                    <div className={styles.donationLabel}>Donated</div>
-                                    <div className={`${styles.donationValue} ${styles.accent}`}>{playerData.donations}</div>
-                                </div>
-                                <div className={styles.donationBox}>
-                                    <div className={styles.donationLabel}>Received</div>
-                                    <div className={styles.donationValue}>{playerData.donationsReceived}</div>
-                                </div>
-                            </div>
-                        </div>
-
+                <div className={styles.dashboard}>
+                    <div className={styles.dashboardHeader}>
+                        <div className={styles.tabActive}>My Profile</div>
+                        <div className={styles.tab}>My Clan</div>
+                        <div className={styles.tab}>Clans</div>
+                        <div className={styles.tab}>Social</div>
                     </div>
 
-                    {/* RIGHT COLUMN: Details */}
-                    <div className={styles.colStack}>
+                    <div className={styles.dashboardSubHeader}>
+                        <div className={styles.subTabActive}><Sword size={14} /> Home Village</div>
+                        <div className={styles.subTab}><Zap size={14} /> Builder Base</div>
+                        <div className={styles.subTab}><Shield size={14} /> Clan Capital</div>
+                    </div>
 
-                        {/* Heroes & Equipment Grid */}
-                        <div className={styles.colStack}>
-                            <SectionHeader title="Heroes & Equipment" icon={Crown} />
-                            <div className={styles.heroGrid}>
-                                {playerData.heroes?.filter(h => h.village === 'home').map((hero, idx) => (
-                                    <div key={idx} className={styles.heroCard}>
-                                        <div className={styles.heroHeader}>
-                                            <span className={styles.heroName}>{hero.name}</span>
-                                            <span className={styles.heroLevel}>Lvl {hero.level}</span>
-                                        </div>
-                                        {/* Equipment */}
-                                        <div className={styles.equipRow}>
-                                            {hero.equipment?.map((eq, i) => (
-                                                <div key={i} className={styles.equipBox} title={eq.name}>
-                                                    <div className={styles.equipName}>{eq.name}</div>
-                                                    <div className={styles.equipLevel}>{eq.level}</div>
-                                                </div>
-                                            ))}
-                                            {(!hero.equipment || hero.equipment.length === 0) && (
-                                                <div className={styles.noEquip}>No Equipment</div>
-                                            )}
+                    <div className={styles.mainGrid}>
+                        {/* LEFT SIDEBAR: TH & PROGRESS */}
+                        <div className={styles.sidebar}>
+                            <div className={styles.thSection}>
+                                <div className={styles.thImageWrapper}>
+                                    <img src={getTownHallImage(playerData.townHallLevel)} alt="TH" className={styles.sidebarThImg} />
+                                </div>
+                                <div className={styles.thLevelLabel}>Town Hall {playerData.townHallLevel}</div>
+                            </div>
+
+                            <div className={styles.progressSection}>
+                                <div className={styles.progressTitle}>PROGRESS</div>
+                                {progressStats.map((stat, i) => (
+                                    <div key={i} className={styles.progressItem}>
+                                        <div className={styles.progressLabel}>{stat.label}</div>
+                                        <div className={styles.progressBarBg}>
+                                            <div className={styles.progressBarFill} style={{ width: `${stat.value}%` }}></div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
 
-                        {/* Spells & Troops Summary */}
-                        <div className={styles.splitGrid}>
+                        {/* RIGHT CONTENT: UNIT GRIDS */}
+                        <div className={styles.content}>
+                            <UnitSection title="Troops" list={troopsList} />
+                            <UnitSection title="Spells" list={spellsList} />
+                            <UnitSection title="Siege Machines" list={siegeList} />
 
-                            {/* Spells */}
-                            <div>
-                                <SectionHeader title="S.P.E.L.L.S" icon={Zap} />
-                                <div className={styles.card}>
-                                    <div className={styles.spellsWrapper}>
-                                        {playerData.spells?.filter(s => s.village === 'home').map((spell, idx) => (
-                                            <div key={idx} className={styles.spellTag}>
-                                                <span className={styles.spellName}>{spell.name}</span>
-                                                <span className={styles.spellLevel}>{spell.level}</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                            <div className={styles.bottomUnitRow}>
+                                <div className={styles.halfWidth}>
+                                    <UnitSection title="Heroes" list={heroesList} />
+                                    {/* Guardians/Equipment could go here if needed */}
+                                </div>
+                                <div className={styles.halfWidth}>
+                                    <UnitSection title="Pets" list={petsList} />
                                 </div>
                             </div>
-
-                            {/* Achievements (Top 4) */}
-                            <div>
-                                <SectionHeader title="Recent Achievements" icon={Target} />
-                                <div className={styles.card}>
-                                    <div className={styles.achievementList}>
-                                        {playerData.achievements?.filter(a => a.village === 'home' && a.stars > 0).slice(0, 4).map((ach, idx) => (
-                                            <div key={idx} className={styles.achievementItem}>
-                                                <span className={styles.achievementName}>{ach.name}</span>
-                                                <div className={styles.stars}>
-                                                    {[...Array(ach.stars)].map((_, i) => <Star key={i} size={8} fill="currentColor" />)}
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
                         </div>
                     </div>
-
                 </div>
             )}
         </div>
     );
 };
 
-const SectionHeader = ({ title, icon: Icon }) => (
-    <div className={styles.sectionHeader}>
-        <Icon size={16} className={styles.sectionHeaderIcon} />
-        <h4 className={styles.sectionHeaderTitle}>{title}</h4>
+const SearchForm = ({ searchTerm, setSearchTerm, handleSearch }) => (
+    <div className={styles.searchSection}>
+        <div className={styles.searchWrapper}>
+            <h1 className={styles.title}>
+                PLAYER <span className={styles.highlight}>LOOKUP</span>
+            </h1>
+            <form onSubmit={handleSearch} className={styles.form}>
+                <Search className={styles.inputIcon} size={20} />
+                <input
+                    type="text"
+                    placeholder="ENTER PLAYER TAG"
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value.toUpperCase())}
+                    className={styles.input}
+                />
+                <button type="submit" className={styles.searchBtn}>Analyze</button>
+            </form>
+            <div className={styles.systemStatus}>System Ready • v2.4.0</div>
+        </div>
+    </div>
+);
+
+const UnitSection = ({ title, list }) => {
+    if (!list || list.length === 0) return null;
+    return (
+        <div className={styles.unitCategory}>
+            <div className={styles.unitCategoryTitle}>{title}</div>
+            <div className={styles.unitGrid}>
+                {list.map((unit, idx) => (
+                    <UnitCard key={idx} unit={unit} />
+                ))}
+            </div>
+        </div>
+    );
+};
+
+const UnitCard = ({ unit }) => (
+    <div className={styles.troopCard} title={`${unit.name} (Lvl ${unit.level}/${unit.maxLevel})`}>
+        {getUnitImage(unit.name) ? (
+            <img src={getUnitImage(unit.name)} alt={unit.name} className={styles.troopImg} />
+        ) : (
+            <div className={styles.troopInitials}>{unit.name.substring(0, 2).toUpperCase()}</div>
+        )}
+        <div className={`${styles.troopLevel} ${unit.level === unit.maxLevel ? styles.troopLevelMax : ''}`}>
+            {unit.level}
+        </div>
     </div>
 );
 
 const StatBox = ({ label, value, highlight = false }) => (
     <div className={styles.statBox}>
-        <div className={styles.statLabel}>{label}</div>
-        <div className={`${styles.statValue} ${highlight ? styles.highlight : ''}`}>
+        <div className={styles.statLabel}>{label.toUpperCase()}</div>
+        <div className={`${styles.statValue} ${highlight ? styles.statHighlight : ''}`}>
             {value?.toLocaleString() || '-'}
         </div>
     </div>
