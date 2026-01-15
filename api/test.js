@@ -1,5 +1,5 @@
 export default async function handler(req, res) {
-    const TARGET = "http://api-blood-alliance.duckdns.org:30267/api/init";
+    const TARGET = "http://2.56.246.81:30267/api/init";
 
     console.log("[TEST] Starting Direct Fetch to " + TARGET);
     const start = Date.now();

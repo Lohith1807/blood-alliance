@@ -15,7 +15,8 @@ export default async function handler(req, res) {
         return res.status(400).send("Missing path - Usage: /coc-api/[target-path]");
     }
 
-    const BACKEND_URL = "http://api-blood-alliance.duckdns.org:30267";
+    // Switched to Direct IP to bypass DNS issues
+    const BACKEND_URL = "http://2.56.246.81:30267";
 
     const searchParams = new URLSearchParams();
     for (const [key, value] of Object.entries(queryParams)) {
