@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Shield, Trophy, Star, Sword, BarChart2, Hash, Users, Activity, Zap, Crown, Target } from 'lucide-react';
+import Lottie from 'lottie-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import styles from '../css/PlayerProfile.module.css';
 
 // Town Hall image mapping - using weserv.nl proxy to bypass CORS
@@ -120,35 +122,81 @@ const getUnitImage = (name) => {
 // Utility for key mapping if needed
 const cleanTag = (tag) => tag?.replace('#', '');
 
+// Robust League Icon Fetcher
+const getLeagueIcon = (playerData) => {
+    if (!playerData) return null;
+    const leagueData = playerData.league || playerData.leagueTier;
+    if (!leagueData || !leagueData.iconUrls) return null;
+
+    // Fallback order: medium -> large -> small
+    return leagueData.iconUrls.medium ||
+        leagueData.iconUrls.large ||
+        leagueData.iconUrls.small;
+};
+
 const PlayerProfile = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [playerData, setPlayerData] = useState(null);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
+    const API_BASE = "http://api-blood-alliance.duckdns.org:30267";
 
-    // Initial Init
+    // Initial Init to establish session/cookies
     useEffect(() => {
-        console.log('Session Init: OK');
+        const initSession = async () => {
+            try {
+                await fetch(`${API_BASE}/api/init`, {
+                    method: 'POST',
+                    headers: {
+                        'Origin': API_BASE,
+                        'Content-Type': 'application/json'
+                    },
+                    mode: 'cors',
+                    credentials: 'include'
+                });
+                console.log('Session Init: SUCCESS');
+            } catch (err) {
+                console.error('Session Init Error:', err);
+            }
+        };
+        initSession();
     }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
         if (!searchTerm) return;
+
+        let tag = searchTerm.trim();
+        if (!tag.startsWith('#')) tag = '#' + tag;
+        const encodedTag = tag.replace('#', '%23');
+
         setLoading(true);
         setError(null);
         setPlayerData(null);
 
         try {
-            await new Promise(resolve => setTimeout(resolve, 600));
-            const mockModule = await import('../data/profile_data.json');
-            if (mockModule.default && mockModule.default.success) {
-                setPlayerData(mockModule.default.data);
+            const response = await fetch(`${API_BASE}/game/player/${encodedTag}`, {
+                headers: {
+                    'Origin': API_BASE
+                },
+                mode: 'cors',
+                credentials: 'include'
+            });
+
+            if (!response.ok) {
+                if (response.status === 404) throw new Error("Player not found.");
+                throw new Error("Failed to fetch player data.");
+            }
+
+            const result = await response.json();
+            if (result.success) {
+                setPlayerData(result.data);
             } else {
-                throw new Error("Invalid Data Format");
+                throw new Error(result.message || "Invalid Data Format");
             }
         } catch (err) {
             console.error(err);
-            setError('Player not found or system error.');
+            setError(err.message || 'Player not found or system error.');
         } finally {
             setLoading(false);
         }
@@ -179,6 +227,25 @@ const PlayerProfile = () => {
         !t.superTroopIsActive
     ) || [];
 
+    // Extract Lifetime Loot from Achievements
+    const getLoot = (name) => {
+        const achievement = playerData?.achievements?.find(a => a.name === name);
+        return achievement ? achievement.value : 0;
+    };
+
+    const lifetimeLoot = [
+        { label: 'Gold Looted', value: getLoot('Gold Grab') },
+        { label: 'Elixir Looted', value: getLoot('Elixir Escapade') },
+        { label: 'Dark Elixir Looted', value: getLoot('Heroic Heist') },
+    ];
+
+    const personalRecords = [
+        { label: 'Best Trophies', value: playerData?.bestTrophies, icon: <Trophy size={14} /> },
+        { label: 'BB Hall Level', value: playerData?.builderHallLevel, icon: <Crown size={14} /> },
+        { label: 'BB Best Trophies', value: playerData?.bestBuilderBaseTrophies, icon: <Target size={14} /> },
+        { label: 'Donations', value: playerData?.donations, icon: <Users size={14} /> },
+    ];
+
     // Derive Progress (Mocked for VISUALS as per reference image)
     const getProgress = (list) => {
         if (!list || list.length === 0) return 0;
@@ -197,78 +264,194 @@ const PlayerProfile = () => {
         { label: 'Walls', value: 92 },
     ];
 
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2
+            }
+        }
+    };
+
+    const itemVariants = {
+        hidden: { opacity: 0, y: 20 },
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: { duration: 0.5, ease: "easeOut" }
+        }
+    };
+
     return (
         <div className={styles.container}>
             <SearchForm searchTerm={searchTerm} setSearchTerm={setSearchTerm} handleSearch={handleSearch} />
 
-            {loading && (
-                <div className={styles.loading}>
-                    <Activity className={styles.highlight} size={32} />
-                    <div className={styles.loadingText}>&gt; RETRIEVING PLAYER DOSSIER...</div>
-                </div>
-            )}
+            <AnimatePresence mode="wait">
+                {loading && (
+                    <motion.div
+                        key="loading"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        className={styles.loading}
+                    >
+                        <Activity className={styles.highlight} size={32} />
+                        <div className={styles.loadingText}>&gt; RETRIEVING PLAYER DOSSIER...</div>
+                    </motion.div>
+                )}
 
-            {error && (
-                <div className={styles.error}>[ERROR] {error}</div>
-            )}
+                {error && (
+                    <motion.div
+                        key="error"
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        className={styles.error}
+                    >
+                        [ERROR] {error}
+                    </motion.div>
+                )}
 
-            {playerData && (
-                <div className={styles.dashboard}>
-                    <div className={styles.dashboardHeader}>
-                        <div className={styles.tabActive}>My Profile</div>
-                        <div className={styles.tab}>My Clan</div>
-                        <div className={styles.tab}>Clans</div>
-                        <div className={styles.tab}>Social</div>
-                    </div>
-
-                    <div className={styles.dashboardSubHeader}>
-                        <div className={styles.subTabActive}><Sword size={14} /> Home Village</div>
-                        <div className={styles.subTab}><Zap size={14} /> Builder Base</div>
-                        <div className={styles.subTab}><Shield size={14} /> Clan Capital</div>
-                    </div>
-
-                    <div className={styles.mainGrid}>
-                        {/* LEFT SIDEBAR: TH & PROGRESS */}
-                        <div className={styles.sidebar}>
-                            <div className={styles.thSection}>
-                                <div className={styles.thImageWrapper}>
-                                    <img src={getTownHallImage(playerData.townHallLevel)} alt="TH" className={styles.sidebarThImg} />
+                {playerData && !loading && (
+                    <motion.div
+                        key="profile"
+                        variants={containerVariants}
+                        initial="hidden"
+                        animate="visible"
+                        className={styles.profileContent}
+                    >
+                        {/* TOP SECTION: PLAYER & CLAN DETAILS CARD */}
+                        <motion.div variants={itemVariants} className={styles.detailsCard}>
+                            <div className={styles.playerSection}>
+                                <div className={styles.leagueIconWrapper}>
+                                    <img src={getTownHallImage(playerData.townHallLevel)} alt="TH" className={styles.leagueImg} />
                                 </div>
-                                <div className={styles.thLevelLabel}>Town Hall {playerData.townHallLevel}</div>
-                            </div>
-
-                            <div className={styles.progressSection}>
-                                <div className={styles.progressTitle}>PROGRESS</div>
-                                {progressStats.map((stat, i) => (
-                                    <div key={i} className={styles.progressItem}>
-                                        <div className={styles.progressLabel}>{stat.label}</div>
-                                        <div className={styles.progressBarBg}>
-                                            <div className={styles.progressBarFill} style={{ width: `${stat.value}%` }}></div>
+                                <div className={styles.playerMainInfo}>
+                                    <div className={styles.nameHeader}>
+                                        <h1 className={styles.profileName}>{playerData.name}</h1>
+                                        <div className={styles.expLevel}>EXP {playerData.expLevel}</div>
+                                    </div>
+                                    <div className={styles.profileTag}>{playerData.tag}</div>
+                                    <div className={styles.badgeRow}>
+                                        <div className={styles.thBadge}>TH {playerData.townHallLevel}</div>
+                                        <div className={styles.warPrefBadge} data-pref={playerData.warPreference}>
+                                            WAR: {playerData.warPreference?.toUpperCase()}
                                         </div>
                                     </div>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/* RIGHT CONTENT: UNIT GRIDS */}
-                        <div className={styles.content}>
-                            <UnitSection title="Troops" list={troopsList} />
-                            <UnitSection title="Spells" list={spellsList} />
-                            <UnitSection title="Siege Machines" list={siegeList} />
-
-                            <div className={styles.bottomUnitRow}>
-                                <div className={styles.halfWidth}>
-                                    <UnitSection title="Heroes" list={heroesList} />
-                                    {/* Guardians/Equipment could go here if needed */}
-                                </div>
-                                <div className={styles.halfWidth}>
-                                    <UnitSection title="Pets" list={petsList} />
                                 </div>
                             </div>
+
+                            <div className={styles.clanSection}>
+                                {playerData.clan ? (
+                                    <>
+                                        <div className={styles.clanCardBadge}>
+                                            <img src={playerData.clan.badgeUrls?.medium} alt="Clan" className={styles.clanBadgeImg} />
+                                        </div>
+                                        <div className={styles.clanNameInfo}>
+                                            <div className={styles.clanCardName}>{playerData.clan.name}</div>
+                                            <div className={styles.playerRole}>
+                                                {playerData.role === 'leader' ? 'Leader' :
+                                                    playerData.role === 'coLeader' ? 'Co-Leader' :
+                                                        playerData.role === 'admin' ? 'Elder' : 'Member'}
+                                            </div>
+                                        </div>
+                                    </>
+                                ) : (
+                                    <div className={styles.noClanText}>Independent Contractor (No Clan)</div>
+                                )}
+                            </div>
+
+                            <div className={styles.quickStatsSection}>
+                                <div className={styles.statMini}>
+                                    <div className={styles.miniLabel}>ATTACK WINS</div>
+                                    <div className={styles.miniValue}>{playerData.attackWins || 0}</div>
+                                </div>
+                                <div className={styles.statMini}>
+                                    <div className={styles.miniLabel}>DEFENSE WINS</div>
+                                    <div className={styles.miniValue}>{playerData.defenseWins || 0}</div>
+                                </div>
+                                <div className={styles.statMini}>
+                                    <div className={styles.miniLabel}>CAPITAL CONTRIB.</div>
+                                    <div className={styles.miniValue}>{playerData.clanCapitalContributions?.toLocaleString()}</div>
+                                </div>
+                            </div>
+                        </motion.div>
+
+                        <div className={styles.mainGrid}>
+                            {/* LEFT SIDEBAR: TH & PROGRESS */}
+                            <motion.div variants={itemVariants} className={styles.sidebar}>
+                                <div className={styles.thHeroSection}>
+                                    <div className={styles.thHeroImageWrapper}>
+                                        {getLeagueIcon(playerData) ? (
+                                            <>
+                                                <img src={getLeagueIcon(playerData)} alt="League" className={styles.sidebarThImg} />
+                                                <div className={styles.leagueName}> {(playerData.league || playerData.leagueTier)?.name}</div>
+                                            </>
+                                        ) : (
+                                            <Shield size={48} color="#EE0000" />
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className={styles.progressBox}>
+                                    <div className={styles.progressHeader}>PROGRESSION_STATUS</div>
+                                    {progressStats.map((stat, i) => (
+                                        <div key={i} className={styles.progItem}>
+                                            <div className={styles.progLabel}>{stat.label.toUpperCase()}</div>
+                                            <div className={styles.progBarBg}>
+                                                <div className={styles.progBarFill} style={{ width: `${stat.value}%` }}></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+
+                            {/* RIGHT CONTENT: STATS & UNIT GRIDS */}
+                            <motion.div variants={itemVariants} className={styles.content}>
+                                <div className={styles.recordsGrid}>
+                                    <div className={styles.recordsCard}>
+                                        <div className={styles.recordsTitle}>PERSONAL RECORDS</div>
+                                        <div className={styles.recordsList}>
+                                            {personalRecords.map((rec, i) => (
+                                                <div key={i} className={styles.recordItem}>
+                                                    <div className={styles.recordIcon}>{rec.icon}</div>
+                                                    <div className={styles.recordLabel}>{rec.label}</div>
+                                                    <div className={styles.recordValue}>{rec.value?.toLocaleString()}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                    <div className={styles.recordsCard}>
+                                        <div className={styles.recordsTitle}>LIFETIME LOOT</div>
+                                        <div className={styles.recordsList}>
+                                            {lifetimeLoot.map((loot, i) => (
+                                                <div key={i} className={styles.recordItem}>
+                                                    <div className={styles.recordLabel}>{loot.label}</div>
+                                                    <div className={styles.recordValue}>{loot.value?.toLocaleString()}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <UnitSection title="Troops" list={troopsList} />
+                                <UnitSection title="Spells" list={spellsList} />
+                                <UnitSection title="Siege Machines" list={siegeList} />
+
+                                <div className={styles.bottomRow}>
+                                    <div className={styles.rowItem}>
+                                        <UnitSection title="Heroes / Guardians" list={heroesList} />
+                                    </div>
+                                    <div className={styles.rowItem}>
+                                        <UnitSection title="Hero Pets" list={petsList} />
+                                    </div>
+                                </div>
+                            </motion.div>
                         </div>
-                    </div>
-                </div>
-            )}
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
@@ -309,18 +492,35 @@ const UnitSection = ({ title, list }) => {
     );
 };
 
-const UnitCard = ({ unit }) => (
-    <div className={styles.troopCard} title={`${unit.name} (Lvl ${unit.level}/${unit.maxLevel})`}>
-        {getUnitImage(unit.name) ? (
-            <img src={getUnitImage(unit.name)} alt={unit.name} className={styles.troopImg} />
-        ) : (
-            <div className={styles.troopInitials}>{unit.name.substring(0, 2).toUpperCase()}</div>
-        )}
-        <div className={`${styles.troopLevel} ${unit.level === unit.maxLevel ? styles.troopLevelMax : ''}`}>
-            {unit.level}
+const UnitCard = ({ unit }) => {
+    const isMax = unit.level === unit.maxLevel;
+    const fireAnimationUrl = "https://lottie.host/85a81e9f-85f2-4e01-9a75-23c280620fa6/mD5OQYtHyo.json";
+
+    return (
+        <div className={styles.troopCard} title={`${unit.name} (Lvl ${unit.level}/${unit.maxLevel})`}>
+            {getUnitImage(unit.name) ? (
+                <img src={getUnitImage(unit.name)} alt={unit.name} className={styles.troopImg} />
+            ) : (
+                <div className={styles.troopInitials}>{unit.name.substring(0, 2).toUpperCase()}</div>
+            )}
+
+            {isMax && (
+                <div className={styles.lottieFireContainer}>
+                    <Lottie
+                        animationData={null}
+                        path={fireAnimationUrl}
+                        loop={true}
+                        className={styles.lottieFire}
+                    />
+                </div>
+            )}
+
+            <div className={`${styles.troopLevel} ${isMax ? styles.troopLevelMax : ''}`}>
+                {unit.level}
+            </div>
         </div>
-    </div>
-);
+    );
+};
 
 const StatBox = ({ label, value, highlight = false }) => (
     <div className={styles.statBox}>
