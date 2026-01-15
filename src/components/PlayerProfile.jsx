@@ -29,14 +29,18 @@ const PlayerProfile = () => {
     useEffect(() => {
         const initSession = async () => {
             try {
-                await fetch(`${API_BASE}/api/init`, {
+                const response = await fetch(`${API_BASE}/api/init`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     credentials: 'include'
                 });
-                console.log('Session Init: SUCCESS');
+                if (response.ok) {
+                    console.log('Session Init: SUCCESS');
+                } else {
+                    console.warn(`Session Init: Received status ${response.status}`);
+                }
             } catch (err) {
                 console.error('Session Init Error:', err);
             }

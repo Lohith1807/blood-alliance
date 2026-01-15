@@ -1,62 +1,71 @@
 export default async function handler(req, res) {
     const { path, ...queryParams } = req.query;
 
-    if (!path) {
-        return res.status(400).send("Missing path");
-    }
+    // Fallback if vercel rewrite didn't pass path correctly
+    const cleanPath = path || req.url.split('?')[0].replace('/coc-api/', '').replace('/api/coc-proxy', '');
 
     const BACKEND_URL = "http://api-blood-alliance.duckdns.org:30267";
 
-    // Reconstruct query string from all params EXCEPT 'path'
+    // Reconstruct query string
     const searchParams = new URLSearchParams();
     for (const [key, value] of Object.entries(queryParams)) {
-        searchParams.append(key, value);
+        if (key !== 'path') searchParams.append(key, value);
     }
     const queryString = searchParams.toString();
-    const targetUrl = `${BACKEND_URL}/${path}${queryString ? '?' + queryString : ''}`;
 
-    console.log(`[PROXY-START] ${req.method} ${targetUrl}`);
+    // Safety check for path slashes
+    const normalizedPath = cleanPath.startsWith('/') ? cleanPath.substring(1) : cleanPath;
+    const targetUrl = `${BACKEND_URL}/${normalizedPath}${queryString ? '?' + queryString : ''}`;
+
+    console.log(`[PROXY-INVOKE] Method: ${req.method} | Path: ${cleanPath} | Target: ${targetUrl}`);
 
     try {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10s timeout
+        const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
 
         const fetchOptions = {
             method: req.method,
             headers: {
                 'Accept': 'application/json, text/plain, */*',
                 'Content-Type': req.headers['content-type'] || 'application/json',
-                'User-Agent': 'Vercel-Proxy-Agent',
+                'User-Agent': 'Vercel-Forward-Proxy',
             },
             signal: controller.signal,
-            // Only set credentials if necessary, but backend might not support it well via proxy
-            // credentials: 'omit' 
         };
 
-        if (req.method !== 'GET' && req.method !== 'HEAD' && req.body) {
-            fetchOptions.body = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+        if (req.method !== 'GET' && req.method !== 'HEAD') {
+            const bodyStr = typeof req.body === 'string' ? req.body : JSON.stringify(req.body);
+            if (bodyStr && bodyStr !== '{}') {
+                fetchOptions.body = bodyStr;
+            }
         }
 
         const response = await fetch(targetUrl, fetchOptions);
+        const data = await response.text();
         clearTimeout(timeoutId);
 
-        const data = await response.text();
-        console.log(`[PROXY-END] ${response.status} from ${targetUrl} (Size: ${data.length})`);
+        console.log(`[PROXY-RESPONSE] Status: ${response.status} | Bytes: ${data.length}`);
 
-        // Forward headers
+        // Safe header forwarding
         res.setHeader('Access-Control-Allow-Origin', '*');
         res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Cookie');
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
         res.setHeader('Access-Control-Allow-Credentials', 'true');
+
+        if (response.headers.get('set-cookie')) {
+            res.setHeader('Set-Cookie', response.headers.get('set-cookie'));
+        }
 
         return res.status(response.status).send(data);
     } catch (error) {
-        console.error(`[PROXY-ERROR] ${error.message} - URL: ${targetUrl}`);
-        const status = error.name === 'AbortError' ? 504 : 502;
-        return res.status(status).json({
-            error: "Proxy connection failed",
-            details: error.message,
-            url: targetUrl
+        console.error(`[PROXY-FATAL] ${error.name}: ${error.message} (Target: ${targetUrl})`);
+
+        const isTimeout = error.name === 'AbortError';
+        return res.status(isTimeout ? 504 : 502).json({
+            success: false,
+            error: isTimeout ? "Gateway Timeout" : "Bad Gateway",
+            message: error.message,
+            targetUrl: targetUrl
         });
     }
 }
