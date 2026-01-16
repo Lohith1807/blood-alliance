@@ -675,3 +675,24 @@
         transform: translateY(0);
     }
 }
+
+.backNav {
+    background: transparent;
+    border: none;
+    color: #666;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-bottom: 2rem;
+    padding: 0;
+    transition: color 0.2s;
+    letter-spacing: 0.1em;
+}
+
+.backNav:hover {
+    color: #EE0000;
+}

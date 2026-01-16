@@ -58,6 +58,7 @@ function App() {
 
                 {/* PLAYER PROFILE ROUTE */}
                 <Route path="/player" element={<PlayerProfile />} />
+                <Route path="/player/:playerTag" element={<PlayerProfile />} />
 
                 {/* FALLBACK */}
                 <Route path="*" element={<Navigate to="/" replace />} />

@@ -1,4 +1,5 @@
 import React, { useState, useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Database, Search, ChevronUp, ChevronDown, Castle } from 'lucide-react';
 import styles from '@/css/ClanDetail.module.css';
@@ -30,6 +31,7 @@ const getTownHallImage = (level) => {
 };
 
 const ClanMembersTable = ({ memberList }) => {
+    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState({ key: 'clanRank', direction: 'asc' });
 
@@ -211,7 +213,11 @@ const ClanMembersTable = ({ memberList }) => {
                                     )}
                                 </td>
                                 <td className={styles.tableCell}>
-                                    <div className={styles.playerInfo}>
+                                    <div
+                                        className={styles.playerInfo}
+                                        onClick={() => navigate(`/player/${encodeURIComponent(member.tag)}`)}
+                                        style={{ cursor: 'pointer' }}
+                                    >
                                         <span className={styles.playerName}>{member.name}</span>
                                         <span className={`mono ${styles.playerTag}`}>{member.tag}</span>
                                     </div>

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Trophy, Users, Activity, Crown, Target } from 'lucide-react';
+import { useParams, useNavigate } from 'react-router-dom';
+import { Trophy, Users, Activity, Crown, Target, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import styles from '../css/PlayerProfile.module.css';
 
@@ -14,11 +15,20 @@ import { UnitSection } from './PlayerProfileComponents/UnitGrids';
 import {
     siegeMachineNames,
     petNames,
+    orderedElixirTroopNames,
+    orderedDarkTroopNames,
+    orderedElixirSpellNames,
+    orderedDarkSpellNames,
     getLoot,
     getProgress
 } from '../utils/playerProfileUtils';
 
+const fullTroopOrder = [...orderedElixirTroopNames, ...orderedDarkTroopNames];
+const fullSpellOrder = [...orderedElixirSpellNames, ...orderedDarkSpellNames];
+
 const PlayerProfile = () => {
+    const { playerTag } = useParams();
+    const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState('');
     const [playerData, setPlayerData] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -68,29 +78,24 @@ const PlayerProfile = () => {
         getBackendUrl(true);
     };
 
-    const handleSearch = async (e) => {
-        e.preventDefault();
-        if (!searchTerm) return;
+    const fetchPlayer = async (tag) => {
+        if (!tag) return;
         if (!apiBase) {
             setError("Backend connecting... please wait.");
             return;
         }
 
-        let tag = searchTerm.trim().toUpperCase();
-        // Auto-fix common typos: O -> 0
-        tag = tag.replace(/O/g, '0');
+        let formattedTag = tag.trim().toUpperCase();
+        formattedTag = formattedTag.replace(/O/g, '0');
+        if (!formattedTag.startsWith('#')) formattedTag = '#' + formattedTag;
 
-        if (!tag.startsWith('#')) tag = '#' + tag;
-        // User reports "Player Not Found" -> likely double encoding issue
-        // Direct call to Express needs proper encoding of # to %23
-        const encodedTag = encodeURIComponent(tag);
+        const encodedTag = encodeURIComponent(formattedTag);
 
         setLoading(true);
         setError(null);
         setPlayerData(null);
 
         try {
-            // DIRECT call to Cloudflare Tunnel (Bypassing Vercel Proxy)
             const response = await fetch(`${apiBase}/game/player/${encodedTag}`, {
                 headers: {
                     'Content-Type': 'application/json',
@@ -116,19 +121,49 @@ const PlayerProfile = () => {
         }
     };
 
+    const handleSearch = (e) => {
+        e.preventDefault();
+        fetchPlayer(searchTerm);
+    };
+
+    // Auto-fetch if playerTag is present in URL
+    useEffect(() => {
+        if (playerTag && apiBase) {
+            fetchPlayer(playerTag);
+        } else if (!playerTag) {
+            // Reset state when navigating back to search page
+            setPlayerData(null);
+            setSearchTerm('');
+        }
+    }, [playerTag, apiBase]);
+
     // Data Preparation
     const heroesList = playerData?.heroes?.filter(h => h.village === 'home') || [];
-    const spellsList = playerData?.spells?.filter(s => s.village === 'home') || [];
+    const spellsList = (playerData?.spells?.filter(s => s.village === 'home') || []).sort((a, b) => {
+        const indexA = fullSpellOrder.indexOf(a.name);
+        const indexB = fullSpellOrder.indexOf(b.name);
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+    });
     const siegeList = playerData?.troops?.filter(t => t.village === 'home' && siegeMachineNames.includes(t.name)) || [];
     const petsList = playerData?.troops?.filter(t => t.village === 'home' && petNames.includes(t.name)) || [];
-    const troopsList = playerData?.troops?.filter(t =>
+    const troopsList = (playerData?.troops?.filter(t =>
         t.village === 'home' &&
         !t.name.startsWith('Super ') &&
         !siegeMachineNames.includes(t.name) &&
         !petNames.includes(t.name) &&
         !['Sneaky Goblin', 'Rocket Balloon', 'Inferno Dragon', 'Ice Hound'].includes(t.name) &&
         !t.superTroopIsActive
-    ) || [];
+    ) || []).sort((a, b) => {
+        const indexA = fullTroopOrder.indexOf(a.name);
+        const indexB = fullTroopOrder.indexOf(b.name);
+        if (indexA === -1 && indexB === -1) return 0;
+        if (indexA === -1) return 1;
+        if (indexB === -1) return -1;
+        return indexA - indexB;
+    });
 
     const lifetimeLoot = [
         { label: 'Gold Looted', value: getLoot(playerData, 'Gold Grab') },
@@ -177,13 +212,28 @@ const PlayerProfile = () => {
 
     return (
         <div className={styles.container}>
-            <SearchForm
-                searchTerm={searchTerm}
-                setSearchTerm={setSearchTerm}
-                handleSearch={handleSearch}
-                onRefresh={handleRefresh}
-                refreshing={refreshing}
-            />
+            {playerTag && (
+                <motion.button
+                    onClick={() => navigate(-1)}
+                    className={styles.backNav}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    whileHover={{ x: -5 }}
+                >
+                    <ArrowLeft size={16} />
+                    <span>RETURN</span>
+                </motion.button>
+            )}
+
+            {!playerTag && (
+                <SearchForm
+                    searchTerm={searchTerm}
+                    setSearchTerm={setSearchTerm}
+                    handleSearch={handleSearch}
+                    onRefresh={handleRefresh}
+                    refreshing={refreshing}
+                />
+            )}
 
             <AnimatePresence mode="wait">
                 {loading && (
@@ -234,8 +284,15 @@ const PlayerProfile = () => {
                                 />
 
                                 <UnitSection title="Troops" list={troopsList} />
-                                <UnitSection title="Spells" list={spellsList} />
-                                <UnitSection title="Siege Machines" list={siegeList} />
+
+                                <div className={styles.bottomRow}>
+                                    <div className={styles.rowItem}>
+                                        <UnitSection title="Spells" list={spellsList} />
+                                    </div>
+                                    <div className={styles.rowItem}>
+                                        <UnitSection title="Siege Machines" list={siegeList} />
+                                    </div>
+                                </div>
 
                                 <div className={styles.bottomRow}>
                                     <div className={styles.rowItem}>

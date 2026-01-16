@@ -118,7 +118,7 @@ export const getUnitImage = (name) => {
 // Robust League Icon Fetcher
 export const getLeagueIcon = (playerData) => {
     if (!playerData) return null;
-    const leagueData = playerData.league || playerData.leagueTier;
+    const leagueData = playerData.leagueTier || playerData.league;
     if (!leagueData || !leagueData.iconUrls) return null;
 
     // Fallback order: medium -> large -> small
@@ -128,8 +128,23 @@ export const getLeagueIcon = (playerData) => {
 };
 
 // Derived categories
-export const siegeMachineNames = ['Wall Wrecker', 'Battle Blimp', 'Stone Slammer', 'Siege Barracks', 'Log Launcher', 'Flame Flinger', 'Battle Drill', 'Troop Launcher', 'Root Rider'];
+export const siegeMachineNames = ['Wall Wrecker', 'Battle Blimp', 'Stone Slammer', 'Siege Barracks', 'Log Launcher', 'Flame Flinger', 'Battle Drill', 'Troop Launcher'];
 export const petNames = ['L.A.S.S.I', 'Electro Owl', 'Mighty Yak', 'Unicorn', 'Frosty', 'Diggy', 'Poison Lizard', 'Phoenix', 'Spirit Fox', 'Angry Jelly', 'Sneezy'];
+export const orderedElixirTroopNames = [
+    'Barbarian', 'Archer', 'Giant', 'Goblin', 'Wall Breaker', 'Balloon', 'Wizard', 'Healer', 'Dragon', 'P.E.K.K.A',
+    'Baby Dragon', 'Miner', 'Electro Dragon', 'Yeti', 'Dragon Rider', 'Electro Titan', 'Root Rider', 'Thrower', 'Meteor Golem'
+];
+export const orderedDarkTroopNames = [
+    'Minion', 'Hog Rider', 'Valkyrie', 'Golem', 'Witch', 'Lava Hound', 'Bowler', 'Ice Golem', 'Headhunter',
+    'Apprentice Warden', 'Druid', 'Furnace'
+];
+export const orderedElixirSpellNames = [
+    'Lightning Spell', 'Healing Spell', 'Rage Spell', 'Jump Spell', 'Freeze Spell', 'Clone Spell',
+    'Invisibility Spell', 'Recall Spell', 'Revive Spell', 'Totem Spell'
+];
+export const orderedDarkSpellNames = [
+    'Poison Spell', 'Earthquake Spell', 'Haste Spell', 'Skeleton Spell', 'Bat Spell', 'Overgrowth Spell', 'Ice Block Spell'
+];
 
 export const getLoot = (playerData, name) => {
     const achievement = playerData?.achievements?.find(a => a.name === name);
