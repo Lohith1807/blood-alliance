@@ -11,7 +11,7 @@ import ProfileSidebar from './PlayerProfileComponents/ProfileSidebar';
 import ProfileStatsCards from './PlayerProfileComponents/ProfileStatsCards';
 import { UnitSection } from './PlayerProfileComponents/UnitGrids';
 
-// Utilities
+
 import {
     siegeMachineNames,
     petNames,
