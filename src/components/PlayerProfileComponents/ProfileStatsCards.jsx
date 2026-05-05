@@ -4,7 +4,7 @@ import styles from '../../css/PlayerProfile.module.css';
 const ProfileStatsCards = ({ personalRecords, lifetimeLoot }) => (
     <div className={styles.recordsGrid}>
         <div className={styles.recordsCard}>
-            <div className={styles.recordsTitle}>PERSONAL RECORDS</div>
+            <div className={styles.recordsTitle}>Personal Records</div>
             <div className={styles.recordsList}>
                 {personalRecords.map((rec, i) => (
                     <div key={i} className={styles.recordItem}>
@@ -16,7 +16,7 @@ const ProfileStatsCards = ({ personalRecords, lifetimeLoot }) => (
             </div>
         </div>
         <div className={styles.recordsCard}>
-            <div className={styles.recordsTitle}>LIFETIME LOOT</div>
+            <div className={styles.recordsTitle}>Lifetime Loot</div>
             <div className={styles.recordsList}>
                 {lifetimeLoot.map((loot, i) => (
                     <div key={i} className={styles.recordItem}>

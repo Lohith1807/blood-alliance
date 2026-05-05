@@ -5,18 +5,18 @@ const SearchForm = ({ searchTerm, setSearchTerm, handleSearch, onRefresh, refres
     <div className={styles.searchSection}>
         <div className={styles.searchWrapper}>
             <h1 className={styles.title}>
-                PLAYER <span className={styles.highlight}>LOOKUP</span>
+                Player <span className={styles.highlight}>Search</span>
             </h1>
             <form onSubmit={handleSearch} className={styles.form}>
                 <Search className={styles.inputIcon} size={20} />
                 <input
                     type="text"
-                    placeholder="ENTER PLAYER TAG"
+                    placeholder="Search by tag..."
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value.toUpperCase())}
                     className={styles.input}
                 />
-                <button type="submit" className={styles.searchBtn}>Analyze</button>
+                <button type="submit" className={styles.searchBtn}>Search</button>
             </form>
             <div className={styles.systemStatus}>
                 <span className={styles.statusText}>System Ready • v2.4.0</span>

@@ -39,7 +39,7 @@ const ClanCard = ({ clan, index }) => {
             onClick={handleClanClick}
         >
             <div className="unit-tag">
-                CLAN_{String(index + 1).padStart(2, '0')}
+                Clan {String(index + 1).padStart(2, '0')}
             </div>
 
             <div className="main-content">
@@ -61,28 +61,28 @@ const ClanCard = ({ clan, index }) => {
 
             <div className="metrics-horizontal">
                 <div className="metric-card">
-                    <span className="metric-key">LEVEL</span>
+                    <span className="metric-key">Level</span>
                     <span className="metric-val mono">{clan.clanLevel}</span>
                 </div>
                 <div className="metric-card">
-                    <span className="metric-key">MEMBERS</span>
+                    <span className="metric-key">Members</span>
                     <span className="metric-val mono">{clan.members}/50</span>
                 </div>
                 <div className="metric-card">
-                    <span className="metric-key">WAR_WINS</span>
+                    <span className="metric-key">War Wins</span>
                     <span className="metric-val mono" style={{ color: '#10b981' }}>{clan.warWins}</span>
                 </div>
             </div>
 
             <div className="hierarchy-box">
                 <div className="hierarchy-label">
-                    <ShieldCheck size={12} /> CLAN_HIERARCHY
+                    <ShieldCheck size={12} /> Clan Hierarchy
                 </div>
                 <div className="commander-text">
-                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>LEADER:</span> <span className="commander-name">{leader}</span>
+                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>Leader:</span> <span className="commander-name">{leader}</span>
                 </div>
                 <div className="commander-text" style={{ marginTop: '0.25rem' }}>
-                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>CO-LEADERS:</span> {coLeaders.slice(0, 1).join(', ')}{coLeaders.length > 1 ? ` +${coLeaders.length - 1}` : ''}
+                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>Co-Leaders:</span> {coLeaders.slice(0, 1).join(', ')}{coLeaders.length > 1 ? ` +${coLeaders.length - 1}` : ''}
                 </div>
             </div>
 
@@ -93,7 +93,7 @@ const ClanCard = ({ clan, index }) => {
                     handleClanClick();
                 }}
             >
-                OPEN INGAME <ExternalLink size={14} />
+                View Clan <ExternalLink size={14} />
             </button>
         </motion.div>
     );
@@ -103,7 +103,7 @@ const ClanCard = ({ clan, index }) => {
 const SkeletonCard = ({ index }) => (
     <div className="clan-card skeleton-card">
         <div className="card-top" style={{ border: 'none' }}>
-            <div className="unit-tag" style={{ opacity: 0.3 }}>LOADING...</div>
+            <div className="unit-tag" style={{ opacity: 0.3 }}>Loading...</div>
         </div>
         <div className="main-content">
             <div className="badge-frame" style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}></div>
@@ -122,20 +122,20 @@ const ClanList = () => {
         <section id="clans" className="container clan-list-section">
             <div className="section-header">
                 <div className="tech-label mono">
-                    <BarChart3 size={16} /> BLOOD_ALLIANCE // CLAN_INFO
+                    <BarChart3 size={16} /> Clan Information
                 </div>
                 <h2 className="section-title">Alliance Clans</h2>
                 <p className="section-subtitle">
                     {loading
-                        ? 'Establishing persistent uplink with Blood Alliance Database...'
-                        : `Blood Alliance has ${clans.length} active clans registered with FWA(Farm War Alliance)`
+                        ? 'Loading clans...'
+                        : `Blood Alliance has ${clans.length} active clans registered.`
                     }
                 </p>
             </div>
 
             {error && (
                 <div className="error-box" style={errorBoxStyle}>
-                    <span style={{ color: 'var(--rh-red)', fontWeight: 'bold' }}>[CRITICAL_FAILURE]:</span> {error}
+                    <span style={{ color: 'var(--rh-red)', fontWeight: 'bold' }}>Error:</span> {error}
                 </div>
             )}
 

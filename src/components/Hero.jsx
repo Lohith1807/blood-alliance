@@ -100,13 +100,13 @@ const Hero = () => {
                             onClick={handleExploreClans}
                             className={`btn btn-primary ${styles.btn}`}
                         >
-                            EXPLORE_CLANS <ChevronRight size={16} />
+                            Explore Clans <ChevronRight size={16} />
                         </button>
                         <button
                             onClick={() => navigate('/tracker')}
                             className={`btn btn-secondary ${styles.btn}`}
                         >
-                            CWL_REGISTRATIONS <Database size={14} style={{ marginLeft: '8px' }} />
+                            CWL Registrations <Database size={14} style={{ marginLeft: '8px' }} />
                         </button>
                     </motion.div>
 
@@ -114,17 +114,17 @@ const Hero = () => {
                     <motion.div variants={itemVariants} className={styles.statusBox}>
                         <div className={styles.statusItem}>
                             <Shield size={12} />
-                            <span className={styles.statusLabel}>CORE_SECURE</span>
+                            <span className={styles.statusLabel}>System Secure</span>
                         </div>
                         <div className={styles.statusItem}>
                             <div className={styles.pulsingDot}></div>
                             <span className={styles.statusLabel}>
-                                {loading ? 'FETCHING...' : 'UPLINK_ACTIVE'}
+                                {loading ? 'Loading...' : 'Online'}
                             </span>
                         </div>
                         <div className={styles.statusItem}>
                             <span className={styles.statusLabel} style={{ color: 'var(--rh-red)' }}>
-                                {loading ? 'LOADING...' : `${clans.length} CLANS_ONLINE`}
+                                {loading ? 'Loading...' : `${clans.length} Clans Online`}
                             </span>
                         </div>
                     </motion.div>

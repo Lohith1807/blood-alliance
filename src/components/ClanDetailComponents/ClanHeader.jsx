@@ -13,11 +13,11 @@ const ClanHeader = ({ clan }) => {
         >
             <div className={styles.headerTop}>
                 <div className={`mono ${styles.techLabel}`}>
-                    <BarChart3 size={14} /> UNIT_PROFILE: {clan.tag}
+                    <BarChart3 size={14} /> Clan Profile: {clan.tag}
                 </div>
                 <div className={styles.statusBadge}>
                     <div className={styles.pulsingDot}></div>
-                    <span>ONLINE</span>
+                    <span>Active</span>
                 </div>
             </div>
 

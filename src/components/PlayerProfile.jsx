@@ -173,8 +173,8 @@ const PlayerProfile = () => {
 
     const personalRecords = [
         { label: 'Best Trophies', value: playerData?.bestTrophies, icon: <Trophy size={14} /> },
-        { label: 'BB Hall Level', value: playerData?.builderHallLevel, icon: <Crown size={14} /> },
-        { label: 'BB Best Trophies', value: playerData?.bestBuilderBaseTrophies, icon: <Target size={14} /> },
+        { label: 'Builder Hall', value: playerData?.builderHallLevel, icon: <Crown size={14} /> },
+        { label: 'Builder Base Best', value: playerData?.bestBuilderBaseTrophies, icon: <Target size={14} /> },
         { label: 'Donations', value: playerData?.donations, icon: <Users size={14} /> },
     ];
 
@@ -221,7 +221,7 @@ const PlayerProfile = () => {
                     whileHover={{ x: -5 }}
                 >
                     <ArrowLeft size={16} />
-                    <span>RETURN</span>
+                    <span>Back</span>
                 </motion.button>
             )}
 
@@ -245,7 +245,7 @@ const PlayerProfile = () => {
                         className={styles.loading}
                     >
                         <Activity className={styles.highlight} size={32} />
-                        <div className={styles.loadingText}>&gt; RETRIEVING PLAYER DOSSIER...</div>
+                        <div className={styles.loadingText}>&gt; Loading player data...</div>
                     </motion.div>
                 )}
 
@@ -256,7 +256,7 @@ const PlayerProfile = () => {
                         animate={{ opacity: 1, scale: 1 }}
                         className={styles.error}
                     >
-                        [ERROR] {error}
+                        Error: {error}
                     </motion.div>
                 )}
 

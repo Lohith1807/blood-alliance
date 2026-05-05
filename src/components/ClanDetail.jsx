@@ -39,9 +39,9 @@ const ClanDetail = () => {
                     >
                         <Loader2 size={48} style={{ color: 'var(--rh-red)' }} />
                     </motion.div>
-                    <h2 style={{ color: '#fff', marginBottom: '0.5rem', marginTop: '1rem' }}>FETCHING_DATA</h2>
+                    <h2 style={{ color: '#fff', marginBottom: '0.5rem', marginTop: '1rem' }}>Loading data...</h2>
                     <p style={{ color: 'var(--text-muted)' }}>
-                        Loading clan data from Blood Alliance Database...
+                        Fetching clan data from the database...
                     </p>
                 </div>
             </section>
@@ -53,12 +53,12 @@ const ClanDetail = () => {
             <section className="container" style={{ padding: '6rem 0', minHeight: 'calc(100vh - 56px)' }}>
                 <div className={styles.errorState}>
                     <Database size={48} style={{ color: 'var(--rh-red)', marginBottom: '1rem' }} />
-                    <h2 style={{ color: '#fff', marginBottom: '0.5rem' }}>CLAN_NOT_FOUND</h2>
+                    <h2 style={{ color: '#fff', marginBottom: '0.5rem' }}>Clan not found</h2>
                     <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-                        Unable to retrieve data for clan tag: {clanTag}
+                        Unable to find data for clan tag: {clanTag}
                     </p>
                     <button onClick={handleBack} className={`btn btn-primary ${styles.backButton}`}>
-                        <ArrowLeft size={16} /> RETURN_TO_HOME
+                        <ArrowLeft size={16} /> Back to Home
                     </button>
                 </div>
             </section>
@@ -76,7 +76,7 @@ const ClanDetail = () => {
                 whileHover={{ x: -5 }}
             >
                 <ArrowLeft size={16} />
-                <span>RETURN_TO_HOME</span>
+                <span>Back to Home</span>
             </motion.button>
 
             <ClanHeader clan={clan} />

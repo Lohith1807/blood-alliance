@@ -31,14 +31,14 @@ const Rules = () => {
                 className={styles.sectionWrapper}
             >
                 <div className={styles.sectionHeader}>
-                    <div className={styles.techLabel}>CWL_PROTOCOLS</div>
+                    <div className={styles.techLabel}>CWL Rules</div>
                     <h2 className={styles.sectionTitle}>Lazy CWL Rules</h2>
                 </div>
 
                 <div className={styles.rulesGrid}>
                     <RuleModule
                         icon={<Zap size={18} />}
-                        title="WHAT IS A LAZY CWL?"
+                        title="What is a Lazy CWL?"
                         rules={[
                             "A relaxed CWL format for members who can’t commit to daily war attacks.",
                             "Focuses on enjoying CWL without the stress of perfect performance.",
@@ -48,7 +48,7 @@ const Rules = () => {
                     />
                     <RuleModule
                         icon={<Target size={18} />}
-                        title="PARTICIPATION_RULES"
+                        title="Participation"
                         rules={[
                             "Use at least one attack per war — no complete inactivity.",
                             "Attack smart: avoid mismatched or rushed bases that waste stars.",
@@ -59,7 +59,7 @@ const Rules = () => {
                     />
                     <RuleModule
                         icon={<Award size={18} />}
-                        title="REWARDS_CONDUCT"
+                        title="Rewards & Conduct"
                         rules={[
                             "CWL medals based on random selection — play fair and help the team climb!",
                             "If you’re online but not attacking, help plan or donate troops.",
@@ -72,7 +72,7 @@ const Rules = () => {
 
                 <div className={styles.ctaBox}>
                     <a href="https://discord.gg/gGGEs5SV9z" target="_blank" rel="noopener noreferrer" className={`btn btn-secondary ${styles.ctaBtn}`}>
-                        JOIN_CWL_DISCUSSION <ExternalLink size={12} style={{ marginLeft: '8px' }} />
+                        Join CWL Discussion <ExternalLink size={12} style={{ marginLeft: '8px' }} />
                     </a>
                 </div>
             </motion.div>
@@ -88,14 +88,14 @@ const Rules = () => {
                 style={{ marginTop: '6rem', borderTop: '1px solid var(--border-color)', paddingTop: '6rem' }}
             >
                 <div className={styles.sectionHeader}>
-                    <div className={styles.techLabel}>BLOOD_ALLIANCE_PROTOCOL</div>
+                    <div className={styles.techLabel}>Clan Protocols</div>
                     <h2 className={styles.sectionTitle}>Alliance & Server Protocols</h2>
                 </div>
 
                 <div className={styles.rulesGrid}>
                     <RuleModule
                         icon={<Users size={18} />}
-                        title="CLAN_RULES"
+                        title="Clan Rules"
                         rules={[
                             "Be active daily and participate in wars and CWL.",
                             "Always use both war attacks — missing attacks may lead to demotion.",
@@ -108,7 +108,7 @@ const Rules = () => {
                     />
                     <RuleModule
                         icon={<MessageSquare size={18} />}
-                        title="SERVER_RULES"
+                        title="Server Rules"
                         rules={[
                             "Respect everyone — no harassment, hate speech, or spam.",
                             "Keep conversations in their appropriate channels.",
@@ -123,7 +123,7 @@ const Rules = () => {
 
                 <div className={styles.ctaBox}>
                     <a href="https://discord.gg/gGGEs5SV9z" target="_blank" rel="noopener noreferrer" className={`btn btn-primary ${styles.ctaBtn} ${styles.ctaBtnPrimary}`}>
-                        JOIN_OUR_DISCORD <ExternalLink size={12} style={{ marginLeft: '8px' }} />
+                        Join our Discord <ExternalLink size={12} style={{ marginLeft: '8px' }} />
                     </a>
                 </div>
             </motion.div>

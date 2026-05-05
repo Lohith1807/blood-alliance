@@ -20,10 +20,10 @@ const ProfileSidebar = ({ playerData, progressStats, itemVariants }) => (
         </div>
 
         <div className={styles.progressBox}>
-            <div className={styles.progressHeader}>PROGRESSION_STATUS</div>
+            <div className={styles.progressHeader}>Progression</div>
             {progressStats.map((stat, i) => (
                 <div key={i} className={styles.progItem}>
-                    <div className={styles.progLabel}>{stat.label.toUpperCase()}</div>
+                    <div className={styles.progLabel}>{stat.label}</div>
                     <div className={styles.progBarBg}>
                         <div className={styles.progBarFill} style={{ width: `${stat.value}%` }}></div>
                     </div>

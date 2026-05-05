@@ -12,13 +12,13 @@ const ProfileHeader = ({ playerData, itemVariants }) => (
             <div className={styles.playerMainInfo}>
                 <div className={styles.nameHeader}>
                     <h1 className={styles.profileName}>{playerData.name}</h1>
-                    <div className={styles.expLevel}>EXP {playerData.expLevel}</div>
+                    <div className={styles.expLevel}>Exp Level {playerData.expLevel}</div>
                 </div>
                 <div className={styles.profileTag}>{playerData.tag}</div>
                 <div className={styles.badgeRow}>
                     <div className={styles.thBadge}>TH {playerData.townHallLevel}</div>
                     <div className={styles.warPrefBadge} data-pref={playerData.warPreference}>
-                        WAR: {playerData.warPreference?.toUpperCase()}
+                        War: {playerData.warPreference === 'in' ? 'In' : 'Out'}
                     </div>
                 </div>
             </div>
@@ -40,21 +40,21 @@ const ProfileHeader = ({ playerData, itemVariants }) => (
                     </div>
                 </>
             ) : (
-                <div className={styles.noClanText}>Independent Contractor (No Clan)</div>
+                <div className={styles.noClanText}>No Clan</div>
             )}
         </div>
 
         <div className={styles.quickStatsSection}>
             <div className={styles.statMini}>
-                <div className={styles.miniLabel}>ATTACK WINS</div>
+                <div className={styles.miniLabel}>Attack Wins</div>
                 <div className={styles.miniValue}>{playerData.attackWins || 0}</div>
             </div>
             <div className={styles.statMini}>
-                <div className={styles.miniLabel}>DEFENSE WINS</div>
+                <div className={styles.miniLabel}>Defense Wins</div>
                 <div className={styles.miniValue}>{playerData.defenseWins || 0}</div>
             </div>
             <div className={styles.statMini}>
-                <div className={styles.miniLabel}>CAPITAL CONTRIB.</div>
+                <div className={styles.miniLabel}>Capital Contrib.</div>
                 <div className={styles.miniValue}>{playerData.clanCapitalContributions?.toLocaleString()}</div>
             </div>
         </div>

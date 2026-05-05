@@ -101,10 +101,10 @@ const ClanMembersTable = ({ memberList }) => {
 
     const getRoleLabel = (role) => {
         switch (role) {
-            case 'leader': return 'LEADER';
-            case 'coLeader': return 'CO-LEADER';
-            case 'admin': return 'ELDER';
-            default: return 'MEMBER';
+            case 'leader': return 'Leader';
+            case 'coLeader': return 'Co-Leader';
+            case 'admin': return 'Elder';
+            default: return 'Member';
         }
     };
 
@@ -118,16 +118,16 @@ const ClanMembersTable = ({ memberList }) => {
             <div className={styles.membersHeader}>
                 <div className={styles.membersTitleArea}>
                     <div className={`mono ${styles.techLabel}`}>
-                        <Database size={14} /> MEMBER_REGISTRY
+                        <Database size={14} /> Members
                     </div>
-                    <h2 className={styles.membersTitle}>Active Personnel ({filteredMembers.length})</h2>
+                    <h2 className={styles.membersTitle}>Clan Members ({filteredMembers.length})</h2>
                 </div>
 
                 <div className={styles.searchContainer}>
                     <Search size={14} style={{ color: 'var(--text-muted)' }} />
                     <input
                         type="text"
-                        placeholder="SEARCH_MEMBER..."
+                        placeholder="Search members..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className={styles.searchInput}
@@ -141,16 +141,16 @@ const ClanMembersTable = ({ memberList }) => {
                         <tr className={styles.tableHeaderRow}>
                             <th className={styles.tableHeader} onClick={() => handleSort('clanRank')}>
                                 <div className={styles.headerCell}>
-                                    RANK
+                                    Rank
                                     {sortConfig.key === 'clanRank' && (
                                         sortConfig.direction === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />
                                     )}
                                 </div>
                             </th>
-                            <th className={styles.tableHeader}>LEAGUE</th>
+                            <th className={styles.tableHeader}>League</th>
                             <th className={styles.tableHeader} onClick={() => handleSort('name')}>
                                 <div className={styles.headerCell}>
-                                    PLAYER
+                                    Player
                                     {sortConfig.key === 'name' && (
                                         sortConfig.direction === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />
                                     )}
@@ -158,7 +158,7 @@ const ClanMembersTable = ({ memberList }) => {
                             </th>
                             <th className={styles.tableHeader} onClick={() => handleSort('role')}>
                                 <div className={styles.headerCell}>
-                                    ROLE
+                                    Role
                                     {sortConfig.key === 'role' && (
                                         sortConfig.direction === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />
                                     )}
@@ -166,7 +166,7 @@ const ClanMembersTable = ({ memberList }) => {
                             </th>
                             <th className={styles.tableHeader} onClick={() => handleSort('townHallLevel')}>
                                 <div className={styles.headerCell}>
-                                    TH_LVL
+                                    TH
                                     {sortConfig.key === 'townHallLevel' && (
                                         sortConfig.direction === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />
                                     )}
@@ -174,7 +174,7 @@ const ClanMembersTable = ({ memberList }) => {
                             </th>
                             <th className={styles.tableHeader} onClick={() => handleSort('expLevel')}>
                                 <div className={styles.headerCell}>
-                                    EXP
+                                    Level
                                     {sortConfig.key === 'expLevel' && (
                                         sortConfig.direction === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />
                                     )}
@@ -182,7 +182,7 @@ const ClanMembersTable = ({ memberList }) => {
                             </th>
                             <th className={styles.tableHeader} onClick={() => handleSort('donations')}>
                                 <div className={styles.headerCell}>
-                                    DONATIONS
+                                    Donations
                                     {sortConfig.key === 'donations' && (
                                         sortConfig.direction === 'asc' ? <ChevronUp size={12} /> : <ChevronDown size={12} />
                                     )}

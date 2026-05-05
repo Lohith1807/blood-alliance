@@ -62,7 +62,7 @@ const PlayerTracker = () => {
     return (
         <div className="container" style={{ paddingTop: 'calc(var(--nav-height) + 2rem)' }}>
             <header className={styles.headerBox}>
-                <div className={styles.tagline}><Database size={14} /> SYSTEM_QUERY: CWL_REGISTRY</div>
+                <div className={styles.tagline}><Database size={14} /> CWL Registry</div>
                 <h1 className={styles.title}>{CONFIG.meta.title} CWL Info</h1>
                 <p className={styles.subtitle}>
                     Check your Lazy CWL registration and assigned clan. Filtering active.
@@ -96,16 +96,16 @@ const PlayerTracker = () => {
                 </div>
 
                 <div className={styles.statsBadge}>
-                    {filteredPlayers.length} RECORDS FOUND
+                    {filteredPlayers.length} records found
                 </div>
             </div>
 
             <div className={styles.tableWrapper}>
                 <div className={styles.tableHeader}>
-                    <div style={{ flex: 2 }}>PLAYER NAME/TAG</div>
-                    <div style={{ flex: 1.5 }}>PLAYER CLAN/TAG</div>
-                    <div style={{ flex: 1.5 }}>DISCORD ID</div>
-                    <div style={{ flex: 1, textAlign: 'right' }}>ACTIONS</div>
+                    <div style={{ flex: 2 }}>Player Name</div>
+                    <div style={{ flex: 1.5 }}>Assigned Clan</div>
+                    <div style={{ flex: 1.5 }}>Discord</div>
+                    <div style={{ flex: 1, textAlign: 'right' }}>Actions</div>
                 </div>
 
                 <AnimatePresence mode='popLayout'>
@@ -149,7 +149,7 @@ const PlayerTracker = () => {
 
             {filteredPlayers.length === 0 && (
                 <div className={styles.emptyState}>
-                    <p>NO MATCHING RECORDS IN REGISTRY</p>
+                    <p>No matching records found</p>
                 </div>
             )}
         </div>
