@@ -28,7 +28,12 @@ const ProfileHeader = ({ playerData, itemVariants }) => (
             {playerData.clan ? (
                 <>
                     <div className={styles.clanCardBadge}>
-                        <img src={playerData.clan.badgeUrls?.medium} alt="Clan" className={styles.clanBadgeImg} />
+                        <img 
+                            src={playerData.clan.badgeUrls?.medium || 'https://api-assets.clashofclans.com/badges/200/empty.png'} 
+                            alt="Clan" 
+                            className={styles.clanBadgeImg}
+                            onError={(e) => { e.target.src = 'https://api-assets.clashofclans.com/badges/200/empty.png'; }}
+                        />
                     </div>
                     <div className={styles.clanNameInfo}>
                         <div className={styles.clanCardName}>{playerData.clan.name}</div>

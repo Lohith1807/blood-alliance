@@ -151,9 +151,10 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                                         : '1px solid var(--border-color)',
                                 }}>
                                 <img
-                                    src={clan.badgeUrls?.large || clan.badgeUrls?.medium}
+                                    src={clan.badgeUrls?.large || clan.badgeUrls?.medium || 'https://api-assets.clashofclans.com/badges/200/empty.png'}
                                     alt={clan.name}
                                     className={styles.clanBadge}
+                                    onError={(e) => { e.target.src = 'https://api-assets.clashofclans.com/badges/200/empty.png'; }}
                                 />
 
                                 {/* Clan info - only show on center card */}

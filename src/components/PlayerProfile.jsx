@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { Trophy, Users, Activity, Crown, Target, ArrowLeft } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -11,7 +11,7 @@ import ProfileSidebar from './PlayerProfileComponents/ProfileSidebar';
 import ProfileStatsCards from './PlayerProfileComponents/ProfileStatsCards';
 import { UnitSection } from './PlayerProfileComponents/UnitGrids';
 
-// Utilities
+
 import {
     siegeMachineNames,
     petNames,
@@ -78,7 +78,7 @@ const PlayerProfile = () => {
         getBackendUrl(true);
     };
 
-    const fetchPlayer = async (tag) => {
+    const fetchPlayer = useCallback(async (tag) => {
         if (!tag) return;
         if (!apiBase) {
             setError("Backend connecting... please wait.");
@@ -119,7 +119,7 @@ const PlayerProfile = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [apiBase]);
 
     const handleSearch = (e) => {
         e.preventDefault();
@@ -135,7 +135,7 @@ const PlayerProfile = () => {
             setPlayerData(null);
             setSearchTerm('');
         }
-    }, [playerTag, apiBase]);
+    }, [playerTag, apiBase, fetchPlayer]);
 
     // Data Preparation
     const heroesList = playerData?.heroes?.filter(h => h.village === 'home') || [];
