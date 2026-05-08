@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Database, Loader2, RotateCw } from 'lucide-react';
+import { Search, Filter, Database, Loader2, RotateCw, ExternalLink } from 'lucide-react';
+import { getTownHallImage } from '../utils/playerProfileUtils';
 import styles from '@/css/PlayerTracker.module.css';
 import CONFIG from '@/config';
 
@@ -27,6 +28,7 @@ const PlayerTracker = () => {
                 const mappedPlayers = rawItems.map(item => ({
                     playerTag: item.player_tag || item.playerTag || '',
                     playerName: item.player_name || item.playerName || 'Unknown',
+                    townHall: item.town_hall || item.townHall || 0,
                     assignedClanTag: item.assigned_clan_tag || item.assignedClanTag || '',
                     assignedClan: item.assigned_clan_name || item.assignedClan || 'Unassigned',
                     username: item.discord_username || item.username || 'N/A',
@@ -130,7 +132,7 @@ const PlayerTracker = () => {
             <div className={styles.tableWrapper}>
                 <div className={styles.tableHeader}>
                     <div style={{ flex: 0.5 }}>#</div>
-                    <div style={{ flex: 2 }}>Player Name</div>
+                    <div style={{ flex: 2.5 }}>Player Info</div>
                     <div style={{ flex: 1.5 }}>Assigned Clan</div>
                     <div style={{ flex: 1.5 }}>Discord Info</div>
                     <div style={{ flex: 1.2, textAlign: 'right' }}>Registered At</div>
@@ -150,8 +152,21 @@ const PlayerTracker = () => {
                                 <div className={styles.sNo}>{index + 1}</div>
                             </div>
 
-                            <div style={{ flex: 2 }}>
-                                <div className={styles.pName}>{player.playerName}</div>
+                            <div style={{ flex: 2.5 }}>
+                                <div className={styles.playerCell}>
+                                    <div className={styles.thWrapper}>
+                                        <img 
+                                            src={getTownHallImage(player.townHall)} 
+                                            alt={`TH${player.townHall}`} 
+                                            className={styles.thIcon}
+                                        />
+                                        <span className={styles.thLevel}>{player.townHall}</span>
+                                    </div>
+                                    <div className={styles.pInfo}>
+                                        <div className={styles.pName}>{player.playerName}</div>
+                                        <div className={`mono ${styles.pTag}`}>{player.playerTag}</div>
+                                    </div>
+                                </div>
                             </div>
 
                             <div style={{ flex: 1.5 }}>

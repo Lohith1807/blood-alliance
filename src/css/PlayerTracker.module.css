@@ -108,14 +108,58 @@
     transition: background 0.2s ease;
 }
 
+.playerCell {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.thWrapper {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.thIcon {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.thLevel {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    background: var(--rh-red);
+    color: #fff;
+    font-size: 0.6rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 800;
+    padding: 1px 3px;
+    border-radius: 2px;
+    line-height: 1;
+    box-shadow: 0 0 0 2px var(--bg-secondary);
+}
+
+.pInfo {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
 .pName {
     font-size: 0.9rem;
     font-weight: 700;
+    line-height: 1.2;
 }
 
 .pTag {
-    font-size: 0.75rem;
-    color: var(--rh-red);
+    font-size: 0.7rem;
+    color: var(--text-muted);
 }
 
 .cName {
