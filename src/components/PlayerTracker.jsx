@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Filter, Database, Loader2 } from 'lucide-react';
+import { Search, Filter, Database, Loader2, RotateCw } from 'lucide-react';
 import styles from '@/css/PlayerTracker.module.css';
 import CONFIG from '@/config';
 
@@ -9,25 +9,38 @@ const PlayerTracker = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const [clanFilter, setClanFilter] = useState('all');
+    const [refreshing, setRefreshing] = useState(false);
 
-    // Fetch players from API
-    useEffect(() => {
-        const fetchPlayers = async () => {
-            try {
-                const response = await fetch(CONFIG.api.endpoints.players);
-                const data = await response.json();
-                if (data.success) {
-                    setPlayers(data.players);
-                } else {
-                    console.error('Failed to load players:', data.error);
-                }
-            } catch (error) {
-                console.error('Error fetching players:', error);
-            } finally {
-                setLoading(false);
+    const fetchPlayers = async (isRefresh = false) => {
+        if (isRefresh) setRefreshing(true);
+        else setLoading(true);
+        
+        try {
+            const response = await fetch('https://zvbtdnywdmfffxvxgzso.supabase.co/functions/v1/registrations-list');
+            const data = await response.json();
+            if (data.success) {
+                // Map API fields to component structure
+                const mappedPlayers = (data.items || []).map(item => ({
+                    playerTag: item.player_tag,
+                    playerName: item.player_name,
+                    assignedClanTag: item.assigned_clan_tag || '',
+                    assignedClan: item.assigned_clan_name || 'Unassigned',
+                    username: item.discord_username || 'N/A',
+                    userId: item.discord_user_id
+                }));
+                setPlayers(mappedPlayers);
+            } else {
+                console.error('Failed to load players:', data.error);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching players:', error);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    };
 
+    useEffect(() => {
         fetchPlayers();
     }, []);
 
@@ -98,6 +111,15 @@ const PlayerTracker = () => {
                 <div className={styles.statsBadge}>
                     {filteredPlayers.length} records found
                 </div>
+
+                <button 
+                    className={`${styles.refreshBtn} ${refreshing ? styles.spinning : ''}`}
+                    onClick={() => fetchPlayers(true)}
+                    disabled={loading || refreshing}
+                    title="Refresh Data"
+                >
+                    <RotateCw size={14} />
+                </button>
             </div>
 
             <div className={styles.tableWrapper}>
