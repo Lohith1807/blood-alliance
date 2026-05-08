@@ -16,7 +16,7 @@ const PlayerTracker = () => {
         else setLoading(true);
         
         try {
-            const response = await fetch('https://zvbtdnywdmfffxvxgzso.supabase.co/functions/v1/registrations-list');
+            const response = await fetch('https://zvbtdnywdmfffxvxgzso.supabase.co/functions/v1/registrations-list?page_size=1000');
             if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
             
             const data = await response.json();
