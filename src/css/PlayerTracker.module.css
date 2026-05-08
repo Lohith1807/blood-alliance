@@ -183,6 +183,21 @@
     color: var(--text-secondary);
 }
 
+.clanLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.clanLink:hover {
+    transform: translateX(4px);
+}
+
+.clanLink:hover .cName {
+    color: var(--rh-red);
+}
+
 .spinning svg {
     animation: spin 1s linear infinite;
 }

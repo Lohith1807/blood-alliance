@@ -146,7 +146,18 @@ const PlayerTracker = () => {
                             </div>
 
                             <div style={{ flex: 1.5 }}>
-                                <div className={styles.cName}>{player.assignedClan}</div>
+                                {player.assignedClanTag ? (
+                                    <a 
+                                        href={`https://link.clashofclans.com/?action=OpenClanProfile&tag=${encodeURIComponent(player.assignedClanTag)}`}
+                                        target="_blank" rel="noopener noreferrer"
+                                        className={styles.clanLink}
+                                    >
+                                        <div className={styles.cName}>{player.assignedClan}</div>
+                                        <div className={`mono ${styles.cTag}`}>{player.assignedClanTag}</div>
+                                    </a>
+                                ) : (
+                                    <div className={styles.cName}>{player.assignedClan}</div>
+                                )}
                             </div>
 
                             <div style={{ flex: 1.5 }}>
