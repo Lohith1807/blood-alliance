@@ -20,6 +20,9 @@ export default async function handler(req, res) {
     }
 
     try {
+        if (!MONGO_URL) {
+            return res.status(500).json({ error: "Server Configuration Error: MONGO_URL is missing" });
+        }
         if (!cachedClient) {
             cachedClient = new MongoClient(MONGO_URL);
             await cachedClient.connect();

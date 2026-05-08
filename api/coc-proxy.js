@@ -12,6 +12,9 @@ const COLLECTION_NAME = "system_config";
 const CONFIG_KEY = "backend_tunnel_url";
 
 async function getBackendUrl() {
+    if (!MONGO_URL) {
+        throw new Error("MONGO_URL environment variable is not defined");
+    }
     // Return cached URL if fresh (< 60 seconds)
     if (cachedBackendUrl && (Date.now() - cacheTime < 60000)) {
         return cachedBackendUrl;
@@ -57,7 +60,8 @@ export default async function handler(req, res) {
 
     try {
         // Dynamic URL Discovery
-        const BACKEND_URL = await getBackendUrl();
+        const rawBackendUrl = await getBackendUrl();
+        const BACKEND_URL = rawBackendUrl.replace(/\/+$/, '');
 
         const searchParams = new URLSearchParams();
         for (const [key, value] of Object.entries(queryParams)) {
@@ -65,7 +69,11 @@ export default async function handler(req, res) {
         }
         const queryString = searchParams.toString();
         const normalizedPath = path.startsWith('/') ? path : '/' + path;
-        const targetUrl = `${BACKEND_URL}${normalizedPath}${queryString ? '?' + queryString : ''}`;
+        
+        // CRITICAL FIX: Ensure the path is encoded so characters like '#' (fragments) 
+        // are not stripped by the fetch client before reaching the backend.
+        const safePath = normalizedPath.split('/').map(seg => encodeURIComponent(seg)).join('/');
+        const targetUrl = `${BACKEND_URL}${safePath}${queryString ? '?' + queryString : ''}`;
 
         console.log(`[PROXY-INVOKE] ${req.method} -> ${targetUrl}`);
 
