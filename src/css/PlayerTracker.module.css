@@ -177,6 +177,12 @@
     cursor: not-allowed;
 }
 
+.regDate {
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-secondary);
+}
+
 .spinning svg {
     animation: spin 1s linear infinite;
 }

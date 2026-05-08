@@ -26,7 +26,8 @@ const PlayerTracker = () => {
                     assignedClanTag: item.assigned_clan_tag || '',
                     assignedClan: item.assigned_clan_name || 'Unassigned',
                     username: item.discord_username || 'N/A',
-                    userId: item.discord_user_id
+                    userId: item.discord_user_id,
+                    registeredAt: item.registered_at
                 }));
                 setPlayers(mappedPlayers);
             } else {
@@ -126,8 +127,8 @@ const PlayerTracker = () => {
                 <div className={styles.tableHeader}>
                     <div style={{ flex: 2 }}>Player Name</div>
                     <div style={{ flex: 1.5 }}>Assigned Clan</div>
-                    <div style={{ flex: 1.5 }}>Discord</div>
-                    <div style={{ flex: 1, textAlign: 'right' }}>Actions</div>
+                    <div style={{ flex: 1.5 }}>Discord Info</div>
+                    <div style={{ flex: 1.2, textAlign: 'right' }}>Registered At</div>
                 </div>
 
                 <AnimatePresence mode='popLayout'>
@@ -142,27 +143,25 @@ const PlayerTracker = () => {
                         >
                             <div style={{ flex: 2 }}>
                                 <div className={styles.pName}>{player.playerName}</div>
-                                <div className={`mono ${styles.pTag}`}>{player.playerTag}</div>
                             </div>
 
                             <div style={{ flex: 1.5 }}>
                                 <div className={styles.cName}>{player.assignedClan}</div>
-                                <div className={`mono ${styles.cTag}`}>{player.assignedClanTag}</div>
                             </div>
 
                             <div style={{ flex: 1.5 }}>
-                                <div className={styles.uName}>{player.username || 'N/A'}</div>
+                                <div className={styles.uName}>{player.username}</div>
                                 <div className={`mono ${styles.uId}`}>{player.userId ? `ID:${player.userId}` : ""}</div>
                             </div>
 
-                            <div style={{ flex: 1, display: 'flex', gap: '8px', justifyContent: 'flex-end' }}>
-                                <a
-                                    href={`https://link.clashofclans.com/?action=OpenPlayerProfile&tag=${encodeURIComponent(player.playerTag)}`}
-                                    target="_blank" rel="noopener noreferrer"
-                                    className={`btn btn-secondary ${styles.rowBtn}`}
-                                >
-                                    Profile
-                                </a>
+                            <div style={{ flex: 1.2, textAlign: 'right' }}>
+                                <div className={styles.regDate}>
+                                    {player.registeredAt ? new Date(player.registeredAt).toLocaleDateString('en-US', {
+                                        month: 'short',
+                                        day: 'numeric',
+                                        year: 'numeric'
+                                    }) : 'N/A'}
+                                </div>
                             </div>
                         </motion.div>
                     ))}
