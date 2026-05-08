@@ -19,7 +19,7 @@ const SearchForm = ({ searchTerm, setSearchTerm, handleSearch, onRefresh, refres
                 <button type="submit" className={styles.searchBtn}>Search</button>
             </form>
             <div className={styles.systemStatus}>
-                <span className={styles.statusText}>System Ready • v2.4.0</span>
+                <span className={styles.statusText}>System Ready • v2.4.1</span>
                 <button
                     onClick={onRefresh}
                     className={styles.refreshBtn}

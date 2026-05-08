@@ -96,14 +96,14 @@ const PlayerProfile = () => {
         setPlayerData(null);
 
         try {
-            // Use internal proxy to bypass browser-side CORS/CSP issues with dynamic tunnels
-            const proxyUrl = `/api/coc-proxy?path=${encodeURIComponent('/game/player/' + encodedTag)}`;
+            // Simplify path to avoid double-encoding issues
+            const targetPath = `/game/player/${formattedTag}`;
+            const proxyUrl = `/api/coc-proxy?path=${encodeURIComponent(targetPath)}`;
             
             const response = await fetch(proxyUrl, {
                 headers: {
                     'Content-Type': 'application/json',
-                },
-                credentials: 'include'
+                }
             });
 
             if (!response.ok) {
