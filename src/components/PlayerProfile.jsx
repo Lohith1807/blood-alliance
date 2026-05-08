@@ -108,7 +108,16 @@ const PlayerProfile = () => {
 
             if (!response.ok) {
                 if (response.status === 404) throw new Error("Player not found.");
-                throw new Error("Failed to fetch player data.");
+                
+                let errorMessage = "Failed to fetch player data.";
+                try {
+                    const errorData = await response.json();
+                    errorMessage = errorData.message || errorData.error || errorMessage;
+                } catch (e) {
+                    // Not JSON, use generic or status text
+                    errorMessage = `Server Error (${response.status}): ${response.statusText || 'Unknown Error'}`;
+                }
+                throw new Error(errorMessage);
             }
 
             const result = await response.json();
