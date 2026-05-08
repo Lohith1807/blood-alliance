@@ -47,9 +47,9 @@ const PlayerProfile = () => {
             if (data.url) {
                 setApiBase(data.url);
 
-                // 2. Init Session directly with Backend
+                // 2. Init Session directly with Backend via Proxy
                 try {
-                    await fetch(`${data.url}/api/init`, {
+                    await fetch(`/api/coc-proxy?path=/api/init`, {
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         credentials: 'include'
@@ -96,7 +96,10 @@ const PlayerProfile = () => {
         setPlayerData(null);
 
         try {
-            const response = await fetch(`${apiBase}/game/player/${encodedTag}`, {
+            // Use internal proxy to bypass browser-side CORS/CSP issues with dynamic tunnels
+            const proxyUrl = `/api/coc-proxy?path=${encodeURIComponent('/game/player/' + encodedTag)}`;
+            
+            const response = await fetch(proxyUrl, {
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -115,7 +118,11 @@ const PlayerProfile = () => {
                 throw new Error(result.message || "Invalid Data Format");
             }
         } catch (err) {
-            setError(err.message || 'Player not found or system error.');
+            if (err.name === 'TypeError' && err.message === 'Failed to fetch') {
+                setError("Connection Failed: The backend server is unreachable. Please click 'Refresh Link' below or check if the tunnel is active.");
+            } else {
+                setError(err.message || 'Player not found or system error.');
+            }
         } finally {
             setLoading(false);
         }
