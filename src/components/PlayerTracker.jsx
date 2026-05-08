@@ -17,21 +17,25 @@ const PlayerTracker = () => {
         
         try {
             const response = await fetch('https://zvbtdnywdmfffxvxgzso.supabase.co/functions/v1/registrations-list');
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
             const data = await response.json();
-            if (data.success) {
-                // Map API fields to component structure
-                const mappedPlayers = (data.items || []).map(item => ({
-                    playerTag: item.player_tag,
-                    playerName: item.player_name,
-                    assignedClanTag: item.assigned_clan_tag || '',
-                    assignedClan: item.assigned_clan_name || 'Unassigned',
-                    username: item.discord_username || 'N/A',
-                    userId: item.discord_user_id,
-                    registeredAt: item.registered_at
+            
+            if (data.success || data.items || data.players) {
+                const rawItems = data.items || data.players || [];
+                // Map API fields to component structure with fallbacks
+                const mappedPlayers = rawItems.map(item => ({
+                    playerTag: item.player_tag || item.playerTag || '',
+                    playerName: item.player_name || item.playerName || 'Unknown',
+                    assignedClanTag: item.assigned_clan_tag || item.assignedClanTag || '',
+                    assignedClan: item.assigned_clan_name || item.assignedClan || 'Unassigned',
+                    username: item.discord_username || item.username || 'N/A',
+                    userId: item.discord_user_id || item.userId || '',
+                    registeredAt: item.registered_at || item.registeredAt || null
                 }));
                 setPlayers(mappedPlayers);
             } else {
-                console.error('Failed to load players:', data.error);
+                console.error('Failed to load players: Success flag false or missing data');
             }
         } catch (error) {
             console.error('Error fetching players:', error);
