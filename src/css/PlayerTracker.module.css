@@ -233,6 +233,21 @@
     color: var(--text-muted);
 }
 
+.playerLink {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    transition: transform 0.2s ease;
+}
+
+.playerLink:hover {
+    transform: translateX(4px);
+}
+
+.playerLink:hover .pName {
+    color: var(--rh-red);
+}
+
 .clanLink {
     text-decoration: none;
     color: inherit;

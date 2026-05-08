@@ -153,20 +153,26 @@ const PlayerTracker = () => {
                             </div>
 
                             <div style={{ flex: 2.5 }}>
-                                <div className={styles.playerCell}>
-                                    <div className={styles.thWrapper}>
-                                        <img 
-                                            src={getTownHallImage(player.townHall)} 
-                                            alt={`TH${player.townHall}`} 
-                                            className={styles.thIcon}
-                                        />
-                                        <span className={styles.thLevel}>{player.townHall}</span>
+                                <a 
+                                    href={`https://link.clashofclans.com/?action=OpenPlayerProfile&tag=${encodeURIComponent(player.playerTag)}`}
+                                    target="_blank" rel="noopener noreferrer"
+                                    className={styles.playerLink}
+                                >
+                                    <div className={styles.playerCell}>
+                                        <div className={styles.thWrapper}>
+                                            <img 
+                                                src={getTownHallImage(player.townHall)} 
+                                                alt={`TH${player.townHall}`} 
+                                                className={styles.thIcon}
+                                            />
+                                            <span className={styles.thLevel}>{player.townHall}</span>
+                                        </div>
+                                        <div className={styles.pInfo}>
+                                            <div className={styles.pName}>{player.playerName}</div>
+                                            <div className={`mono ${styles.pTag}`}>{player.playerTag}</div>
+                                        </div>
                                     </div>
-                                    <div className={styles.pInfo}>
-                                        <div className={styles.pName}>{player.playerName}</div>
-                                        <div className={`mono ${styles.pTag}`}>{player.playerTag}</div>
-                                    </div>
-                                </div>
+                                </a>
                             </div>
 
                             <div style={{ flex: 1.5 }}>
