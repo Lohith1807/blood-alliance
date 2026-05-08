@@ -129,6 +129,7 @@ const PlayerTracker = () => {
 
             <div className={styles.tableWrapper}>
                 <div className={styles.tableHeader}>
+                    <div style={{ flex: 0.5 }}>#</div>
                     <div style={{ flex: 2 }}>Player Name</div>
                     <div style={{ flex: 1.5 }}>Assigned Clan</div>
                     <div style={{ flex: 1.5 }}>Discord Info</div>
@@ -136,7 +137,7 @@ const PlayerTracker = () => {
                 </div>
 
                 <AnimatePresence mode='popLayout'>
-                    {filteredPlayers.map((player) => (
+                    {filteredPlayers.map((player, index) => (
                         <motion.div
                             key={player.playerTag}
                             layout
@@ -145,6 +146,10 @@ const PlayerTracker = () => {
                             exit={{ opacity: 0 }}
                             className={styles.tableRow}
                         >
+                            <div style={{ flex: 0.5 }}>
+                                <div className={styles.sNo}>{index + 1}</div>
+                            </div>
+
                             <div style={{ flex: 2 }}>
                                 <div className={styles.pName}>{player.playerName}</div>
                             </div>
