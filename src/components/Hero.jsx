@@ -103,7 +103,7 @@ const Hero = () => {
                             Explore Clans <ChevronRight size={16} />
                         </button>
                         <button
-                            onClick={() => navigate('/tracker')}
+                            onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/'}
                             className={`btn btn-secondary ${styles.btn}`}
                         >
                             CWL Registrations <Database size={14} style={{ marginLeft: '8px' }} />

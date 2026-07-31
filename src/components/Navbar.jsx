@@ -147,6 +147,14 @@ const Navbar = () => {
                         </li>
                         <li>
                             <NavItem
+                                active={false}
+                                onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/'}
+                            >
+                                Register for CWL
+                            </NavItem>
+                        </li>
+                        <li>
+                            <NavItem
                                 active={location.pathname === '/tracker'}
                                 onClick={() => handleNavClick('/tracker')}
                             >
@@ -218,6 +226,12 @@ const Navbar = () => {
                                 onClick={() => handleNavClick('/', '#rules')}
                             >
                                 Rules
+                            </MobileNavItem>
+                            <MobileNavItem
+                                active={false}
+                                onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/'}
+                            >
+                                Register for CWL
                             </MobileNavItem>
                             <MobileNavItem
                                 active={location.pathname === '/tracker'}
