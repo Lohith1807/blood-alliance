@@ -1,17 +1,36 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X } from 'lucide-react';
-import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield } from 'lucide-react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useAuth } from '../context/AuthContext';
 import styles from '@/css/Navbar.module.css';
 
 const Navbar = () => {
     const [activeSection, setActiveSection] = useState('home');
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
     const location = useLocation();
     const navigate = useNavigate();
+    const { user, isAuthenticated, isAdmin, isOwner, canViewLogs, logout } = useAuth();
 
     // Check if we are on the home page
     const isHomePage = location.pathname === '/';
+
+    // Check if any of the module routes are active
+    const isModuleActive = ['/manage-clans', '/ticket-management', '/user-management', '/audit-logs'].includes(location.pathname);
+
+    // Close dropdown on click outside
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('mousedown', handleClickOutside);
+    }, []);
 
     // Handle scroll to update active section highlighting
     useEffect(() => {
@@ -28,7 +47,6 @@ const Navbar = () => {
                 const element = document.getElementById(section);
                 if (element) {
                     const rect = element.getBoundingClientRect();
-                    // If the top of the section is within range, set it as active
                     if (rect.top <= threshold && rect.bottom >= threshold) {
                         setActiveSection(section);
                         break;
@@ -38,7 +56,7 @@ const Navbar = () => {
         };
 
         window.addEventListener('scroll', handleScroll, { passive: true });
-        handleScroll(); // Initial check
+        handleScroll();
         return () => window.removeEventListener('scroll', handleScroll);
     }, [isHomePage]);
 
@@ -49,7 +67,7 @@ const Navbar = () => {
             setTimeout(() => {
                 const element = document.getElementById(id);
                 if (element) {
-                    const yOffset = -56; // Navbar height
+                    const yOffset = -56;
                     const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
                     window.scrollTo({ top: y, behavior: 'smooth' });
                 }
@@ -60,11 +78,11 @@ const Navbar = () => {
     }, [location, isHomePage]);
 
     const handleNavClick = (path, hash = '') => {
-        setIsMenuOpen(false); // Close mobile menu on click
+        setIsMenuOpen(false);
+        setIsDropdownOpen(false);
 
         if (path === '/') {
             if (isHomePage) {
-                // If already on home, just scroll
                 if (hash) {
                     const id = hash.replace('#', '');
                     const element = document.getElementById(id);
@@ -76,15 +94,19 @@ const Navbar = () => {
                 } else {
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 }
-                // Update URL without reload if desired, or just let scroll handle it
-                // navigate(hash ? '/' + hash : '/'); // Optional
             } else {
-                // Navigate to home (with hash)
                 navigate('/' + hash);
             }
         } else {
             navigate(path);
         }
+    };
+
+    const handleLogout = async () => {
+        setIsMenuOpen(false);
+        setIsDropdownOpen(false);
+        await logout();
+        navigate('/', { replace: true });
     };
 
     const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -169,10 +191,180 @@ const Navbar = () => {
                                 Search
                             </NavItem>
                         </li>
+
+                        {/* Beside Search: LOGIN OPTION (when logged out) */}
+                        {!isAuthenticated && (
+                            <li>
+                                <NavItem
+                                    active={location.pathname === '/login'}
+                                    onClick={() => handleNavClick('/login')}
+                                >
+                                    Login
+                                </NavItem>
+                            </li>
+                        )}
+
+                        {/* AFTER LOGIN: ONLY A DROPDOWN ON DESKTOP */}
+                        {isAuthenticated && (
+                            <li className={styles.dropdownWrapper} ref={dropdownRef}>
+                                <span
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    className={styles.link}
+                                    style={{
+                                        color: isModuleActive ? 'var(--rh-red)' : 'var(--text-secondary)',
+                                        borderBottom: isModuleActive ? '2px solid var(--rh-red)' : '2px solid transparent',
+                                        cursor: 'pointer',
+                                        display: 'inline-flex',
+                                        alignItems: 'center',
+                                        gap: '0.35rem'
+                                    }}
+                                >
+                                    <span>Modules</span>
+                                    <ChevronDown
+                                        size={14}
+                                        className={`${styles.dropdownChevron} ${isDropdownOpen ? styles.dropdownChevronOpen : ''}`}
+                                    />
+                                </span>
+
+                                <AnimatePresence>
+                                    {isDropdownOpen && (
+                                        <motion.div
+                                            initial={{ opacity: 0, y: -6 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: -6 }}
+                                            transition={{ duration: 0.15 }}
+                                            className={styles.dropdownMenu}
+                                        >
+                                            <div className={styles.dropdownHeader}>
+                                                Alliance Modules
+                                            </div>
+                                            <div
+                                                className={`${styles.dropdownItem} ${location.pathname === '/manage-clans' ? styles.dropdownItemActive : ''}`}
+                                                onClick={() => {
+                                                    setIsDropdownOpen(false);
+                                                    handleNavClick('/manage-clans');
+                                                }}
+                                            >
+                                                <Layers size={15} style={{ color: 'var(--rh-red)' }} />
+                                                <span>Manage Clan List & Order</span>
+                                            </div>
+                                            <div
+                                                className={`${styles.dropdownItem} ${location.pathname === '/ticket-management' ? styles.dropdownItemActive : ''}`}
+                                                onClick={() => {
+                                                    setIsDropdownOpen(false);
+                                                    handleNavClick('/ticket-management');
+                                                }}
+                                            >
+                                                <Ticket size={15} style={{ color: '#60a5fa' }} />
+                                                <span>Discord Ticket Management</span>
+                                            </div>
+                                            {isAdmin && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/user-management' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/user-management');
+                                                    }}
+                                                >
+                                                    <Users size={15} style={{ color: '#f87171' }} />
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
+                                                        <span>User Management</span>
+                                                        <span style={{
+                                                            fontSize: '0.62rem',
+                                                            padding: '1px 4px',
+                                                            background: 'rgba(238, 0, 0, 0.2)',
+                                                            color: 'var(--rh-red)',
+                                                            borderRadius: 2,
+                                                            fontFamily: 'JetBrains Mono',
+                                                            fontWeight: 700
+                                                        }}>
+                                                            ADMIN
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            )}
+                                            {canViewLogs && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/audit-logs' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/audit-logs');
+                                                    }}
+                                                >
+                                                    <Shield size={15} style={{ color: '#fbbf24' }} />
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
+                                                        <span>Audit & Activity Logs</span>
+                                                        <span style={{
+                                                            fontSize: '0.62rem',
+                                                            padding: '1px 4px',
+                                                            background: 'rgba(251, 191, 36, 0.2)',
+                                                            color: '#fbbf24',
+                                                            borderRadius: 2,
+                                                            fontFamily: 'JetBrains Mono',
+                                                            fontWeight: 700
+                                                        }}>
+                                                            {isOwner ? 'OWNER' : 'LOGS'}
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            )}
+                                        </motion.div>
+                                    )}
+                                </AnimatePresence>
+                            </li>
+                        )}
                     </ul>
                 </nav>
 
-                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.85rem' }}>
+                    {/* Logged in status & Logout on Desktop */}
+                    {isAuthenticated && (
+                        <div className="hide-mobile" style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+                            <div
+                                style={{
+                                    display: 'flex',
+                                    alignItems: 'center',
+                                    gap: '0.4rem',
+                                    padding: '0.2rem 0.55rem',
+                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    border: '1px solid var(--border-color)',
+                                    borderRadius: 3,
+                                    fontSize: '0.72rem',
+                                    fontFamily: 'JetBrains Mono',
+                                    color: 'var(--text-secondary)'
+                                }}
+                                title={user?.email}
+                            >
+                                <span style={{
+                                    display: 'inline-block',
+                                    width: 6,
+                                    height: 6,
+                                    borderRadius: '50%',
+                                    backgroundColor: '#4ade80'
+                                }} />
+                                <span style={{
+                                    fontWeight: 700,
+                                    color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa'
+                                }}>
+                                    {user?.role?.toUpperCase()}
+                                </span>
+                            </div>
+                            <button
+                                onClick={handleLogout}
+                                className="btn btn-secondary"
+                                style={{
+                                    height: 30,
+                                    padding: '0 0.65rem',
+                                    fontSize: '0.75rem',
+                                    borderRadius: 2
+                                }}
+                                title="Sign out of your session"
+                            >
+                                Logout
+                            </button>
+                        </div>
+                    )}
+
                     <a
                         href="https://discord.gg/gGGEs5SV9z"
                         target="_blank"
@@ -182,17 +374,18 @@ const Navbar = () => {
                         Join Discord
                     </a>
 
-                    {/* Hamburger Button */}
+                    {/* Hamburger Button for Mobile */}
                     <button
                         className={`show-mobile ${styles.hamburger}`}
                         onClick={toggleMenu}
+                        aria-label="Toggle Navigation Menu"
                     >
                         {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
                     </button>
                 </div>
             </div>
 
-            {/* Mobile Menu Drawer */}
+            {/* Mobile Menu Drawer (Sidebar Menu) */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <motion.div
@@ -245,6 +438,91 @@ const Navbar = () => {
                             >
                                 Search
                             </MobileNavItem>
+
+                            {/* Beside Search: LOGIN OPTION (when logged out) */}
+                            {!isAuthenticated && (
+                                <MobileNavItem
+                                    active={location.pathname === '/login'}
+                                    onClick={() => handleNavClick('/login')}
+                                >
+                                    Login
+                                </MobileNavItem>
+                            )}
+
+                            {/* IN MOBILE SIDEBAR MENU: DISPLAY MODULES DIRECTLY */}
+                            {isAuthenticated && (
+                                <>
+                                    <li style={{
+                                        borderTop: '1px solid var(--border-color)',
+                                        margin: '0.5rem 0',
+                                        padding: '0.5rem 1rem 0.2rem',
+                                        fontSize: '0.7rem',
+                                        color: 'var(--text-muted)',
+                                        fontFamily: 'JetBrains Mono',
+                                        textTransform: 'uppercase',
+                                        letterSpacing: '0.05em'
+                                    }}>
+                                        Alliance Modules
+                                    </li>
+                                    <MobileNavItem
+                                        active={location.pathname === '/manage-clans'}
+                                        onClick={() => handleNavClick('/manage-clans')}
+                                    >
+                                        Manage Clan List & Order
+                                    </MobileNavItem>
+                                    <MobileNavItem
+                                        active={location.pathname === '/ticket-management'}
+                                        onClick={() => handleNavClick('/ticket-management')}
+                                    >
+                                        Discord Ticket Management
+                                    </MobileNavItem>
+                                    {isAdmin && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/user-management'}
+                                            onClick={() => handleNavClick('/user-management')}
+                                        >
+                                            User Management — Admin Only
+                                        </MobileNavItem>
+                                    )}
+                                    {canViewLogs && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/audit-logs'}
+                                            onClick={() => handleNavClick('/audit-logs')}
+                                        >
+                                            Audit & Activity Logs
+                                        </MobileNavItem>
+                                    )}
+
+                                    {/* User status and Logout in Mobile Drawer */}
+                                    <li style={{
+                                        marginTop: '0.75rem',
+                                        padding: '0.75rem 1rem',
+                                        background: 'rgba(255, 255, 255, 0.03)',
+                                        borderRadius: 4,
+                                        border: '1px solid var(--border-color)',
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center'
+                                    }}>
+                                        <div>
+                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600 }}>
+                                                {user?.email}
+                                            </div>
+                                            <div style={{ fontSize: '0.68rem', color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa', fontFamily: 'JetBrains Mono', textTransform: 'uppercase' }}>
+                                                Role: {user?.role}
+                                            </div>
+                                        </div>
+                                        <button
+                                            onClick={handleLogout}
+                                            className="btn btn-secondary"
+                                            style={{ height: 30, fontSize: '0.75rem', padding: '0 0.65rem' }}
+                                        >
+                                            Logout
+                                        </button>
+                                    </li>
+                                </>
+                            )}
+
                             <li style={{ marginTop: '1rem' }}>
                                 <a
                                     href="https://discord.gg/gGGEs5SV9z"

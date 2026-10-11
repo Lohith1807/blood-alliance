@@ -5,15 +5,14 @@ let cachedClient = null;
 let cachedBackendUrl = null;
 let cacheTime = 0;
 
-// Configuration
-const MONGO_URL = process.env.MONGO_URL;
+const MONGO_URL = process.env.MONGO_URL || process.env.MONGODB_URI;
 const DB_NAME = "ClansData";
 const COLLECTION_NAME = "system_config";
 const CONFIG_KEY = "backend_tunnel_url";
 
 async function getBackendUrl() {
     if (!MONGO_URL) {
-        throw new Error("MONGO_URL environment variable is not defined");
+        throw new Error("MONGO_URL or MONGODB_URI environment variable is not defined");
     }
     // Return cached URL if fresh (< 60 seconds)
     if (cachedBackendUrl && (Date.now() - cacheTime < 60000)) {

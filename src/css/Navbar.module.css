@@ -25,6 +25,7 @@
     gap: 10px;
     cursor: pointer;
     font-family: 'Inter', sans-serif;
+    flex-shrink: 0;
 }
 
 .logoMark {
@@ -73,7 +74,7 @@
 
 .ul {
     display: flex;
-    gap: 1.5rem;
+    gap: 1.25rem;
     list-style: none;
     height: 100%;
     align-items: center;
@@ -87,6 +88,7 @@
     padding: 1.1rem 0;
     display: inline-block;
     font-family: 'Inter', sans-serif;
+    white-space: nowrap;
 }
 
 .discordBtn {
@@ -94,6 +96,7 @@
     padding: 0 0.75rem;
     font-size: 0.8rem;
     border-radius: 2px;
+    white-space: nowrap;
 }
 
 .hamburger {
@@ -107,6 +110,74 @@
     justify-content: center;
 }
 
+/* Desktop Dropdown Styles */
+.dropdownWrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 100%;
+}
+
+.dropdownChevron {
+    transition: transform 0.2s ease;
+}
+
+.dropdownChevronOpen {
+    transform: rotate(180deg);
+}
+
+.dropdownMenu {
+    position: absolute;
+    top: calc(100% - 2px);
+    right: 0;
+    min-width: 250px;
+    background: #1c1c1c;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    box-shadow: 0 14px 35px rgba(0, 0, 0, 0.75);
+    padding: 0.5rem 0;
+    z-index: 1050;
+}
+
+.dropdownHeader {
+    padding: 0.4rem 1rem 0.35rem;
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.08em;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    margin-bottom: 0.25rem;
+}
+
+.dropdownItem {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.65rem 1rem;
+    color: var(--text-secondary);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    white-space: nowrap;
+}
+
+.dropdownItem:hover {
+    background: rgba(238, 0, 0, 0.1);
+    color: #fff;
+    border-left: 2px solid var(--rh-red);
+    padding-left: calc(1rem - 2px);
+}
+
+.dropdownItemActive {
+    color: var(--rh-red);
+    font-weight: 600;
+    background: rgba(238, 0, 0, 0.06);
+}
+
+/* Mobile Sidebar Menu Drawer */
 .mobileMenuOverlay {
     position: absolute;
     top: var(--nav-height);

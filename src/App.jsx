@@ -5,6 +5,8 @@ import Hero from './components/Hero';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
 import { ClanProvider } from './context/ClanContext';
+import { AuthProvider } from './context/AuthContext';
+import ProtectedRoute from './components/ProtectedRoute';
 import { Loader2 } from 'lucide-react';
 
 // Lazy Load Heavy Components
@@ -12,6 +14,13 @@ const ClanList = lazy(() => import('./components/ClanList'));
 const PlayerTracker = lazy(() => import('./components/PlayerTracker'));
 const ClanDetail = lazy(() => import('./components/ClanDetail'));
 const PlayerProfile = lazy(() => import('./components/PlayerProfile'));
+
+// Authenticated & Access Components
+const Login = lazy(() => import('./components/Login'));
+const ManageClans = lazy(() => import('./components/ManageClans'));
+const TicketManagement = lazy(() => import('./components/TicketManagement'));
+const UserManagement = lazy(() => import('./components/UserManagement'));
+const AuditLogs = lazy(() => import('./components/AuditLogs'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -29,47 +38,77 @@ const PageLoader = () => (
 
 function App() {
   return (
-    <ClanProvider>
-      <BrowserRouter>
-        <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
-          <div className="bg-grid"></div>
-          <div className="bg-noise"></div>
-          <div className="scanline"></div>
+    <AuthProvider>
+      <ClanProvider>
+        <BrowserRouter>
+          <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
+            <div className="bg-grid"></div>
+            <div className="bg-noise"></div>
+            <div className="scanline"></div>
 
-          <Navbar />
+            <Navbar />
 
-          <main>
-            <Suspense fallback={<PageLoader />}>
-              <Routes>
-                {/* HOME ROUTE */}
-                <Route path="/" element={
-                  <>
-                    <Hero />
-                    <ClanList />
-                    <Rules />
-                  </>
-                } />
+            <main>
+              <Suspense fallback={<PageLoader />}>
+                <Routes>
+                  {/* HOME ROUTE */}
+                  <Route path="/" element={
+                    <>
+                      <Hero />
+                      <ClanList />
+                      <Rules />
+                    </>
+                  } />
 
-                {/* TRACKER ROUTE */}
-                <Route path="/tracker" element={<PlayerTracker />} />
+                  {/* AUTHENTICATION ROUTE */}
+                  <Route path="/login" element={<Login />} />
 
-                {/* CLAN DETAIL ROUTE */}
-                <Route path="/clan/:tag" element={<ClanDetail />} />
+                  {/* AUTHENTICATED MODULE ROUTES */}
+                  <Route path="/manage-clans" element={
+                    <ProtectedRoute>
+                      <ManageClans />
+                    </ProtectedRoute>
+                  } />
 
-                {/* PLAYER PROFILE ROUTE */}
-                <Route path="/player" element={<PlayerProfile />} />
-                <Route path="/player/:playerTag" element={<PlayerProfile />} />
+                  <Route path="/ticket-management" element={
+                    <ProtectedRoute>
+                      <TicketManagement />
+                    </ProtectedRoute>
+                  } />
 
-                {/* FALLBACK */}
-                <Route path="*" element={<Navigate to="/" replace />} />
-              </Routes>
-            </Suspense>
-          </main>
+                  <Route path="/user-management" element={
+                    <ProtectedRoute requiredRole="admin">
+                      <UserManagement />
+                    </ProtectedRoute>
+                  } />
 
-          <Footer />
-        </div>
-      </BrowserRouter>
-    </ClanProvider>
+                  <Route path="/audit-logs" element={
+                    <ProtectedRoute requireLogsAccess={true}>
+                      <AuditLogs />
+                    </ProtectedRoute>
+                  } />
+
+                  {/* TRACKER ROUTE */}
+                  <Route path="/tracker" element={<PlayerTracker />} />
+
+                  {/* CLAN DETAIL ROUTE */}
+                  <Route path="/clan/:tag" element={<ClanDetail />} />
+
+                  {/* PLAYER PROFILE ROUTE */}
+                  <Route path="/player" element={<PlayerProfile />} />
+                  <Route path="/player/:playerTag" element={<PlayerProfile />} />
+
+                  {/* FALLBACK */}
+                  <Route path="*" element={<Navigate to="/" replace />} />
+                </Routes>
+              </Suspense>
+            </main>
+
+            <Footer />
+          </div>
+        </BrowserRouter>
+      </ClanProvider>
+    </AuthProvider>
   );
 }
 
