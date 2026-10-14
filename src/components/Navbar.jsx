@@ -170,7 +170,7 @@ const Navbar = () => {
                         <li>
                             <NavItem
                                 active={false}
-                                onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/'}
+                                onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/auth'}
                             >
                                 Register for CWL
                             </NavItem>
