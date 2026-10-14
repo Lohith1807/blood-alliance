@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Ticket, UserCheck, Search, RefreshCw, AlertCircle, CheckCircle2,
-    Clock, ExternalLink, Calendar, User, FileText, Filter, SlidersHorizontal, X
+    Clock, ExternalLink, Calendar, User, FileText, Filter, SlidersHorizontal, X, Shield
 } from 'lucide-react';
+import { getTownHallImage } from '../utils/playerProfileUtils';
 import { useAuth } from '../context/AuthContext';
 import styles from '@/css/TicketManagement.module.css';
 
@@ -106,7 +107,13 @@ const TicketManagement = () => {
             t.userName?.toLowerCase().includes(q) ||
             t.claimedBy?.toLowerCase().includes(q) ||
             t.claimedByName?.toLowerCase().includes(q) ||
-            t.ticketType?.toLowerCase().includes(q);
+            t.ticketType?.toLowerCase().includes(q) ||
+            t.playerName?.toLowerCase().includes(q) ||
+            t.player_name?.toLowerCase().includes(q) ||
+            t.playerTag?.toLowerCase().includes(q) ||
+            t.assignedClan?.toLowerCase().includes(q) ||
+            t.assignedClanTag?.toLowerCase().includes(q) ||
+            String(t.playerTh || t.townHall || '').toLowerCase().includes(q);
 
         return matchesCategory && matchesDate && matchesClaim && matchesSearch;
     });
@@ -276,7 +283,7 @@ const TicketManagement = () => {
                             <Search size={15} className={styles.searchIcon} />
                             <input
                                 type="text"
-                                placeholder="Search ID, Name, Staff..."
+                                placeholder="Search ID, Player, Clan, Staff..."
                                 className={styles.searchInput}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -359,24 +366,27 @@ const TicketManagement = () => {
                         <table className={styles.table}>
                             <thead>
                                 <tr>
-                                    <th style={{ width: 120, textAlign: 'left' }}>Ticket ID</th>
-                                    <th style={{ width: 140, textAlign: 'left' }}>Ticket Type</th>
-                                    <th style={{ width: 180, textAlign: 'left' }}>Date Opened</th>
-                                    <th style={{ width: 220, textAlign: 'left' }}>Who Claimed</th>
-                                    <th style={{ width: 220, textAlign: 'left' }}>Opener / Applicant</th>
+                                    <th style={{ width: 110, textAlign: 'left' }}>Ticket ID</th>
+                                    <th style={{ width: 130, textAlign: 'left' }}>Ticket Type</th>
+                                    <th style={{ width: 110, textAlign: 'left' }}>Player TH</th>
+                                    <th style={{ width: 170, textAlign: 'left' }}>Player Name</th>
+                                    <th style={{ width: 170, textAlign: 'left' }}>Assigned Clan</th>
+                                    <th style={{ width: 160, textAlign: 'left' }}>Date Opened</th>
+                                    <th style={{ width: 190, textAlign: 'left' }}>Who Claimed</th>
+                                    <th style={{ width: 190, textAlign: 'left' }}>Opener / Applicant</th>
                                     <th style={{ textAlign: 'left' }}>Transcript Archive</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="6" style={{ textAlign: 'center', padding: '3.5rem' }}>
+                                        <td colSpan="9" style={{ textAlign: 'center', padding: '3.5rem' }}>
                                             <span style={{ color: 'var(--text-muted)' }}>Fetching live ticket data from Discord bot...</span>
                                         </td>
                                     </tr>
                                 ) : filteredTickets.length === 0 ? (
                                     <tr>
-                                        <td colSpan="6" style={{ textAlign: 'center', padding: '3.5rem' }}>
+                                        <td colSpan="9" style={{ textAlign: 'center', padding: '3.5rem' }}>
                                             <span style={{ color: 'var(--text-muted)' }}>No tickets found matching the selected filter.</span>
                                         </td>
                                     </tr>
@@ -386,6 +396,16 @@ const TicketManagement = () => {
                                             ticket.category === 'fwa' ? styles.catFwa :
                                             ticket.category === 'warEntry' ? styles.catWar :
                                             styles.catAlliance;
+
+                                        const thVal = ticket.playerTh || ticket.townHall || ticket.th || ticket.player_th;
+                                        const thNum = thVal ? (typeof thVal === 'number' ? thVal : parseInt(String(thVal).replace(/\D/g, ''), 10)) : null;
+                                        const thImg = thNum ? getTownHallImage(thNum) : null;
+
+                                        const pName = ticket.playerName || ticket.player_name || ticket.inGameName || ticket.ign;
+                                        const pTag = ticket.playerTag || ticket.player_tag || ticket.tag;
+
+                                        const aClan = ticket.assignedClan || ticket.assigned_clan || ticket.assignedClanName || ticket.clan;
+                                        const aClanTag = ticket.assignedClanTag || ticket.assigned_clan_tag || ticket.clanTag;
 
                                         return (
                                             <tr key={`${ticket.category}-${ticket.ticketId}`}>
@@ -401,6 +421,74 @@ const TicketManagement = () => {
                                                     <span className={`${styles.catBadge} ${catClass}`}>
                                                         {ticket.ticketType || ticket.category}
                                                     </span>
+                                                </td>
+
+                                                {/* Player TH */}
+                                                <td>
+                                                    {thVal ? (
+                                                        <div className={styles.thCell}>
+                                                            {thImg && (
+                                                                <img
+                                                                    src={thImg}
+                                                                    alt={`TH${thVal}`}
+                                                                    className={styles.thImg}
+                                                                />
+                                                            )}
+                                                            <span className={styles.thBadge}>
+                                                                TH {thVal}
+                                                            </span>
+                                                        </div>
+                                                    ) : (
+                                                        <span className={styles.emptyDash}>—</span>
+                                                    )}
+                                                </td>
+
+                                                {/* Player Name */}
+                                                <td>
+                                                    {pName ? (
+                                                        <div className={styles.playerCell}>
+                                                            <div className={styles.playerName} title={pName}>
+                                                                {pName}
+                                                            </div>
+                                                            {pTag && (
+                                                                <a
+                                                                    href={`https://link.clashofclans.com/?action=OpenPlayerProfile&tag=${encodeURIComponent(pTag)}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className={styles.playerTagLink}
+                                                                >
+                                                                    {pTag}
+                                                                </a>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <span className={styles.emptyDash}>—</span>
+                                                    )}
+                                                </td>
+
+                                                {/* Assigned Clan */}
+                                                <td>
+                                                    {aClan ? (
+                                                        <div className={styles.clanCell}>
+                                                            <div className={styles.clanNameRow} title={aClan}>
+                                                                <Shield size={13} style={{ color: 'var(--rh-red)', flexShrink: 0 }} />
+                                                                <span>{aClan}</span>
+                                                            </div>
+                                                            {aClanTag && (
+                                                                <a
+                                                                    href={`https://link.clashofclans.com/?action=OpenClanProfile&tag=${encodeURIComponent(aClanTag)}`}
+                                                                    target="_blank"
+                                                                    rel="noopener noreferrer"
+                                                                    className={styles.clanTagLink}
+                                                                    style={{ marginLeft: '1.15rem' }}
+                                                                >
+                                                                    {aClanTag}
+                                                                </a>
+                                                            )}
+                                                        </div>
+                                                    ) : (
+                                                        <span className={styles.emptyDash}>Unassigned</span>
+                                                    )}
                                                 </td>
 
                                                 {/* Date */}

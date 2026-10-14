@@ -45,23 +45,45 @@ function normalizeTickets(ticketData) {
             const ownerName = t.ticketOwnerName || (t.userId ? `User #${String(t.userId).slice(-4)}` : 'Unknown');
             const claimedName = t.claimedUserNickname || (t.claimedBy ? `Staff #${String(t.claimedBy).slice(-4)}` : null);
 
+            // Extract Town Hall level
+            const rawTh = t.playerTh ?? t.playerTH ?? t.th ?? t.townHall ?? t.townhall ?? t.town_hall ?? t.townHallLevel ?? t.player_th ?? null;
+            let thNumber = null;
+            if (rawTh !== null && rawTh !== undefined && rawTh !== '') {
+                const parsed = typeof rawTh === 'number' ? rawTh : parseInt(String(rawTh).replace(/\D/g, ''), 10);
+                if (!isNaN(parsed) && parsed > 0 && parsed <= 35) {
+                    thNumber = parsed;
+                }
+            }
+
+            const pName = t.playerName || t.player_name || t.inGameName || t.ign || null;
+            const pTag = t.playerTag || t.player_tag || t.tag || null;
+            const aClan = t.assignedClan || t.assigned_clan || t.assignedClanName || t.assigned_clan_name || t.clan || t.clanName || t.clan_name || null;
+            const aClanTag = t.assignedClanTag || t.assigned_clan_tag || t.clanTag || t.clan_tag || null;
+
             return {
+                ...t,
                 ticketId: t.ticketId || t.id || `TICKET-${idx + 1}`,
                 userId: t.userId || t.user_id || 'Unknown',
                 userName: ownerName,
                 userHandle: t.ticketOwnerName || t.userId || '',
-                userAvatar: null,
+                userAvatar: t.userAvatar || null,
                 channelId: t.channelId || null,
                 ticketOpenedDate: t.ticketOpenedDate || t.date || t.createdAt || null,
                 claimedBy: t.claimedBy || t.claimed_by || null,
                 claimedByName: claimedName,
                 claimedByHandle: t.claimedUserNickname || t.claimedBy || null,
-                claimedByAvatar: null,
+                claimedByAvatar: t.claimedByAvatar || null,
                 transcript: formatTranscriptUrl(t.transcript || t.transcriptUrl),
                 category: catName,
                 ticketType: catName === 'warEntry' ? 'War Entry' :
                             catName === 'allianceApply' ? 'Alliance Apply' :
-                            'FWA'
+                            'FWA',
+                playerName: pName,
+                playerTag: pTag,
+                playerTh: thNumber || rawTh || null,
+                townHall: thNumber,
+                assignedClan: aClan,
+                assignedClanTag: aClanTag
             };
         });
     };

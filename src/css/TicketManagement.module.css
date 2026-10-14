@@ -418,6 +418,101 @@
     background: var(--rh-red-hover);
 }
 
+/* Player TH, Player Name, Assigned Clan Columns */
+.thCell {
+    display: flex;
+    align-items: center;
+    gap: 0.45rem;
+}
+
+.thImg {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+
+.thBadge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.15rem 0.45rem;
+    border-radius: 2px;
+    background: rgba(238, 0, 0, 0.12);
+    border: 1px solid rgba(238, 0, 0, 0.35);
+    color: #ff6b6b;
+    font-size: 0.72rem;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.5px;
+}
+
+.playerCell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.playerName {
+    font-weight: 600;
+    color: var(--text-primary);
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.playerTagLink {
+    display: inline-block;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.playerTagLink:hover {
+    color: var(--rh-red);
+}
+
+.clanCell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.clanNameRow {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-weight: 600;
+    color: #f3f4f6;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 180px;
+}
+
+.clanTagLink {
+    display: inline-block;
+    font-size: 0.68rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    text-decoration: none;
+    transition: color 0.15s ease;
+}
+
+.clanTagLink:hover {
+    color: #60a5fa;
+}
+
+.emptyDash {
+    color: var(--text-muted);
+    font-size: 0.75rem;
+    font-family: 'JetBrains Mono', monospace;
+}
+
 /* ========================================================
    Mobile Filter Modal / Drawer
    ======================================================== */
