@@ -3,8 +3,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
-const ProtectedRoute = ({ children, requiredRole = null, requireLogsAccess = false }) => {
-    const { isAuthenticated, user, canViewLogs, isOwner, loading } = useAuth();
+const ProtectedRoute = ({ children, requiredRole = null, requiredModule = null, requireLogsAccess = false }) => {
+    const { isAuthenticated, user, canViewLogs, isOwner, hasModuleAccess, loading } = useAuth();
 
     if (loading) {
         return (
@@ -23,6 +23,10 @@ const ProtectedRoute = ({ children, requiredRole = null, requireLogsAccess = fal
 
     if (!isAuthenticated) {
         return <Navigate to="/login" replace />;
+    }
+
+    if (requiredModule && !hasModuleAccess(requiredModule)) {
+        return <Navigate to="/" replace />;
     }
 
     if (requiredRole && user?.role !== requiredRole && !isOwner) {

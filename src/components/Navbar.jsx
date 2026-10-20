@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield } from 'lucide-react';
+import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield, FileText, Sliders } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from '@/css/Navbar.module.css';
@@ -13,13 +13,20 @@ const Navbar = () => {
 
     const location = useLocation();
     const navigate = useNavigate();
-    const { user, isAuthenticated, isAdmin, isOwner, canViewLogs, logout } = useAuth();
+    const { user, isAuthenticated, isAdmin, isOwner, canViewLogs, hasModuleAccess, logout } = useAuth();
 
     // Check if we are on the home page
     const isHomePage = location.pathname === '/';
 
     // Check if any of the module routes are active
-    const isModuleActive = ['/manage-clans', '/ticket-management', '/user-management', '/audit-logs'].includes(location.pathname);
+    const isModuleActive = [
+        '/manage-clans',
+        '/ticket-management',
+        '/user-management',
+        '/audit-logs',
+        '/clan-rules',
+        '/module-permissions'
+    ].includes(location.pathname);
 
     // Close dropdown on click outside
     useEffect(() => {
@@ -238,27 +245,59 @@ const Navbar = () => {
                                             <div className={styles.dropdownHeader}>
                                                 Alliance Modules
                                             </div>
-                                            <div
-                                                className={`${styles.dropdownItem} ${location.pathname === '/manage-clans' ? styles.dropdownItemActive : ''}`}
-                                                onClick={() => {
-                                                    setIsDropdownOpen(false);
-                                                    handleNavClick('/manage-clans');
-                                                }}
-                                            >
-                                                <Layers size={15} style={{ color: 'var(--rh-red)' }} />
-                                                <span>Manage Clan List & Order</span>
-                                            </div>
-                                            <div
-                                                className={`${styles.dropdownItem} ${location.pathname === '/ticket-management' ? styles.dropdownItemActive : ''}`}
-                                                onClick={() => {
-                                                    setIsDropdownOpen(false);
-                                                    handleNavClick('/ticket-management');
-                                                }}
-                                            >
-                                                <Ticket size={15} style={{ color: '#60a5fa' }} />
-                                                <span>Discord Ticket Management</span>
-                                            </div>
-                                            {isAdmin && (
+                                            {hasModuleAccess('manage-clans') && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/manage-clans' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/manage-clans');
+                                                    }}
+                                                >
+                                                    <Layers size={15} style={{ color: 'var(--rh-red)' }} />
+                                                    <span>Manage Clan List & Order</span>
+                                                </div>
+                                            )}
+
+                                            {hasModuleAccess('ticket-management') && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/ticket-management' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/ticket-management');
+                                                    }}
+                                                >
+                                                    <Ticket size={15} style={{ color: '#60a5fa' }} />
+                                                    <span>Discord Ticket Management</span>
+                                                </div>
+                                            )}
+
+                                            {hasModuleAccess('clan-rules') && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/clan-rules' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/clan-rules');
+                                                    }}
+                                                >
+                                                    <FileText size={15} style={{ color: '#c084fc' }} />
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
+                                                        <span>Clan Rules Management</span>
+                                                        <span style={{
+                                                            fontSize: '0.62rem',
+                                                            padding: '1px 4px',
+                                                            background: 'rgba(168, 85, 247, 0.2)',
+                                                            color: '#c084fc',
+                                                            borderRadius: 2,
+                                                            fontFamily: 'JetBrains Mono',
+                                                            fontWeight: 700
+                                                        }}>
+                                                            LEADER
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            {hasModuleAccess('user-management') && (
                                                 <div
                                                     className={`${styles.dropdownItem} ${location.pathname === '/user-management' ? styles.dropdownItemActive : ''}`}
                                                     onClick={() => {
@@ -283,7 +322,34 @@ const Navbar = () => {
                                                     </span>
                                                 </div>
                                             )}
-                                            {canViewLogs && (
+
+                                            {hasModuleAccess('module-permissions') && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/module-permissions' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/module-permissions');
+                                                    }}
+                                                >
+                                                    <Sliders size={15} style={{ color: '#34d399' }} />
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
+                                                        <span>Module Permissions</span>
+                                                        <span style={{
+                                                            fontSize: '0.62rem',
+                                                            padding: '1px 4px',
+                                                            background: 'rgba(16, 185, 129, 0.2)',
+                                                            color: '#34d399',
+                                                            borderRadius: 2,
+                                                            fontFamily: 'JetBrains Mono',
+                                                            fontWeight: 700
+                                                        }}>
+                                                            RBAC
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            )}
+
+                                            {hasModuleAccess('audit-logs') && (
                                                 <div
                                                     className={`${styles.dropdownItem} ${location.pathname === '/audit-logs' ? styles.dropdownItemActive : ''}`}
                                                     onClick={() => {
@@ -464,27 +530,47 @@ const Navbar = () => {
                                     }}>
                                         Alliance Modules
                                     </li>
-                                    <MobileNavItem
-                                        active={location.pathname === '/manage-clans'}
-                                        onClick={() => handleNavClick('/manage-clans')}
-                                    >
-                                        Manage Clan List & Order
-                                    </MobileNavItem>
-                                    <MobileNavItem
-                                        active={location.pathname === '/ticket-management'}
-                                        onClick={() => handleNavClick('/ticket-management')}
-                                    >
-                                        Discord Ticket Management
-                                    </MobileNavItem>
-                                    {isAdmin && (
+                                    {hasModuleAccess('manage-clans') && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/manage-clans'}
+                                            onClick={() => handleNavClick('/manage-clans')}
+                                        >
+                                            Manage Clan List & Order
+                                        </MobileNavItem>
+                                    )}
+                                    {hasModuleAccess('ticket-management') && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/ticket-management'}
+                                            onClick={() => handleNavClick('/ticket-management')}
+                                        >
+                                            Discord Ticket Management
+                                        </MobileNavItem>
+                                    )}
+                                    {hasModuleAccess('clan-rules') && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/clan-rules'}
+                                            onClick={() => handleNavClick('/clan-rules')}
+                                        >
+                                            Clan Rules Management
+                                        </MobileNavItem>
+                                    )}
+                                    {hasModuleAccess('user-management') && (
                                         <MobileNavItem
                                             active={location.pathname === '/user-management'}
                                             onClick={() => handleNavClick('/user-management')}
                                         >
-                                            User Management — Admin Only
+                                            User Management
                                         </MobileNavItem>
                                     )}
-                                    {canViewLogs && (
+                                    {hasModuleAccess('module-permissions') && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/module-permissions'}
+                                            onClick={() => handleNavClick('/module-permissions')}
+                                        >
+                                            Module Permissions (RBAC)
+                                        </MobileNavItem>
+                                    )}
+                                    {hasModuleAccess('audit-logs') && (
                                         <MobileNavItem
                                             active={location.pathname === '/audit-logs'}
                                             onClick={() => handleNavClick('/audit-logs')}

@@ -21,6 +21,8 @@ const ManageClans = lazy(() => import('./components/ManageClans'));
 const TicketManagement = lazy(() => import('./components/TicketManagement'));
 const UserManagement = lazy(() => import('./components/UserManagement'));
 const AuditLogs = lazy(() => import('./components/AuditLogs'));
+const ClanRulesManagement = lazy(() => import('./components/ClanRulesManagement'));
+const ModulePermissions = lazy(() => import('./components/ModulePermissions'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -65,26 +67,38 @@ function App() {
 
                   {/* AUTHENTICATED MODULE ROUTES */}
                   <Route path="/manage-clans" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredModule="manage-clans">
                       <ManageClans />
                     </ProtectedRoute>
                   } />
 
                   <Route path="/ticket-management" element={
-                    <ProtectedRoute>
+                    <ProtectedRoute requiredModule="ticket-management">
                       <TicketManagement />
                     </ProtectedRoute>
                   } />
 
                   <Route path="/user-management" element={
-                    <ProtectedRoute requiredRole="admin">
+                    <ProtectedRoute requiredModule="user-management">
                       <UserManagement />
                     </ProtectedRoute>
                   } />
 
                   <Route path="/audit-logs" element={
-                    <ProtectedRoute requireLogsAccess={true}>
+                    <ProtectedRoute requiredModule="audit-logs" requireLogsAccess={true}>
                       <AuditLogs />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/clan-rules" element={
+                    <ProtectedRoute requiredModule="clan-rules">
+                      <ClanRulesManagement />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/module-permissions" element={
+                    <ProtectedRoute requiredModule="module-permissions">
+                      <ModulePermissions />
                     </ProtectedRoute>
                   } />
 

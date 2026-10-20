@@ -11,6 +11,7 @@ const UserManagement = () => {
     const { token, user: currentUser, isOwner } = useAuth();
 
     const [usersList, setUsersList] = useState([]);
+    const [clansList, setClansList] = useState([]);
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
@@ -19,7 +20,8 @@ const UserManagement = () => {
     const [createForm, setCreateForm] = useState({
         email: '',
         password: '',
-        role: 'mod',
+        role: 'leader',
+        assignedClans: [],
         canViewLogs: false
     });
     const [showCreatePassword, setShowCreatePassword] = useState(false);
@@ -29,8 +31,9 @@ const UserManagement = () => {
     const [editForm, setEditForm] = useState({
         id: '',
         email: '',
-        role: 'mod',
+        role: 'leader',
         password: '',
+        assignedClans: [],
         canViewLogs: false
     });
     const [showEditPassword, setShowEditPassword] = useState(false);
@@ -57,8 +60,21 @@ const UserManagement = () => {
         }
     };
 
+    const fetchClans = async () => {
+        try {
+            const res = await fetch('/api/clans');
+            const data = await res.json();
+            if (data.clans) {
+                setClansList(data.clans);
+            }
+        } catch (err) {
+            console.error('Failed to load clans list for assignment:', err);
+        }
+    };
+
     useEffect(() => {
         fetchUsers();
+        fetchClans();
     }, []);
 
     const showFeedback = (message, type = 'success') => {
@@ -84,13 +100,26 @@ const UserManagement = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to create user');
 
-            setCreateForm({ email: '', password: '', role: 'mod' });
+            setCreateForm({ email: '', password: '', role: 'leader', assignedClans: [], canViewLogs: false });
             showFeedback(`User ${data.user.email} created successfully as ${data.user.role.toUpperCase()}`);
             fetchUsers();
         } catch (err) {
             showFeedback(err.message, 'error');
         } finally {
             setSubmitting(false);
+        }
+    };
+
+    // Toggle Clan Selection for Create or Edit
+    const toggleClanSelection = (tag, isEdit = false) => {
+        if (isEdit) {
+            const current = editForm.assignedClans || [];
+            const next = current.includes(tag) ? current.filter(t => t !== tag) : [...current, tag];
+            setEditForm({ ...editForm, assignedClans: next });
+        } else {
+            const current = createForm.assignedClans || [];
+            const next = current.includes(tag) ? current.filter(t => t !== tag) : [...current, tag];
+            setCreateForm({ ...createForm, assignedClans: next });
         }
     };
 
@@ -101,6 +130,7 @@ const UserManagement = () => {
             email: u.email,
             role: u.role,
             password: '',
+            assignedClans: Array.isArray(u.assignedClans) ? u.assignedClans : [],
             canViewLogs: Boolean(u.canViewLogs)
         });
         setEditModalOpen(true);
@@ -116,6 +146,7 @@ const UserManagement = () => {
                 id: editForm.id,
                 email: editForm.email,
                 role: editForm.role,
+                assignedClans: editForm.assignedClans || [],
                 canViewLogs: editForm.canViewLogs
             };
             if (editForm.password) {
@@ -297,9 +328,87 @@ const UserManagement = () => {
                                     onChange={(e) => setCreateForm({ ...createForm, role: e.target.value })}
                                     disabled={submitting}
                                 >
+                                    <option value="leader">Clan Leader (Custom Clan Rules & Assigned Clans)</option>
+                                    <option value="staff">Staff (Discord Tickets & Verification)</option>
                                     <option value="mod">Mod (Moderator - Clans & Tickets)</option>
                                     <option value="admin">Admin (Full Access & User Management)</option>
                                 </select>
+                            </div>
+
+                            <div className={styles.formGroup}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                                    <label className={styles.label}>
+                                        Assigned Clans {createForm.role === 'leader' && <span style={{ color: 'var(--rh-red)' }}>*</span>}
+                                    </label>
+                                    {clansList.length > 0 && (
+                                        <button
+                                            type="button"
+                                            onClick={() => {
+                                                const allTags = clansList.map(c => c.tag || c._id);
+                                                const isAllSelected = (createForm.assignedClans || []).length === clansList.length;
+                                                setCreateForm({ ...createForm, assignedClans: isAllSelected ? [] : allTags });
+                                            }}
+                                            style={{
+                                                background: 'none',
+                                                border: 'none',
+                                                color: '#60a5fa',
+                                                fontSize: '0.7rem',
+                                                cursor: 'pointer',
+                                                padding: 0,
+                                                fontFamily: 'JetBrains Mono'
+                                            }}
+                                        >
+                                            {(createForm.assignedClans || []).length === clansList.length ? 'Clear All' : 'Select All'}
+                                        </button>
+                                    )}
+                                </div>
+                                <div style={{
+                                    background: 'var(--bg-primary)',
+                                    border: '1px solid var(--border-color)',
+                                    borderRadius: 3,
+                                    padding: '0.6rem 0.75rem',
+                                    maxHeight: '130px',
+                                    overflowY: 'auto',
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '0.45rem'
+                                }}>
+                                    {clansList.length === 0 ? (
+                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No clans found</span>
+                                    ) : (
+                                        clansList.map(clan => {
+                                            const tag = clan.tag || clan._id;
+                                            const isChecked = (createForm.assignedClans || []).includes(tag);
+                                            return (
+                                                <label
+                                                    key={tag}
+                                                    style={{
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        gap: '0.5rem',
+                                                        fontSize: '0.78rem',
+                                                        color: isChecked ? 'var(--text-primary)' : 'var(--text-muted)',
+                                                        cursor: 'pointer'
+                                                    }}
+                                                >
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={isChecked}
+                                                        onChange={() => toggleClanSelection(tag, false)}
+                                                        style={{ accentColor: 'var(--rh-red)' }}
+                                                    />
+                                                    <span style={{ fontWeight: isChecked ? 600 : 400 }}>{clan.name}</span>
+                                                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                                        ({tag})
+                                                    </span>
+                                                </label>
+                                            );
+                                        })
+                                    )}
+                                </div>
+                                <small style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: 3 }}>
+                                    Assign specific clans this user can manage in the Clan Rules module.
+                                </small>
                             </div>
 
                             {isOwner && (
@@ -396,25 +505,50 @@ const UserManagement = () => {
                                                         </div>
                                                     </td>
                                                     <td>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
-                                                            <span className={`${styles.roleBadge} ${
-                                                                u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' ? styles.roleAdmin :
-                                                                u.role === 'admin' ? styles.roleAdmin : styles.roleMod
-                                                            }`} style={u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' ? { background: 'rgba(251, 191, 36, 0.2)', color: '#fbbf24' } : {}}>
-                                                                {u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' ? 'OWNER' : u.role?.toUpperCase()}
-                                                            </span>
-                                                            {u.canViewLogs && u.email?.toLowerCase() !== 'lohithreddy1819@gmail.com' && (
-                                                                <span style={{
-                                                                    fontSize: '0.62rem',
-                                                                    padding: '1px 5px',
-                                                                    background: 'rgba(251, 191, 36, 0.15)',
-                                                                    color: '#fbbf24',
-                                                                    borderRadius: 2,
-                                                                    fontFamily: 'JetBrains Mono',
-                                                                    fontWeight: 700
-                                                                }}>
-                                                                    LOGS
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', flexWrap: 'wrap' }}>
+                                                                <span className={`${styles.roleBadge} ${
+                                                                    u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' ? styles.roleAdmin :
+                                                                    u.role === 'admin' ? styles.roleAdmin :
+                                                                    u.role === 'staff' ? styles.roleStaff :
+                                                                    u.role === 'leader' ? styles.roleLeader : styles.roleMod
+                                                                }`} style={u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' ? { background: 'rgba(251, 191, 36, 0.2)', color: '#fbbf24' } : {}}>
+                                                                    {u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' ? 'OWNER' : u.role?.toUpperCase()}
                                                                 </span>
+                                                                {u.canViewLogs && u.email?.toLowerCase() !== 'lohithreddy1819@gmail.com' && (
+                                                                    <span style={{
+                                                                        fontSize: '0.62rem',
+                                                                        padding: '1px 5px',
+                                                                        background: 'rgba(251, 191, 36, 0.15)',
+                                                                        color: '#fbbf24',
+                                                                        borderRadius: 2,
+                                                                        fontFamily: 'JetBrains Mono',
+                                                                        fontWeight: 700
+                                                                    }}>
+                                                                        LOGS
+                                                                    </span>
+                                                                )}
+                                                            </div>
+
+                                                            {u.assignedClans && u.assignedClans.length > 0 && (
+                                                                <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                                                                    {u.assignedClans.map(tag => {
+                                                                        const clan = clansList.find(c => c.tag === tag || c._id === tag);
+                                                                        return (
+                                                                            <span key={tag} style={{
+                                                                                fontSize: '0.62rem',
+                                                                                padding: '1px 5px',
+                                                                                background: 'rgba(168, 85, 247, 0.12)',
+                                                                                border: '1px solid rgba(168, 85, 247, 0.3)',
+                                                                                color: '#c084fc',
+                                                                                borderRadius: 2,
+                                                                                fontFamily: 'JetBrains Mono'
+                                                                            }}>
+                                                                                {clan?.name || tag}
+                                                                            </span>
+                                                                        );
+                                                                    })}
+                                                                </div>
                                                             )}
                                                         </div>
                                                     </td>
@@ -501,7 +635,9 @@ const UserManagement = () => {
                                             onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
                                             disabled={submitting}
                                         >
-                                            <option value="mod">Mod (Moderator)</option>
+                                            <option value="leader">Clan Leader (Custom Clan Rules & Assigned Clans)</option>
+                                            <option value="staff">Staff (Discord Tickets & Verification)</option>
+                                            <option value="mod">Mod (Moderator - Clans & Tickets)</option>
                                             <option value="admin">Admin (Administrator)</option>
                                         </select>
                                         {editForm.role !== 'admin' && adminCount <= 1 && usersList.find(u => u.id === editForm.id)?.role === 'admin' && (
@@ -509,6 +645,82 @@ const UserManagement = () => {
                                                 Notice: Demoting the only admin is not allowed.
                                             </small>
                                         )}
+                                    </div>
+
+                                    <div>
+                                        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 2 }}>
+                                            <label className={styles.label}>
+                                                Assigned Clans {editForm.role === 'leader' && <span style={{ color: 'var(--rh-red)' }}>*</span>}
+                                            </label>
+                                            {clansList.length > 0 && (
+                                                <button
+                                                    type="button"
+                                                    onClick={() => {
+                                                        const allTags = clansList.map(c => c.tag || c._id);
+                                                        const isAllSelected = (editForm.assignedClans || []).length === clansList.length;
+                                                        setEditForm({ ...editForm, assignedClans: isAllSelected ? [] : allTags });
+                                                    }}
+                                                    style={{
+                                                        background: 'none',
+                                                        border: 'none',
+                                                        color: '#60a5fa',
+                                                        fontSize: '0.7rem',
+                                                        cursor: 'pointer',
+                                                        padding: 0,
+                                                        fontFamily: 'JetBrains Mono'
+                                                    }}
+                                                >
+                                                    {(editForm.assignedClans || []).length === clansList.length ? 'Clear All' : 'Select All'}
+                                                </button>
+                                            )}
+                                        </div>
+                                        <div style={{
+                                            background: 'var(--bg-primary)',
+                                            border: '1px solid var(--border-color)',
+                                            borderRadius: 3,
+                                            padding: '0.6rem 0.75rem',
+                                            maxHeight: '130px',
+                                            overflowY: 'auto',
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: '0.45rem'
+                                        }}>
+                                            {clansList.length === 0 ? (
+                                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)' }}>No clans found</span>
+                                            ) : (
+                                                clansList.map(clan => {
+                                                    const tag = clan.tag || clan._id;
+                                                    const isChecked = (editForm.assignedClans || []).includes(tag);
+                                                    return (
+                                                        <label
+                                                            key={tag}
+                                                            style={{
+                                                                display: 'flex',
+                                                                alignItems: 'center',
+                                                                gap: '0.5rem',
+                                                                fontSize: '0.78rem',
+                                                                color: isChecked ? 'var(--text-primary)' : 'var(--text-muted)',
+                                                                cursor: 'pointer'
+                                                            }}
+                                                        >
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={isChecked}
+                                                                onChange={() => toggleClanSelection(tag, true)}
+                                                                style={{ accentColor: 'var(--rh-red)' }}
+                                                            />
+                                                            <span style={{ fontWeight: isChecked ? 600 : 400 }}>{clan.name}</span>
+                                                            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                                                ({tag})
+                                                            </span>
+                                                        </label>
+                                                    );
+                                                })
+                                            )}
+                                        </div>
+                                        <small style={{ fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: 3 }}>
+                                            Assign which clans this user is permitted to edit in the Clan Rules module.
+                                        </small>
                                     </div>
 
                                     <div>

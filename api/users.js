@@ -17,8 +17,8 @@ export default async function handler(req, res) {
         return res.status(200).end();
     }
 
-    // Role check: Only admin can access user management
-    const auth = await requireAuth(req, res, 'admin');
+    // Role check: Check module permission for user-management
+    const auth = await requireAuth(req, res, null, { requiredModule: 'user-management' });
     if (!auth) return; // Response handled by requireAuth
 
     const { db } = auth;
@@ -37,6 +37,7 @@ export default async function handler(req, res) {
                 role: u.role,
                 isOwner: u.email?.toLowerCase() === 'lohithreddy1819@gmail.com',
                 canViewLogs: u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' || Boolean(u.canViewLogs),
+                assignedClans: Array.isArray(u.assignedClans) ? u.assignedClans : [],
                 createdAt: u.createdAt || null,
                 updatedAt: u.updatedAt || null
             }));
@@ -49,7 +50,7 @@ export default async function handler(req, res) {
 
         // 2. CREATE NEW USER
         if (req.method === 'POST') {
-            const { email, password, role, canViewLogs } = req.body || {};
+            const { email, password, role, canViewLogs, assignedClans } = req.body || {};
 
             if (!email || !password || !role) {
                 return res.status(400).json({ error: 'Email, password, and role are required' });
@@ -66,8 +67,9 @@ export default async function handler(req, res) {
             }
 
             const cleanRole = String(role).trim().toLowerCase();
-            if (cleanRole !== 'admin' && cleanRole !== 'mod') {
-                return res.status(400).json({ error: 'Role must be either "admin" or "mod"' });
+            const validRoles = ['admin', 'mod', 'staff', 'leader'];
+            if (!validRoles.includes(cleanRole)) {
+                return res.status(400).json({ error: 'Role must be one of: "admin", "mod", "staff", or "leader"' });
             }
 
             // Check duplicate email
@@ -76,12 +78,17 @@ export default async function handler(req, res) {
                 return res.status(409).json({ error: 'A user with this email address already exists' });
             }
 
+            const sanitizedClans = Array.isArray(assignedClans) 
+                ? assignedClans.map(t => String(t).trim().toUpperCase()).filter(Boolean)
+                : [];
+
             const { salt, hash } = hashPassword(password);
             const newUser = {
                 email: cleanEmail,
                 passwordHash: hash,
                 salt: salt,
                 role: cleanRole,
+                assignedClans: sanitizedClans,
                 canViewLogs: auth.user.isOwner ? Boolean(canViewLogs) : false,
                 createdAt: new Date(),
                 updatedAt: new Date()
@@ -93,7 +100,7 @@ export default async function handler(req, res) {
                 user: auth.user,
                 action: 'USER_CREATE',
                 target: cleanEmail,
-                details: `Created user ${cleanEmail} with role '${cleanRole}'${newUser.canViewLogs ? ' (granted log access)' : ''}`,
+                details: `Created user ${cleanEmail} with role '${cleanRole}'${sanitizedClans.length ? ` (assigned to ${sanitizedClans.length} clans: ${sanitizedClans.join(', ')})` : ''}${newUser.canViewLogs ? ' (granted log access)' : ''}`,
                 req
             });
 
@@ -104,6 +111,7 @@ export default async function handler(req, res) {
                     id: result.insertedId.toString(),
                     email: cleanEmail,
                     role: cleanRole,
+                    assignedClans: newUser.assignedClans,
                     canViewLogs: newUser.canViewLogs,
                     createdAt: newUser.createdAt
                 }
@@ -158,8 +166,9 @@ export default async function handler(req, res) {
             // Update Role
             if (role) {
                 const cleanRole = String(role).trim().toLowerCase();
-                if (cleanRole !== 'admin' && cleanRole !== 'mod') {
-                    return res.status(400).json({ error: 'Role must be either "admin" or "mod"' });
+                const validRoles = ['admin', 'mod', 'staff', 'leader'];
+                if (!validRoles.includes(cleanRole)) {
+                    return res.status(400).json({ error: 'Role must be one of: "admin", "mod", "staff", or "leader"' });
                 }
 
                 // Guard against demoting the last admin
@@ -170,6 +179,14 @@ export default async function handler(req, res) {
                     }
                 }
                 updateFields.role = cleanRole;
+            }
+
+            // Update Assigned Clans
+            const { assignedClans } = req.body;
+            if (assignedClans !== undefined) {
+                updateFields.assignedClans = Array.isArray(assignedClans)
+                    ? assignedClans.map(t => String(t).trim().toUpperCase()).filter(Boolean)
+                    : [];
             }
 
             // Only Owner can modify canViewLogs permission
@@ -207,6 +224,7 @@ export default async function handler(req, res) {
                     id: updatedUser._id.toString(),
                     email: updatedUser.email,
                     role: updatedUser.role,
+                    assignedClans: Array.isArray(updatedUser.assignedClans) ? updatedUser.assignedClans : [],
                     canViewLogs: updatedUser.canViewLogs || false,
                     updatedAt: updatedUser.updatedAt
                 }

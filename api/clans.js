@@ -63,8 +63,8 @@ export default async function handler(req, res) {
             });
         }
 
-        // MUTATIONS (POST, PUT, PATCH, DELETE) REQUIRE AUTH (admin or mod)
-        const auth = await requireAuth(req, res);
+        // MUTATIONS (POST, PUT, PATCH, DELETE) REQUIRE AUTH
+        const auth = await requireAuth(req, res, null, { requiredModule: 'manage-clans' });
         if (!auth) return; // response handled by requireAuth
 
         // REORDER CLANS (PATCH or POST with action === 'reorder')

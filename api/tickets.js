@@ -128,8 +128,8 @@ export default async function handler(req, res) {
         return res.status(200).end();
     }
 
-    // Role check: requires auth (admin or mod)
-    const auth = await requireAuth(req, res);
+    // Role check: requires auth based on ticket-management module permissions
+    const auth = await requireAuth(req, res, null, { requiredModule: 'ticket-management' });
     if (!auth) return;
 
     try {

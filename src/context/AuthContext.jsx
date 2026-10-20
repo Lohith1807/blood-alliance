@@ -181,8 +181,60 @@ export const AuthProvider = ({ children }) => {
         return data;
     };
 
+    const [permissions, setPermissions] = useState({
+        'manage-clans': ['admin', 'mod'],
+        'ticket-management': ['admin', 'mod', 'staff'],
+        'user-management': ['admin'],
+        'audit-logs': ['admin'],
+        'clan-rules': ['admin', 'leader'],
+        'module-permissions': ['admin']
+    });
+
+    // Fetch dynamic module permissions from backend
+    const fetchPermissions = useCallback(async (authToken) => {
+        const activeToken = authToken || token;
+        if (!activeToken) return;
+
+        try {
+            const res = await fetch('/api/permissions', {
+                headers: { 'Authorization': `Bearer ${activeToken}` }
+            });
+            if (res.ok) {
+                const data = await res.json();
+                if (data.permissions) {
+                    setPermissions(data.permissions);
+                }
+            }
+        } catch (err) {
+            console.error('Failed to load module permissions:', err);
+        }
+    }, [token]);
+
+    useEffect(() => {
+        if (token) {
+            fetchPermissions(token);
+        }
+    }, [token, fetchPermissions]);
+
     const isOwner = user?.email?.toLowerCase() === 'lohithreddy1819@gmail.com' || Boolean(user?.isOwner);
     const canViewLogs = isOwner || Boolean(user?.canViewLogs);
+    const assignedClans = Array.isArray(user?.assignedClans) ? user.assignedClans : [];
+
+    // RBAC module access checker
+    const hasModuleAccess = useCallback((moduleKey) => {
+        if (!user) return false;
+        if (isOwner) return true;
+
+        if (moduleKey === 'audit-logs') {
+            return canViewLogs || (permissions['audit-logs'] && permissions['audit-logs'].includes(user.role));
+        }
+
+        const allowed = permissions[moduleKey];
+        if (Array.isArray(allowed)) {
+            return allowed.includes(user.role);
+        }
+        return false;
+    }, [user, isOwner, canViewLogs, permissions]);
 
     const value = {
         user,
@@ -191,8 +243,14 @@ export const AuthProvider = ({ children }) => {
         isAuthenticated: Boolean(user && token),
         isAdmin: user?.role === 'admin' || isOwner,
         isMod: user?.role === 'mod',
+        isStaff: user?.role === 'staff',
+        isLeader: user?.role === 'leader',
         isOwner,
         canViewLogs,
+        assignedClans,
+        permissions,
+        hasModuleAccess,
+        fetchPermissions,
         loading,
         sessionExpiredMessage,
         clearSessionExpiredMessage: () => setSessionExpiredMessage(''),
