@@ -654,7 +654,7 @@ const ClanRulesManagement = () => {
                                                                 <img
                                                                     src={formData.thumbnail}
                                                                     alt="Thumbnail"
-                                                                    className={styles.discordThumbnail}
+                                                                    className={styles.discordThumbnail} referrerPolicy="no-referrer"
                                                                     onError={(e) => e.target.style.display = 'none'}
                                                                 />
                                                             )}
@@ -681,7 +681,7 @@ const ClanRulesManagement = () => {
                                                             <img
                                                                 src={formData.image}
                                                                 alt="Banner"
-                                                                className={styles.discordBanner}
+                                                                className={styles.discordBanner} referrerPolicy="no-referrer"
                                                                 onError={(e) => e.target.style.display = 'none'}
                                                             />
                                                         )}
