@@ -38,8 +38,13 @@ const ClanCard = ({ clan, index }) => {
             viewport={{ once: true, margin: "-50px" }}
             onClick={handleClanClick}
         >
-            <div className="unit-tag">
-                Clan {String(index + 1).padStart(2, '0')}
+            <div className="card-top-badges">
+                <div className="unit-tag">
+                    Clan {String(index + 1).padStart(2, '0')}
+                </div>
+                <div className={`clan-type-badge ${clan.clanType === 'WAR' ? 'badge-war' : 'badge-fwa'}`}>
+                    {clan.clanType || 'FWA'}
+                </div>
             </div>
 
             <div className="main-content">

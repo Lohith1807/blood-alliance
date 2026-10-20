@@ -304,3 +304,29 @@
     gap: 0.75rem;
     margin-top: 1.75rem;
 }
+
+.typeBadgeFwa {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    border-radius: 2px;
+    background: rgba(59, 130, 246, 0.15);
+    color: #60a5fa;
+    border: 1px solid rgba(59, 130, 246, 0.35);
+    letter-spacing: 0.05em;
+}
+
+.typeBadgeWar {
+    display: inline-block;
+    padding: 3px 8px;
+    font-size: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    border-radius: 2px;
+    background: rgba(239, 68, 68, 0.15);
+    color: #ff6b6b;
+    border: 1px solid rgba(239, 68, 68, 0.35);
+    letter-spacing: 0.05em;
+}

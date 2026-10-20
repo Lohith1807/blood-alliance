@@ -30,6 +30,7 @@ const ManageClans = () => {
         description: '',
         clanLevel: 10,
         type: 'open',
+        clanType: 'FWA',
         requiredTownhallLevel: 12
     });
     const [selectedClan, setSelectedClan] = useState(null);
@@ -127,6 +128,7 @@ const ManageClans = () => {
                 description: '',
                 clanLevel: 10,
                 type: 'open',
+                clanType: 'FWA',
                 requiredTownhallLevel: 12
             });
             showFeedback(`Clan ${data.clan.name} added successfully!`);
@@ -146,6 +148,7 @@ const ManageClans = () => {
             description: clan.description || '',
             clanLevel: clan.clanLevel || 1,
             type: clan.type || 'open',
+            clanType: clan.clanType || 'FWA',
             requiredTownhallLevel: clan.requiredTownhallLevel || 1
         });
         setEditModalOpen(true);
@@ -294,8 +297,9 @@ const ManageClans = () => {
                                 <tr>
                                     <th style={{ width: 70 }}>Order</th>
                                     <th>Clan</th>
+                                    <th style={{ width: 110 }}>Clan Type</th>
                                     <th>Level</th>
-                                    <th>Type</th>
+                                    <th>Join Type</th>
                                     <th>Required TH</th>
                                     <th>Members</th>
                                     <th style={{ textAlign: 'center', width: 120 }}>Sequence</th>
@@ -305,13 +309,13 @@ const ManageClans = () => {
                             <tbody>
                                 {loading ? (
                                     <tr>
-                                        <td colSpan="8" style={{ textAlign: 'center', padding: '3rem' }}>
+                                        <td colSpan="9" style={{ textAlign: 'center', padding: '3rem' }}>
                                             Loading clans...
                                         </td>
                                     </tr>
                                 ) : clansList.length === 0 ? (
                                     <tr>
-                                        <td colSpan="8" style={{ textAlign: 'center', padding: '3rem' }}>
+                                        <td colSpan="9" style={{ textAlign: 'center', padding: '3rem' }}>
                                             No clans found. Click "Add Clan" to add one.
                                         </td>
                                     </tr>
@@ -335,6 +339,11 @@ const ManageClans = () => {
                                                         <div className={styles.clanTag}>{clan.tag || clan._id}</div>
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td>
+                                                <span className={clan.clanType === 'WAR' ? styles.typeBadgeWar : styles.typeBadgeFwa}>
+                                                    {clan.clanType || 'FWA'}
+                                                </span>
                                             </td>
                                             <td>
                                                 <span className="mono">Lvl {clan.clanLevel || 1}</span>
@@ -451,7 +460,7 @@ const ManageClans = () => {
                                         />
                                     </div>
                                     <div className={styles.inputGroup}>
-                                        <label className={styles.modalLabel}>Type</label>
+                                        <label className={styles.modalLabel}>Join Type</label>
                                         <select
                                             className={styles.modalInput}
                                             value={formData.type}
@@ -460,6 +469,17 @@ const ManageClans = () => {
                                             <option value="open">Open</option>
                                             <option value="inviteOnly">Invite Only</option>
                                             <option value="closed">Closed</option>
+                                        </select>
+                                    </div>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.modalLabel}>Clan Type</label>
+                                        <select
+                                            className={styles.modalInput}
+                                            value={formData.clanType || 'FWA'}
+                                            onChange={(e) => setFormData({ ...formData, clanType: e.target.value })}
+                                        >
+                                            <option value="FWA">FWA</option>
+                                            <option value="WAR">WAR</option>
                                         </select>
                                     </div>
                                     <div className={`${styles.inputGroup} ${styles.fullCol}`}>
@@ -551,7 +571,7 @@ const ManageClans = () => {
                                         />
                                     </div>
                                     <div className={styles.inputGroup}>
-                                        <label className={styles.modalLabel}>Type</label>
+                                        <label className={styles.modalLabel}>Join Type</label>
                                         <select
                                             className={styles.modalInput}
                                             value={formData.type}
@@ -560,6 +580,17 @@ const ManageClans = () => {
                                             <option value="open">Open</option>
                                             <option value="inviteOnly">Invite Only</option>
                                             <option value="closed">Closed</option>
+                                        </select>
+                                    </div>
+                                    <div className={styles.inputGroup}>
+                                        <label className={styles.modalLabel}>Clan Type</label>
+                                        <select
+                                            className={styles.modalInput}
+                                            value={formData.clanType || 'FWA'}
+                                            onChange={(e) => setFormData({ ...formData, clanType: e.target.value })}
+                                        >
+                                            <option value="FWA">FWA</option>
+                                            <option value="WAR">WAR</option>
                                         </select>
                                     </div>
                                     <div className={`${styles.inputGroup} ${styles.fullCol}`}>

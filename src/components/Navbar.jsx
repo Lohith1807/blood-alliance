@@ -39,6 +39,29 @@ const Navbar = () => {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
+    // Prevent background scrolling while mobile menu is open
+    useEffect(() => {
+        if (isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = '';
+        }
+        return () => {
+            document.body.style.overflow = '';
+        };
+    }, [isMenuOpen]);
+
+    // Close mobile drawer automatically if window is resized to desktop width
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth > 992 && isMenuOpen) {
+                setIsMenuOpen(false);
+            }
+        };
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [isMenuOpen]);
+
     // Handle scroll to update active section highlighting
     useEffect(() => {
         if (!isHomePage) {

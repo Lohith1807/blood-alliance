@@ -117,7 +117,7 @@ export default async function handler(req, res) {
 
         // ADD CLAN (POST)
         if (req.method === 'POST') {
-            const { tag, name, description, clanLevel, badgeUrls, type, clanPoints, requiredTownhallLevel } = req.body || {};
+            const { tag, name, description, clanLevel, badgeUrls, type, clanPoints, requiredTownhallLevel, clanType } = req.body || {};
 
             if (!tag || !name) {
                 return res.status(400).json({ error: 'Clan tag and name are required' });
@@ -148,6 +148,7 @@ export default async function handler(req, res) {
                 clanPoints: Number(clanPoints) || 0,
                 requiredTownhallLevel: Number(requiredTownhallLevel) || 1,
                 type: type || 'open',
+                clanType: clanType ? String(clanType).trim().toUpperCase() : 'FWA',
                 badgeUrls: badgeUrls || {
                     small: 'https://api-assets.clashofclans.com/badges/70/4eWfNqf2rN1E0k0gQ2F5t-hF9U2G_h1l3X9K7w2A5A.png',
                     medium: 'https://api-assets.clashofclans.com/badges/200/4eWfNqf2rN1E0k0gQ2F5t-hF9U2G_h1l3X9K7w2A5A.png',
@@ -166,7 +167,7 @@ export default async function handler(req, res) {
                 user: auth.user,
                 action: 'CLAN_ADD',
                 target: `${newClan.name} (${newClan.tag})`,
-                details: `Added new clan ${newClan.name} (${newClan.tag}) at position #${newClan.order}`,
+                details: `Added new clan ${newClan.name} (${newClan.tag}) [${newClan.clanType}] at position #${newClan.order}`,
                 req
             });
 
@@ -179,7 +180,7 @@ export default async function handler(req, res) {
 
         // EDIT CLAN (PUT)
         if (req.method === 'PUT') {
-            const { tag, name, description, clanLevel, type, requiredTownhallLevel, order } = req.body || {};
+            const { tag, name, description, clanLevel, type, requiredTownhallLevel, order, clanType } = req.body || {};
 
             if (!tag) {
                 return res.status(400).json({ error: 'Clan tag is required' });
@@ -195,6 +196,7 @@ export default async function handler(req, res) {
             if (type !== undefined) updateData.type = String(type);
             if (requiredTownhallLevel !== undefined) updateData.requiredTownhallLevel = Number(requiredTownhallLevel);
             if (order !== undefined) updateData.order = Number(order);
+            if (clanType !== undefined) updateData.clanType = String(clanType).trim().toUpperCase();
 
             const result = await collection.updateOne(
                 { $or: [{ _id: clanTag }, { tag: clanTag }] },
