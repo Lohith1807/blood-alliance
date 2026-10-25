@@ -88,17 +88,32 @@ function normalizeTickets(ticketData) {
         });
     };
 
-    const formatted = {
-        fwa: formatCategory(ticketData.fwa, 'fwa'),
-        warEntry: formatCategory(ticketData.warEntry, 'warEntry'),
-        allianceApply: formatCategory(ticketData.allianceApply, 'allianceApply')
+    // Helper to sort tickets by date descending (latest date to older)
+    const sortByDateDesc = (list) => {
+        return [...list].sort((a, b) => {
+            const timeA = a.ticketOpenedDate ? new Date(a.ticketOpenedDate).getTime() : 0;
+            const timeB = b.ticketOpenedDate ? new Date(b.ticketOpenedDate).getTime() : 0;
+            const validA = !isNaN(timeA) ? timeA : 0;
+            const validB = !isNaN(timeB) ? timeB : 0;
+
+            if (validB !== validA) {
+                return validB - validA;
+            }
+            return String(b.ticketId || '').localeCompare(String(a.ticketId || ''), undefined, { numeric: true });
+        });
     };
 
-    const allTickets = [
+    const formatted = {
+        fwa: sortByDateDesc(formatCategory(ticketData.fwa, 'fwa')),
+        warEntry: sortByDateDesc(formatCategory(ticketData.warEntry, 'warEntry')),
+        allianceApply: sortByDateDesc(formatCategory(ticketData.allianceApply, 'allianceApply'))
+    };
+
+    const allTickets = sortByDateDesc([
         ...formatted.fwa,
         ...formatted.warEntry,
         ...formatted.allianceApply
-    ];
+    ]);
 
     const stats = {
         total: allTickets.length,

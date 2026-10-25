@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Ticket, UserCheck, Search, RefreshCw, AlertCircle, CheckCircle2,
-    Clock, ExternalLink, Calendar, User, FileText, Filter, SlidersHorizontal, X, Shield
+    Clock, ExternalLink, Calendar, User, FileText, Filter, SlidersHorizontal, X, Shield,
+    ArrowDown, ArrowUp, ArrowUpDown
 } from 'lucide-react';
 import { getTownHallImage } from '../utils/playerProfileUtils';
 import { useAuth } from '../context/AuthContext';
@@ -18,6 +19,7 @@ const TicketManagement = () => {
     const [selectedDate, setSelectedDate] = useState(''); // 'YYYY-MM-DD'
     const [datePreset, setDatePreset] = useState('all'); // 'all' | 'today' | '7days' | '30days' | 'custom'
     const [claimStatus, setClaimStatus] = useState('all'); // 'all' | 'claimed' | 'unclaimed'
+    const [sortOrder, setSortOrder] = useState('desc'); // 'desc' = latest date to older, 'asc' = older to latest date
     const [searchQuery, setSearchQuery] = useState('');
     const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
@@ -91,38 +93,53 @@ const TicketManagement = () => {
         return true;
     };
 
-    // Filtered Tickets (by category, date, claim status, and search)
-    const filteredTickets = tickets.filter(t => {
-        const matchesCategory = filterCategory === 'all' || t.category === filterCategory;
-        const matchesDate = matchesDateFilter(t.ticketOpenedDate);
-        const matchesClaim =
-            claimStatus === 'all' ? true :
-            claimStatus === 'claimed' ? Boolean(t.claimedBy) :
-            !t.claimedBy;
+    // Filtered & Sorted Tickets (by category, date, claim status, search, and ordered latest to older)
+    const filteredTickets = tickets
+        .filter(t => {
+            const matchesCategory = filterCategory === 'all' || t.category === filterCategory;
+            const matchesDate = matchesDateFilter(t.ticketOpenedDate);
+            const matchesClaim =
+                claimStatus === 'all' ? true :
+                claimStatus === 'claimed' ? Boolean(t.claimedBy) :
+                !t.claimedBy;
 
-        const q = searchQuery.toLowerCase().trim();
-        const matchesSearch = !q ||
-            t.ticketId?.toLowerCase().includes(q) ||
-            t.userId?.toLowerCase().includes(q) ||
-            t.userName?.toLowerCase().includes(q) ||
-            t.claimedBy?.toLowerCase().includes(q) ||
-            t.claimedByName?.toLowerCase().includes(q) ||
-            t.ticketType?.toLowerCase().includes(q) ||
-            t.playerName?.toLowerCase().includes(q) ||
-            t.player_name?.toLowerCase().includes(q) ||
-            t.playerTag?.toLowerCase().includes(q) ||
-            t.assignedClan?.toLowerCase().includes(q) ||
-            t.assignedClanTag?.toLowerCase().includes(q) ||
-            String(t.playerTh || t.townHall || '').toLowerCase().includes(q);
+            const q = searchQuery.toLowerCase().trim();
+            const matchesSearch = !q ||
+                t.ticketId?.toLowerCase().includes(q) ||
+                t.userId?.toLowerCase().includes(q) ||
+                t.userName?.toLowerCase().includes(q) ||
+                t.claimedBy?.toLowerCase().includes(q) ||
+                t.claimedByName?.toLowerCase().includes(q) ||
+                t.ticketType?.toLowerCase().includes(q) ||
+                t.playerName?.toLowerCase().includes(q) ||
+                t.player_name?.toLowerCase().includes(q) ||
+                t.playerTag?.toLowerCase().includes(q) ||
+                t.assignedClan?.toLowerCase().includes(q) ||
+                t.assignedClanTag?.toLowerCase().includes(q) ||
+                String(t.playerTh || t.townHall || '').toLowerCase().includes(q);
 
-        return matchesCategory && matchesDate && matchesClaim && matchesSearch;
-    });
+            return matchesCategory && matchesDate && matchesClaim && matchesSearch;
+        })
+        .sort((a, b) => {
+            const timeA = a.ticketOpenedDate ? new Date(a.ticketOpenedDate).getTime() : 0;
+            const timeB = b.ticketOpenedDate ? new Date(b.ticketOpenedDate).getTime() : 0;
+            const validA = !isNaN(timeA) ? timeA : 0;
+            const validB = !isNaN(timeB) ? timeB : 0;
+
+            if (validB !== validA) {
+                return sortOrder === 'asc' ? validA - validB : validB - validA;
+            }
+            return sortOrder === 'asc'
+                ? String(a.ticketId || '').localeCompare(String(b.ticketId || ''), undefined, { numeric: true })
+                : String(b.ticketId || '').localeCompare(String(a.ticketId || ''), undefined, { numeric: true });
+        });
 
     // Count of active filters
     let activeFilterCount = 0;
     if (filterCategory !== 'all') activeFilterCount++;
     if (selectedDate || datePreset !== 'all') activeFilterCount++;
     if (claimStatus !== 'all') activeFilterCount++;
+    if (sortOrder !== 'desc') activeFilterCount++;
 
     const clearDate = () => {
         setSelectedDate('');
@@ -135,6 +152,7 @@ const TicketManagement = () => {
         setDatePreset('all');
         setClaimStatus('all');
         setSearchQuery('');
+        setSortOrder('desc');
     };
 
     return (
@@ -254,6 +272,26 @@ const TicketManagement = () => {
                     </div>
 
                     <div className={styles.controlsRight}>
+                        {/* Sort Order Toggle */}
+                        <button
+                            type="button"
+                            onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+                            className={styles.sortToggleBtn}
+                            title={`Sort: currently ${sortOrder === 'desc' ? 'Latest to Older' : 'Older to Latest'} (click to toggle)`}
+                        >
+                            {sortOrder === 'desc' ? (
+                                <>
+                                    <ArrowDown size={13} style={{ color: 'var(--rh-red)' }} />
+                                    <span>Latest First</span>
+                                </>
+                            ) : (
+                                <>
+                                    <ArrowUp size={13} style={{ color: 'var(--rh-red)' }} />
+                                    <span>Oldest First</span>
+                                </>
+                            )}
+                        </button>
+
                         {/* Desktop Date Filter */}
                         <div className={`${styles.dateFilterWrap} ${styles.desktopDateWrap}`}>
                             <Calendar size={13} className={styles.dateIcon} />
@@ -345,6 +383,15 @@ const TicketManagement = () => {
                             </span>
                         )}
 
+                        {sortOrder === 'asc' && (
+                            <span className={styles.filterPill}>
+                                <span>Order: Oldest First</span>
+                                <button onClick={() => setSortOrder('desc')} className={styles.filterPillRemove} title="Reset to Latest First">
+                                    <X size={12} />
+                                </button>
+                            </span>
+                        )}
+
                         {searchQuery && (
                             <span className={styles.filterPill}>
                                 <span>Search: "{searchQuery}"</span>
@@ -371,7 +418,21 @@ const TicketManagement = () => {
                                     <th style={{ width: 110, textAlign: 'left' }}>Player TH</th>
                                     <th style={{ width: 170, textAlign: 'left' }}>Player Name</th>
                                     <th style={{ width: 170, textAlign: 'left' }}>Assigned Clan</th>
-                                    <th style={{ width: 160, textAlign: 'left' }}>Date Opened</th>
+                                    <th
+                                        style={{ width: 165, textAlign: 'left' }}
+                                        className={styles.sortableHeader}
+                                        onClick={() => setSortOrder(prev => prev === 'desc' ? 'asc' : 'desc')}
+                                        title={`Sorted ${sortOrder === 'desc' ? 'Latest to Older' : 'Older to Latest'} (Click to toggle)`}
+                                    >
+                                        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
+                                            <span>Date Opened</span>
+                                            {sortOrder === 'desc' ? (
+                                                <ArrowDown size={13} style={{ color: 'var(--rh-red)' }} />
+                                            ) : (
+                                                <ArrowUp size={13} style={{ color: 'var(--rh-red)' }} />
+                                            )}
+                                        </div>
+                                    </th>
                                     <th style={{ width: 190, textAlign: 'left' }}>Who Claimed</th>
                                     <th style={{ width: 190, textAlign: 'left' }}>Opener / Applicant</th>
                                     <th style={{ textAlign: 'left' }}>Transcript Archive</th>
@@ -735,6 +796,29 @@ const TicketManagement = () => {
                                             >
                                                 <span>Unclaimed</span>
                                                 <span className={styles.chipCount}>{stats.unclaimed || 0}</span>
+                                            </button>
+                                        </div>
+                                    </div>
+
+                                    {/* 4. Sort Order */}
+                                    <div>
+                                        <div className={styles.sheetSectionTitle}>
+                                            <ArrowUpDown size={13} /> Order By Date
+                                        </div>
+                                        <div className={styles.chipsGrid}>
+                                            <button
+                                                className={`${styles.chipOption} ${sortOrder === 'desc' ? styles.chipOptionActive : ''}`}
+                                                onClick={() => setSortOrder('desc')}
+                                            >
+                                                <span>Latest First</span>
+                                                <ArrowDown size={13} />
+                                            </button>
+                                            <button
+                                                className={`${styles.chipOption} ${sortOrder === 'asc' ? styles.chipOptionActive : ''}`}
+                                                onClick={() => setSortOrder('asc')}
+                                            >
+                                                <span>Oldest First</span>
+                                                <ArrowUp size={13} />
                                             </button>
                                         </div>
                                     </div>
