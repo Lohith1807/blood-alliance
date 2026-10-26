@@ -37,7 +37,8 @@ export default async function handler(req, res) {
                     { id: 'user-management', name: 'User Management', description: 'Create and edit alliance staff, mods, and leader accounts' },
                     { id: 'audit-logs', name: 'Audit & Activity Logs', description: 'System-wide activity, change tracking, and audit history' },
                     { id: 'clan-rules', name: 'Clan Rules Management', description: 'Configure custom clan rules and protocols per assigned clan' },
-                    { id: 'module-permissions', name: 'Module Permissions', description: 'Configure role-based access for all alliance modules' }
+                    { id: 'module-permissions', name: 'Module Permissions', description: 'Configure role-based access for all alliance modules' },
+                    { id: 'command-management', name: 'Bot Command Management', description: 'Bot command access control, roles, and allowed members' }
                 ]
             });
         }

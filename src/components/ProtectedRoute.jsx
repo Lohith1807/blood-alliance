@@ -3,8 +3,8 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { Loader2 } from 'lucide-react';
 
-const ProtectedRoute = ({ children, requiredRole = null, requiredModule = null, requireLogsAccess = false }) => {
-    const { isAuthenticated, user, canViewLogs, isOwner, hasModuleAccess, loading } = useAuth();
+const ProtectedRoute = ({ children, requiredRole = null, requiredModule = null, requireLogsAccess = false, requireCommandManagementAccess = false }) => {
+    const { isAuthenticated, user, canViewLogs, canManageCommands, isOwner, hasModuleAccess, loading } = useAuth();
 
     if (loading) {
         return (
@@ -34,6 +34,10 @@ const ProtectedRoute = ({ children, requiredRole = null, requiredModule = null, 
     }
 
     if (requireLogsAccess && !canViewLogs) {
+        return <Navigate to="/" replace />;
+    }
+
+    if (requireCommandManagementAccess && !canManageCommands) {
         return <Navigate to="/" replace />;
     }
 

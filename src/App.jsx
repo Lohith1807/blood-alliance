@@ -23,6 +23,7 @@ const UserManagement = lazy(() => import('./components/UserManagement'));
 const AuditLogs = lazy(() => import('./components/AuditLogs'));
 const ClanRulesManagement = lazy(() => import('./components/ClanRulesManagement'));
 const ModulePermissions = lazy(() => import('./components/ModulePermissions'));
+const CommandManagement = lazy(() => import('./components/CommandManagement'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -99,6 +100,12 @@ function App() {
                   <Route path="/module-permissions" element={
                     <ProtectedRoute requiredModule="module-permissions">
                       <ModulePermissions />
+                    </ProtectedRoute>
+                  } />
+
+                  <Route path="/command-management" element={
+                    <ProtectedRoute requiredModule="command-management" requireCommandManagementAccess={true}>
+                      <CommandManagement />
                     </ProtectedRoute>
                   } />
 

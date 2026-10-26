@@ -37,6 +37,7 @@ export default async function handler(req, res) {
                 role: u.role,
                 isOwner: u.email?.toLowerCase() === 'lohithreddy1819@gmail.com',
                 canViewLogs: u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' || Boolean(u.canViewLogs),
+                canManageCommands: u.email?.toLowerCase() === 'lohithreddy1819@gmail.com' || Boolean(u.canManageCommands),
                 assignedClans: Array.isArray(u.assignedClans) ? u.assignedClans : [],
                 createdAt: u.createdAt || null,
                 updatedAt: u.updatedAt || null
@@ -50,7 +51,7 @@ export default async function handler(req, res) {
 
         // 2. CREATE NEW USER
         if (req.method === 'POST') {
-            const { email, password, role, canViewLogs, assignedClans } = req.body || {};
+            const { email, password, role, canViewLogs, canManageCommands, assignedClans } = req.body || {};
 
             if (!email || !password || !role) {
                 return res.status(400).json({ error: 'Email, password, and role are required' });
@@ -90,6 +91,7 @@ export default async function handler(req, res) {
                 role: cleanRole,
                 assignedClans: sanitizedClans,
                 canViewLogs: auth.user.isOwner ? Boolean(canViewLogs) : false,
+                canManageCommands: (auth.user.isOwner && cleanRole === 'admin') ? Boolean(canManageCommands) : false,
                 createdAt: new Date(),
                 updatedAt: new Date()
             };
@@ -100,7 +102,7 @@ export default async function handler(req, res) {
                 user: auth.user,
                 action: 'USER_CREATE',
                 target: cleanEmail,
-                details: `Created user ${cleanEmail} with role '${cleanRole}'${sanitizedClans.length ? ` (assigned to ${sanitizedClans.length} clans: ${sanitizedClans.join(', ')})` : ''}${newUser.canViewLogs ? ' (granted log access)' : ''}`,
+                details: `Created user ${cleanEmail} with role '${cleanRole}'${sanitizedClans.length ? ` (assigned to ${sanitizedClans.length} clans: ${sanitizedClans.join(', ')})` : ''}${newUser.canViewLogs ? ' (granted log access)' : ''}${newUser.canManageCommands ? ' (granted command management)' : ''}`,
                 req
             });
 
@@ -113,6 +115,7 @@ export default async function handler(req, res) {
                     role: cleanRole,
                     assignedClans: newUser.assignedClans,
                     canViewLogs: newUser.canViewLogs,
+                    canManageCommands: newUser.canManageCommands,
                     createdAt: newUser.createdAt
                 }
             });
@@ -120,7 +123,7 @@ export default async function handler(req, res) {
 
         // 3. EDIT USER
         if (req.method === 'PUT') {
-            const { id, email, role, password, canViewLogs } = req.body || {};
+            const { id, email, role, password, canViewLogs, canManageCommands } = req.body || {};
 
             if (!id) {
                 return res.status(400).json({ error: 'User ID is required' });
@@ -194,6 +197,12 @@ export default async function handler(req, res) {
                 updateFields.canViewLogs = Boolean(canViewLogs);
             }
 
+            // Only Owner can modify canManageCommands permission (only applicable to admins)
+            if (auth.user.isOwner && canManageCommands !== undefined) {
+                const targetRole = updateFields.role || existingUser.role;
+                updateFields.canManageCommands = targetRole === 'admin' ? Boolean(canManageCommands) : false;
+            }
+
             // Update Password if provided
             if (password) {
                 if (password.length < 6) {
@@ -226,6 +235,7 @@ export default async function handler(req, res) {
                     role: updatedUser.role,
                     assignedClans: Array.isArray(updatedUser.assignedClans) ? updatedUser.assignedClans : [],
                     canViewLogs: updatedUser.canViewLogs || false,
+                    canManageCommands: updatedUser.canManageCommands || false,
                     updatedAt: updatedUser.updatedAt
                 }
             });

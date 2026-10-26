@@ -218,12 +218,17 @@ export const AuthProvider = ({ children }) => {
 
     const isOwner = user?.email?.toLowerCase() === 'lohithreddy1819@gmail.com' || Boolean(user?.isOwner);
     const canViewLogs = isOwner || Boolean(user?.canViewLogs);
+    const canManageCommands = isOwner || (user?.role === 'admin' && Boolean(user?.canManageCommands));
     const assignedClans = Array.isArray(user?.assignedClans) ? user.assignedClans : [];
 
     // RBAC module access checker
     const hasModuleAccess = useCallback((moduleKey) => {
         if (!user) return false;
         if (isOwner) return true;
+
+        if (moduleKey === 'command-management') {
+            return canManageCommands;
+        }
 
         if (moduleKey === 'audit-logs') {
             return canViewLogs || (permissions['audit-logs'] && permissions['audit-logs'].includes(user.role));
@@ -234,7 +239,7 @@ export const AuthProvider = ({ children }) => {
             return allowed.includes(user.role);
         }
         return false;
-    }, [user, isOwner, canViewLogs, permissions]);
+    }, [user, isOwner, canViewLogs, canManageCommands, permissions]);
 
     const value = {
         user,
@@ -247,6 +252,7 @@ export const AuthProvider = ({ children }) => {
         isLeader: user?.role === 'leader',
         isOwner,
         canViewLogs,
+        canManageCommands,
         assignedClans,
         permissions,
         hasModuleAccess,

@@ -22,7 +22,8 @@ const UserManagement = () => {
         password: '',
         role: 'leader',
         assignedClans: [],
-        canViewLogs: false
+        canViewLogs: false,
+        canManageCommands: false
     });
     const [showCreatePassword, setShowCreatePassword] = useState(false);
 
@@ -34,7 +35,8 @@ const UserManagement = () => {
         role: 'leader',
         password: '',
         assignedClans: [],
-        canViewLogs: false
+        canViewLogs: false,
+        canManageCommands: false
     });
     const [showEditPassword, setShowEditPassword] = useState(false);
 
@@ -100,7 +102,7 @@ const UserManagement = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to create user');
 
-            setCreateForm({ email: '', password: '', role: 'leader', assignedClans: [], canViewLogs: false });
+            setCreateForm({ email: '', password: '', role: 'leader', assignedClans: [], canViewLogs: false, canManageCommands: false });
             showFeedback(`User ${data.user.email} created successfully as ${data.user.role.toUpperCase()}`);
             fetchUsers();
         } catch (err) {
@@ -131,7 +133,8 @@ const UserManagement = () => {
             role: u.role,
             password: '',
             assignedClans: Array.isArray(u.assignedClans) ? u.assignedClans : [],
-            canViewLogs: Boolean(u.canViewLogs)
+            canViewLogs: Boolean(u.canViewLogs),
+            canManageCommands: Boolean(u.canManageCommands)
         });
         setEditModalOpen(true);
     };
@@ -147,7 +150,8 @@ const UserManagement = () => {
                 email: editForm.email,
                 role: editForm.role,
                 assignedClans: editForm.assignedClans || [],
-                canViewLogs: editForm.canViewLogs
+                canViewLogs: editForm.canViewLogs,
+                canManageCommands: editForm.canManageCommands
             };
             if (editForm.password) {
                 payload.password = editForm.password;
@@ -414,21 +418,50 @@ const UserManagement = () => {
                             {isOwner && (
                                 <div style={{
                                     marginBottom: '1rem',
-                                    padding: '0.65rem 0.75rem',
-                                    background: 'rgba(251, 191, 36, 0.06)',
-                                    border: '1px solid rgba(251, 191, 36, 0.2)',
-                                    borderRadius: 3
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    gap: '0.5rem'
                                 }}>
-                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
-                                        <input
-                                            type="checkbox"
-                                            checked={createForm.canViewLogs || false}
-                                            onChange={(e) => setCreateForm({ ...createForm, canViewLogs: e.target.checked })}
-                                            disabled={submitting}
-                                            style={{ accentColor: '#fbbf24' }}
-                                        />
-                                        <span>Grant access to view Audit & Activity Logs</span>
-                                    </label>
+                                    <div style={{
+                                        padding: '0.65rem 0.75rem',
+                                        background: 'rgba(251, 191, 36, 0.06)',
+                                        border: '1px solid rgba(251, 191, 36, 0.2)',
+                                        borderRadius: 3
+                                    }}>
+                                        <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
+                                            <input
+                                                type="checkbox"
+                                                checked={createForm.canViewLogs || false}
+                                                onChange={(e) => setCreateForm({ ...createForm, canViewLogs: e.target.checked })}
+                                                disabled={submitting}
+                                                style={{ accentColor: '#fbbf24' }}
+                                            />
+                                            <span>Grant access to view Audit & Activity Logs</span>
+                                        </label>
+                                    </div>
+
+                                    {createForm.role === 'admin' && (
+                                        <div style={{
+                                            padding: '0.65rem 0.75rem',
+                                            background: 'rgba(238, 0, 0, 0.06)',
+                                            border: '1px solid rgba(238, 0, 0, 0.25)',
+                                            borderRadius: 3
+                                        }}>
+                                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
+                                                <input
+                                                    type="checkbox"
+                                                    checked={createForm.canManageCommands || false}
+                                                    onChange={(e) => setCreateForm({ ...createForm, canManageCommands: e.target.checked })}
+                                                    disabled={submitting}
+                                                    style={{ accentColor: 'var(--rh-red)' }}
+                                                />
+                                                <span style={{ fontWeight: 600 }}>Grant Bot Command Management Access</span>
+                                            </label>
+                                            <small style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '0.2rem', paddingLeft: '1.4rem' }}>
+                                                Allow this selected admin to view and edit Discord bot command permissions.
+                                            </small>
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
@@ -526,6 +559,20 @@ const UserManagement = () => {
                                                                         fontWeight: 700
                                                                     }}>
                                                                         LOGS
+                                                                    </span>
+                                                                )}
+                                                                {u.canManageCommands && u.email?.toLowerCase() !== 'lohithreddy1819@gmail.com' && (
+                                                                    <span style={{
+                                                                        fontSize: '0.62rem',
+                                                                        padding: '1px 5px',
+                                                                        background: 'rgba(238, 0, 0, 0.15)',
+                                                                        color: 'var(--rh-red)',
+                                                                        border: '1px solid rgba(238, 0, 0, 0.3)',
+                                                                        borderRadius: 2,
+                                                                        fontFamily: 'JetBrains Mono',
+                                                                        fontWeight: 700
+                                                                    }}>
+                                                                        COMMANDS
                                                                     </span>
                                                                 )}
                                                             </div>
@@ -754,21 +801,50 @@ const UserManagement = () => {
 
                                     {isOwner && (
                                         <div style={{
-                                            padding: '0.65rem 0.75rem',
-                                            background: 'rgba(251, 191, 36, 0.06)',
-                                            border: '1px solid rgba(251, 191, 36, 0.2)',
-                                            borderRadius: 3
+                                            display: 'flex',
+                                            flexDirection: 'column',
+                                            gap: '0.5rem'
                                         }}>
-                                            <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
-                                                <input
-                                                    type="checkbox"
-                                                    checked={editForm.canViewLogs || false}
-                                                    onChange={(e) => setEditForm({ ...editForm, canViewLogs: e.target.checked })}
-                                                    disabled={submitting}
-                                                    style={{ accentColor: '#fbbf24' }}
-                                                />
-                                                <span>Grant access to view Audit & Activity Logs</span>
-                                            </label>
+                                            <div style={{
+                                                padding: '0.65rem 0.75rem',
+                                                background: 'rgba(251, 191, 36, 0.06)',
+                                                border: '1px solid rgba(251, 191, 36, 0.2)',
+                                                borderRadius: 3
+                                            }}>
+                                                <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={editForm.canViewLogs || false}
+                                                        onChange={(e) => setEditForm({ ...editForm, canViewLogs: e.target.checked })}
+                                                        disabled={submitting}
+                                                        style={{ accentColor: '#fbbf24' }}
+                                                    />
+                                                    <span>Grant access to view Audit & Activity Logs</span>
+                                                </label>
+                                            </div>
+
+                                            {editForm.role === 'admin' && (
+                                                <div style={{
+                                                    padding: '0.65rem 0.75rem',
+                                                    background: 'rgba(238, 0, 0, 0.06)',
+                                                    border: '1px solid rgba(238, 0, 0, 0.25)',
+                                                    borderRadius: 3
+                                                }}>
+                                                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={editForm.canManageCommands || false}
+                                                            onChange={(e) => setEditForm({ ...editForm, canManageCommands: e.target.checked })}
+                                                            disabled={submitting}
+                                                            style={{ accentColor: 'var(--rh-red)' }}
+                                                        />
+                                                        <span style={{ fontWeight: 600 }}>Grant Bot Command Management Access</span>
+                                                    </label>
+                                                    <small style={{ display: 'block', fontSize: '0.68rem', color: 'var(--text-muted)', marginTop: '0.2rem', paddingLeft: '1.4rem' }}>
+                                                        Allow this selected admin to view and edit Discord bot command permissions.
+                                                    </small>
+                                                </div>
+                                            )}
                                         </div>
                                     )}
                                 </div>

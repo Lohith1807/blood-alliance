@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield, FileText, Sliders } from 'lucide-react';
+import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield, FileText, Sliders, Terminal } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from '@/css/Navbar.module.css';
@@ -25,7 +25,8 @@ const Navbar = () => {
         '/user-management',
         '/audit-logs',
         '/clan-rules',
-        '/module-permissions'
+        '/module-permissions',
+        '/command-management'
     ].includes(location.pathname);
 
     // Close dropdown on click outside
@@ -397,6 +398,32 @@ const Navbar = () => {
                                                     </span>
                                                 </div>
                                             )}
+
+                                            {hasModuleAccess('command-management') && (
+                                                <div
+                                                    className={`${styles.dropdownItem} ${location.pathname === '/command-management' ? styles.dropdownItemActive : ''}`}
+                                                    onClick={() => {
+                                                        setIsDropdownOpen(false);
+                                                        handleNavClick('/command-management');
+                                                    }}
+                                                >
+                                                    <Terminal size={15} style={{ color: '#ec4899' }} />
+                                                    <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
+                                                        <span>Bot Command Management</span>
+                                                        <span style={{
+                                                            fontSize: '0.62rem',
+                                                            padding: '1px 4px',
+                                                            background: 'rgba(236, 72, 153, 0.2)',
+                                                            color: '#f472b6',
+                                                            borderRadius: 2,
+                                                            fontFamily: 'JetBrains Mono',
+                                                            fontWeight: 700
+                                                        }}>
+                                                            BOT
+                                                        </span>
+                                                    </span>
+                                                </div>
+                                            )}
                                         </motion.div>
                                     )}
                                 </AnimatePresence>
@@ -599,6 +626,14 @@ const Navbar = () => {
                                             onClick={() => handleNavClick('/audit-logs')}
                                         >
                                             Audit & Activity Logs
+                                        </MobileNavItem>
+                                    )}
+                                    {hasModuleAccess('command-management') && (
+                                        <MobileNavItem
+                                            active={location.pathname === '/command-management'}
+                                            onClick={() => handleNavClick('/command-management')}
+                                        >
+                                            Bot Command Management
                                         </MobileNavItem>
                                     )}
 
