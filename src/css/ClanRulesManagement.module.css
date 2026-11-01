@@ -883,3 +883,335 @@
     }
 }
 
+/* ==========================================================================
+   WAR RULES PROTOCOL SECTION STYLES
+   ========================================================================== */
+
+.sectionNav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0.75rem;
+    background: #14161b;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    margin-bottom: 0.5rem;
+}
+
+.sectionNavBtn {
+    background: transparent;
+    border: 1px solid transparent;
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.45rem 0.9rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.18s ease;
+}
+
+.sectionNavBtn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.05);
+}
+
+.sectionNavBtnActive {
+    color: #fff;
+    background: rgba(238, 0, 0, 0.15);
+    border-color: rgba(238, 0, 0, 0.4);
+}
+
+.warRulesCard {
+    background: #1a1c22;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+    overflow: hidden;
+}
+
+.warRulesCardHeader {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.015);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.warRulesTitleGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.warRulesTitle {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.warRulesSubtitle {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.warTabsContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.85rem 1.5rem;
+    background: #14161b;
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+}
+
+.warTabBtn {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--border-color);
+    color: var(--text-muted);
+    font-size: 0.8125rem;
+    font-weight: 600;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    white-space: nowrap;
+    transition: all 0.18s ease;
+}
+
+.warTabBtn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.07);
+    border-color: rgba(255, 255, 255, 0.2);
+}
+
+.warTabActiveWin {
+    background: rgba(34, 197, 94, 0.15) !important;
+    border-color: rgba(34, 197, 94, 0.5) !important;
+    color: #4ade80 !important;
+    font-weight: 700;
+}
+
+.warTabActiveLose {
+    background: rgba(239, 68, 68, 0.15) !important;
+    border-color: rgba(239, 68, 68, 0.5) !important;
+    color: #f87171 !important;
+    font-weight: 700;
+}
+
+.warTabActiveBl {
+    background: rgba(59, 130, 246, 0.15) !important;
+    border-color: rgba(59, 130, 246, 0.5) !important;
+    color: #60a5fa !important;
+    font-weight: 700;
+}
+
+.warTabActiveMis {
+    background: rgba(245, 158, 11, 0.15) !important;
+    border-color: rgba(245, 158, 11, 0.5) !important;
+    color: #fbbf24 !important;
+    font-weight: 700;
+}
+
+.warScenarioBanner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    margin-bottom: 1.25rem;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.bannerWin {
+    background: rgba(34, 197, 94, 0.1);
+    border: 1px solid rgba(34, 197, 94, 0.25);
+    color: #86efac;
+}
+
+.bannerLose {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.25);
+    color: #fca5a5;
+}
+
+.bannerBl {
+    background: rgba(59, 130, 246, 0.1);
+    border: 1px solid rgba(59, 130, 246, 0.25);
+    color: #93c5fd;
+}
+
+.bannerMis {
+    background: rgba(245, 158, 11, 0.1);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    color: #fde68a;
+}
+
+.warBody {
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.warRawTextarea {
+    width: 100%;
+    min-height: 280px;
+    padding: 0.85rem 1rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    color: #dbdee1;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8125rem;
+    line-height: 1.55;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.18s;
+}
+
+.warRawTextarea:focus {
+    border-color: var(--rh-red);
+}
+
+.rawTextToolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.6rem;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.rawTextSyntaxHelp {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.rawTextSyntaxTag {
+    background: rgba(255, 255, 255, 0.05);
+    padding: 2px 5px;
+    border-radius: 2px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* DISCORD WAR MESSAGE PREVIEW */
+.discordWarMessageCard {
+    background: #313338;
+    border-radius: 6px;
+    padding: 1.15rem;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    position: sticky;
+    top: 0;
+}
+
+.discordWarContent {
+    background: #2b2d31;
+    border-radius: 4px;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.65rem;
+    font-size: 0.825rem;
+    color: #dbdee1;
+    line-height: 1.5;
+    border-left: 4px solid #3b82f6;
+    margin-top: 0.5rem;
+}
+
+.discordWarBorderWin {
+    border-left-color: #22c55e !important;
+}
+
+.discordWarBorderLose {
+    border-left-color: #ef4444 !important;
+}
+
+.discordWarBorderBl {
+    border-left-color: #3b82f6 !important;
+}
+
+.discordWarBorderMis {
+    border-left-color: #f59e0b !important;
+}
+
+.discordDivider {
+    color: #4e5058;
+    font-weight: 700;
+    letter-spacing: -0.05em;
+    user-select: none;
+    overflow: hidden;
+    white-space: nowrap;
+    opacity: 0.7;
+    margin: 0.25rem 0;
+}
+
+.discordWarHeaderTitle {
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: #f2f3f5;
+}
+
+.discordWarItemRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    line-height: 1.45;
+}
+
+.discordArrowBullet {
+    color: #949ba4;
+    font-weight: 700;
+    font-family: 'JetBrains Mono', monospace;
+    flex-shrink: 0;
+}
+
+.discordDiamondBullet {
+    color: #f59e0b;
+    flex-shrink: 0;
+}
+
+.discordSubHeading {
+    font-size: 0.825rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-top: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.discordLinkText {
+    color: #00a8fc;
+    text-decoration: underline;
+    word-break: break-all;
+}
+
+.warBadgeMainCard {
+    font-size: 0.65rem;
+    padding: 2px 6px;
+    border-radius: 2px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+    background: rgba(239, 68, 68, 0.12);
+    color: #fca5a5;
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
