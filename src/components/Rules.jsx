@@ -19,7 +19,7 @@ const Rules = () => {
     };
 
     return (
-        <section className="container" style={{ padding: '6rem 0' }}>
+        <section className="container" style={{ paddingTop: '6rem', paddingBottom: '6rem' }}>
 
             {/* LAZY CWL PROTOCOL */}
             <motion.div
