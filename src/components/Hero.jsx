@@ -113,6 +113,11 @@ const Hero = () => {
                             onClick={handleExploreClans}
                             className={`${styles.bevelBtn} ${styles.bevelPrimary}`}
                         >
+                            <img
+                                src="/images/clan-castle.png"
+                                alt="TH19 Clan Castle"
+                                style={{ width: 24, height: 24, objectFit: 'contain' }}
+                            />
                             Explore Clans <ChevronRight size={16} />
                         </button>
                         <a
@@ -133,7 +138,7 @@ const Hero = () => {
                             <img
                                 src="/images/cwl-medal.png"
                                 alt="CWL Medal"
-                                style={{ width: 17, height: 17, objectFit: 'contain' }}
+                                style={{ width: 22, height: 22, objectFit: 'contain' }}
                             />
                             CWL Registrations
                         </button>

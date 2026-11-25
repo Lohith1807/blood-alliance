@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart3, Swords, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
@@ -77,20 +77,45 @@ const SkeletonCard = () => (
 
 const ClanList = () => {
     const { clans, loading, error } = useClans();
+    const [filter, setFilter] = useState('ALL');
+
+    const filteredClans = useMemo(() => {
+        if (filter === 'ALL') return clans;
+        return clans.filter(c => (c.clanType || 'FWA').toUpperCase() === filter);
+    }, [clans, filter]);
 
     return (
         <section id="clans" className="container clan-list-section">
-            <div className="section-header">
-                <div className="tech-label">
-                    <BarChart3 size={14} /> Our Family
+            <div className="section-header-row">
+                <div className="section-header">
+                    <div className="tech-label">
+                        <BarChart3 size={14} /> Our Family
+                    </div>
+                    <h2 className="section-title">Alliance Clans</h2>
+                    <p className="section-subtitle">
+                        {loading
+                            ? 'Loading clans...'
+                            : `${filteredClans.length} active clan${filteredClans.length === 1 ? '' : 's'} — click any clan for full details.`
+                        }
+                    </p>
                 </div>
-                <h2 className="section-title">Alliance Clans</h2>
-                <p className="section-subtitle">
-                    {loading
-                        ? 'Loading clans...'
-                        : `${clans.length} active clans — click any clan for full details.`
-                    }
-                </p>
+
+                <div className="clan-filter-group">
+                    {[
+                        { key: 'ALL', label: 'All Clans' },
+                        { key: 'FWA', label: 'FWA Clans' },
+                        { key: 'WAR', label: 'War Clans' }
+                    ].map(tab => (
+                        <button
+                            key={tab.key}
+                            type="button"
+                            onClick={() => setFilter(tab.key)}
+                            className={`clan-filter-btn ${filter === tab.key ? 'clan-filter-btn-active' : ''}`}
+                        >
+                            {tab.label}
+                        </button>
+                    ))}
+                </div>
             </div>
 
             {error && (
@@ -104,8 +129,12 @@ const ClanList = () => {
                     [...Array(6)].map((_, index) => (
                         <SkeletonCard key={index} index={index} />
                     ))
+                ) : filteredClans.length === 0 ? (
+                    <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '2.5rem', color: 'var(--text-muted)' }}>
+                        No {filter === 'WAR' ? 'War' : 'FWA'} clans found.
+                    </div>
                 ) : (
-                    clans.map((clan, index) => (
+                    filteredClans.map((clan, index) => (
                         <ClanCard key={clan.tag} clan={clan} index={index} />
                     ))
                 )}

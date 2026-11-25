@@ -88,8 +88,8 @@ const Rules = () => {
                 style={{ marginTop: '6rem', borderTop: '1px solid var(--border-color)', paddingTop: '6rem' }}
             >
                 <div className={styles.sectionHeader}>
-                    <div className={styles.techLabel}>Clan Protocols</div>
-                    <h2 className={styles.sectionTitle}>Alliance & Server Protocols</h2>
+                    <div className={styles.techLabel}>Rules</div>
+                    <h2 className={styles.sectionTitle}>Clan & Discord Rules</h2>
                 </div>
 
                 <div className={styles.rulesGrid}>
