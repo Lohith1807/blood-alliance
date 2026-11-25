@@ -32,7 +32,7 @@
 .titleIconWrap {
     width: 36px;
     height: 36px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -60,7 +60,7 @@
     padding: 0.35rem 0.75rem;
     background: rgba(16, 185, 129, 0.12);
     border: 1px solid rgba(16, 185, 129, 0.25);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.72rem;
     font-family: 'JetBrains Mono', monospace;
     color: #34d399;
@@ -91,7 +91,7 @@
 .statCard {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 1rem 1.25rem;
     display: flex;
     align-items: center;
@@ -107,7 +107,7 @@
 .statIconWrap {
     width: 42px;
     height: 42px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -136,7 +136,7 @@
 .controlsBar {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
     display: flex;
@@ -156,7 +156,7 @@
     padding: 0.45rem 0.85rem;
     background: #1c1c1c;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-secondary);
@@ -173,7 +173,7 @@
 }
 
 .filterTabActive {
-    background: rgba(238, 0, 0, 0.15) !important;
+    background: rgba(218, 7, 10, 0.15) !important;
     border-color: var(--rh-red) !important;
     color: var(--text-primary) !important;
 }
@@ -182,7 +182,7 @@
     font-size: 0.65rem;
     font-family: 'JetBrains Mono', monospace;
     padding: 1px 5px;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     background: rgba(255, 255, 255, 0.1);
 }
 
@@ -208,7 +208,7 @@
     padding: 0 1rem 0 2.5rem;
     background: #161616;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.82rem;
     font-family: 'JetBrains Mono', monospace;
@@ -242,7 +242,7 @@
 .tableCard {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
@@ -294,7 +294,7 @@
     padding: 0.3rem 0.6rem;
     background: #111111;
     border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.8rem;
     font-weight: 700;
@@ -311,7 +311,7 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0.25rem 0.55rem;
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.68rem;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
@@ -349,7 +349,7 @@
     align-items: center;
     gap: 0.35rem;
     padding: 0.2rem 0.5rem;
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.72rem;
     font-family: 'Inter', sans-serif;
     font-weight: 600;
@@ -375,7 +375,7 @@
     padding: 0.2rem 0.5rem;
     background: rgba(88, 101, 242, 0.12);
     border: 1px solid rgba(88, 101, 242, 0.25);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.72rem;
     color: #cbd5e1;
 }
@@ -391,7 +391,7 @@
     padding: 0.2rem 0.45rem;
     background: #191919;
     border: 1px solid var(--border-color);
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     font-size: 0.68rem;
     font-family: 'JetBrains Mono', monospace;
     color: var(--text-muted);
@@ -407,7 +407,7 @@
     height: 32px;
     padding: 0 0.85rem;
     font-size: 0.75rem;
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
@@ -473,13 +473,13 @@
     gap: 0.4rem;
     padding: 0.5rem 1.15rem;
     background: #0d0d0d;
-    border: 1px solid rgba(238, 0, 0, 0.45);
-    border-radius: 4px;
+    border: 1px solid rgba(218, 7, 10, 0.45);
+    border-radius: var(--radius-md);
     font-size: 1.25rem;
     font-family: 'JetBrains Mono', monospace;
     font-weight: 700;
     color: #ffffff;
-    box-shadow: 0 0 15px rgba(238, 0, 0, 0.2);
+    box-shadow: 0 0 15px rgba(218, 7, 10, 0.2);
 }
 
 .modalTitleMeta {
@@ -516,7 +516,7 @@
 .closeModalBtn {
     width: 36px;
     height: 36px;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     border: 1px solid var(--border-color);
     background: #1e1e1e;
     color: var(--text-muted);
@@ -550,7 +550,7 @@
 .editSectionCard {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -580,7 +580,7 @@
     font-size: 0.7rem;
     font-family: 'JetBrains Mono', monospace;
     padding: 1px 6px;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     background: rgba(255, 255, 255, 0.1);
     color: #e2e8f0;
 }
@@ -610,7 +610,7 @@
     padding: 0 1rem 0 2.4rem;
     background: #141414;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.82rem;
     outline: none;
@@ -630,7 +630,7 @@
     overflow-y: auto;
     background: #1a1a1a;
     border: 1px solid #444444;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     z-index: 100;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6);
 }
@@ -670,7 +670,7 @@
     padding: 0.85rem;
     background: #121212;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     align-content: flex-start;
 }
 
@@ -679,7 +679,7 @@
     align-items: center;
     gap: 0.45rem;
     padding: 0.35rem 0.65rem;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     font-size: 0.78rem;
     font-weight: 600;
     font-family: 'Inter', sans-serif;
@@ -731,7 +731,7 @@
     padding: 0 1rem 0 2.4rem;
     background: #141414;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.82rem;
     outline: none;
@@ -751,7 +751,7 @@
     overflow-y: auto;
     background: #1a1a1a;
     border: 1px solid #5865f2;
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     z-index: 100;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.7);
 }
@@ -810,7 +810,7 @@
     padding: 0.35rem 0.65rem;
     background: rgba(88, 101, 242, 0.12);
     border: 1px solid rgba(88, 101, 242, 0.3);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     font-size: 0.78rem;
     color: #e2e8f0;
     transition: transform 0.15s;

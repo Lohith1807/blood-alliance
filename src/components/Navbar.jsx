@@ -200,40 +200,12 @@ const Navbar = () => {
                         </li>
                         <li>
                             <NavItem
-                                active={false}
-                                onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/auth'}
-                            >
-                                Register for CWL
-                            </NavItem>
-                        </li>
-                        <li>
-                            <NavItem
-                                active={location.pathname === '/tracker'}
-                                onClick={() => handleNavClick('/tracker')}
-                            >
-                                CWL Players
-                            </NavItem>
-                        </li>
-                        <li>
-                            <NavItem
                                 active={location.pathname === '/player'}
                                 onClick={() => handleNavClick('/player')}
                             >
                                 Search
                             </NavItem>
                         </li>
-
-                        {/* Beside Search: LOGIN OPTION (when logged out) */}
-                        {!isAuthenticated && (
-                            <li>
-                                <NavItem
-                                    active={location.pathname === '/login'}
-                                    onClick={() => handleNavClick('/login')}
-                                >
-                                    Login
-                                </NavItem>
-                            </li>
-                        )}
 
                         {/* AFTER LOGIN: ONLY A DROPDOWN ON DESKTOP */}
                         {isAuthenticated && (
@@ -242,8 +214,8 @@ const Navbar = () => {
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                                     className={styles.link}
                                     style={{
-                                        color: isModuleActive ? 'var(--rh-red)' : 'var(--text-secondary)',
-                                        borderBottom: isModuleActive ? '2px solid var(--rh-red)' : '2px solid transparent',
+                                        color: isModuleActive ? '#ffffff' : 'var(--muted-foreground)',
+                                        backgroundColor: isModuleActive ? 'var(--primary)' : 'transparent',
                                         cursor: 'pointer',
                                         display: 'inline-flex',
                                         alignItems: 'center',
@@ -335,7 +307,7 @@ const Navbar = () => {
                                                         <span style={{
                                                             fontSize: '0.62rem',
                                                             padding: '1px 4px',
-                                                            background: 'rgba(238, 0, 0, 0.2)',
+                                                            background: 'rgba(218, 7, 10, 0.2)',
                                                             color: 'var(--rh-red)',
                                                             borderRadius: 2,
                                                             fontFamily: 'JetBrains Mono',
@@ -439,40 +411,56 @@ const Navbar = () => {
                             <div
                                 style={{
                                     display: 'flex',
+                                    flexDirection: 'column',
                                     alignItems: 'center',
-                                    gap: '0.4rem',
-                                    padding: '0.2rem 0.55rem',
-                                    background: 'rgba(255, 255, 255, 0.05)',
+                                    justifyContent: 'center',
+                                    gap: '2px',
+                                    padding: '0.24rem 0.7rem',
+                                    background: 'var(--muted)',
                                     border: '1px solid var(--border-color)',
-                                    borderRadius: 3,
-                                    fontSize: '0.72rem',
-                                    fontFamily: 'JetBrains Mono',
-                                    color: 'var(--text-secondary)'
+                                    borderRadius: '9999px',
+                                    fontFamily: 'var(--font-sans)',
+                                    lineHeight: 1.1
                                 }}
                                 title={user?.email}
                             >
-                                <span style={{
-                                    display: 'inline-block',
-                                    width: 6,
-                                    height: 6,
-                                    borderRadius: '50%',
-                                    backgroundColor: '#4ade80'
-                                }} />
-                                <span style={{
-                                    fontWeight: 700,
-                                    color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa'
-                                }}>
-                                    {user?.role?.toUpperCase()}
-                                </span>
+                                {user?.name && (
+                                    <span style={{
+                                        fontSize: '0.72rem',
+                                        fontWeight: 600,
+                                        color: 'var(--text-primary)'
+                                    }}>
+                                        {user.name}
+                                    </span>
+                                )}
+                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.32rem' }}>
+                                    <span style={{
+                                        display: 'inline-block',
+                                        width: 6,
+                                        height: 6,
+                                        borderRadius: '50%',
+                                        backgroundColor: '#4ade80',
+                                        flexShrink: 0
+                                    }} />
+                                    <span style={{
+                                        fontSize: user?.name ? '0.58rem' : '0.68rem',
+                                        fontWeight: 700,
+                                        fontFamily: 'var(--font-mono)',
+                                        letterSpacing: '0.04em',
+                                        color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa'
+                                    }}>
+                                        {user?.role?.toUpperCase()}
+                                    </span>
+                                </div>
                             </div>
                             <button
                                 onClick={handleLogout}
                                 className="btn btn-secondary"
                                 style={{
-                                    height: 30,
+                                    height: 28,
                                     padding: '0 0.65rem',
                                     fontSize: '0.75rem',
-                                    borderRadius: 2
+                                    borderRadius: 'var(--radius-md)'
                                 }}
                                 title="Sign out of your session"
                             >
@@ -481,12 +469,35 @@ const Navbar = () => {
                         </div>
                     )}
 
+                    {!isAuthenticated && (
+                        <button
+                            onClick={() => handleNavClick('/login')}
+                            className="btn btn-secondary hide-mobile"
+                            style={{
+                                height: 28,
+                                padding: '0 0.7rem',
+                                fontSize: '0.75rem',
+                                fontWeight: 600,
+                                borderRadius: 'var(--radius-md)',
+                                backgroundColor: 'var(--card)',
+                                borderColor: 'var(--border-color)',
+                                color: '#ffffff'
+                            }}
+                        >
+                            Login
+                        </button>
+                    )}
+
                     <a
                         href="https://discord.gg/gGGEs5SV9z"
                         target="_blank"
                         rel="noopener noreferrer"
                         className={`btn btn-primary hide-mobile ${styles.discordBtn}`}
+                        style={{ gap: '0.4rem' }}
                     >
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                            <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                        </svg>
                         Join Discord
                     </a>
 
@@ -535,18 +546,6 @@ const Navbar = () => {
                                 onClick={() => handleNavClick('/', '#rules')}
                             >
                                 Rules
-                            </MobileNavItem>
-                            <MobileNavItem
-                                active={false}
-                                onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/'}
-                            >
-                                Register for CWL
-                            </MobileNavItem>
-                            <MobileNavItem
-                                active={location.pathname === '/tracker'}
-                                onClick={() => handleNavClick('/tracker')}
-                            >
-                                CWL Players
                             </MobileNavItem>
                             <MobileNavItem
                                 active={location.pathname === '/player'}
@@ -650,7 +649,7 @@ const Navbar = () => {
                                     }}>
                                         <div>
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-                                                {user?.email}
+                                                {user?.name || user?.email}
                                             </div>
                                             <div style={{ fontSize: '0.68rem', color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa', fontFamily: 'JetBrains Mono', textTransform: 'uppercase' }}>
                                                 Role: {user?.role}
@@ -691,8 +690,8 @@ const NavItem = ({ children, active, onClick }) => (
         onClick={onClick}
         className={styles.link}
         style={{
-            color: active ? 'var(--rh-red)' : 'var(--text-secondary)',
-            borderBottom: active ? '2px solid var(--rh-red)' : '2px solid transparent',
+            color: active ? '#ffffff' : 'var(--muted-foreground)',
+            backgroundColor: active ? 'var(--primary)' : 'transparent',
             cursor: 'pointer'
         }}
     >
@@ -705,9 +704,9 @@ const MobileNavItem = ({ children, active, onClick }) => (
         onClick={onClick}
         className={styles.mobileLink}
         style={{
-            color: active ? 'var(--rh-red)' : 'var(--text-primary)',
-            backgroundColor: active ? 'rgba(238, 0, 0, 0.1)' : 'transparent',
-            borderLeft: active ? '3px solid var(--rh-red)' : '3px solid transparent'
+            color: active ? '#ffffff' : 'var(--muted-foreground)',
+            backgroundColor: active ? 'var(--primary)' : 'transparent',
+            borderRadius: 'var(--radius-xl)'
         }}
     >
         {children}

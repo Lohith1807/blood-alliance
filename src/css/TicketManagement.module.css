@@ -39,7 +39,7 @@
 .statCard {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 1rem 1.25rem;
     display: flex;
     align-items: center;
@@ -49,11 +49,11 @@
 .statIconWrap {
     width: 40px;
     height: 40px;
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     display: flex;
     align-items: center;
     justify-content: center;
-    background: rgba(238, 0, 0, 0.1);
+    background: rgba(218, 7, 10, 0.1);
     color: var(--rh-red);
 }
 
@@ -75,7 +75,7 @@
 .controlsBar {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 1rem 1.25rem;
     margin-bottom: 1.5rem;
     display: flex;
@@ -95,7 +95,7 @@
     padding: 0.45rem 0.85rem;
     background: #1e1e1e;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.75rem;
     font-weight: 600;
     color: var(--text-muted);
@@ -110,7 +110,7 @@
 }
 
 .catTabActive {
-    background: rgba(238, 0, 0, 0.15);
+    background: rgba(218, 7, 10, 0.15);
     border-color: var(--rh-red);
     color: #fff;
 }
@@ -132,7 +132,7 @@
     padding: 0.45rem 0.65rem 0.45rem 2rem;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.78rem;
     font-family: 'JetBrains Mono', monospace;
@@ -187,7 +187,7 @@
     padding: 0.45rem 0.75rem 0.45rem 2.25rem;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.8125rem;
     outline: none;
@@ -205,7 +205,7 @@
     padding: 0.45rem 0.75rem;
     background: #1e1e1e;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.8125rem;
     font-weight: 600;
@@ -228,7 +228,7 @@
     padding: 0.45rem 0.85rem;
     background: #1e1e1e;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.8125rem;
     font-weight: 600;
@@ -243,7 +243,7 @@
 }
 
 .mobileFilterTriggerActive {
-    background: rgba(238, 0, 0, 0.15);
+    background: rgba(218, 7, 10, 0.15);
     border-color: var(--rh-red);
     color: #fff;
 }
@@ -268,7 +268,7 @@
     padding: 0.5rem 0.75rem;
     background: rgba(255, 255, 255, 0.02);
     border: 1px dashed var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
 }
 
 .activeFiltersLabel {
@@ -285,7 +285,7 @@
     padding: 0.2rem 0.55rem;
     background: #222;
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.72rem;
     color: var(--text-primary);
     font-family: 'JetBrains Mono', monospace;
@@ -319,7 +319,7 @@
 .tableCard {
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     overflow: hidden;
 }
 
@@ -367,7 +367,7 @@
 .catBadge {
     display: inline-flex;
     padding: 0.2rem 0.5rem;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     font-size: 0.7rem;
     font-weight: 600;
     font-family: 'JetBrains Mono', monospace;
@@ -381,8 +381,8 @@
 }
 
 .catWar {
-    background: rgba(238, 0, 0, 0.15);
-    border: 1px solid rgba(238, 0, 0, 0.4);
+    background: rgba(218, 7, 10, 0.15);
+    border: 1px solid rgba(218, 7, 10, 0.4);
     color: #f87171;
 }
 
@@ -427,7 +427,7 @@
     padding: 0.3rem 0.6rem;
     font-size: 0.72rem;
     font-weight: 600;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     cursor: pointer;
     border: 1px solid var(--border-color);
     background: #2b2b2b;
@@ -470,9 +470,9 @@
     display: inline-flex;
     align-items: center;
     padding: 0.15rem 0.45rem;
-    border-radius: 2px;
-    background: rgba(238, 0, 0, 0.12);
-    border: 1px solid rgba(238, 0, 0, 0.35);
+    border-radius: var(--radius-md);
+    background: rgba(218, 7, 10, 0.12);
+    border: 1px solid rgba(218, 7, 10, 0.35);
     color: #ff6b6b;
     font-size: 0.72rem;
     font-weight: 700;
@@ -603,7 +603,7 @@
 .sheetCloseBtn {
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     color: var(--text-muted);
     cursor: pointer;
     width: 32px;
@@ -648,7 +648,7 @@
     padding: 0.65rem 0.85rem;
     background: #202020;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     font-size: 0.8125rem;
     font-weight: 600;
     color: var(--text-muted);
@@ -666,7 +666,7 @@
 }
 
 .chipOptionActive {
-    background: rgba(238, 0, 0, 0.15);
+    background: rgba(218, 7, 10, 0.15);
     border-color: var(--rh-red);
     color: #fff;
 }
@@ -689,7 +689,7 @@
     padding: 0.65rem 0.85rem 0.65rem 2.25rem;
     background: #202020;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.8125rem;
     font-family: 'JetBrains Mono', monospace;
@@ -717,7 +717,7 @@
     padding: 0.7rem;
     background: #202020;
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     color: var(--text-muted);
     font-size: 0.8125rem;
     font-weight: 600;
@@ -735,7 +735,7 @@
     padding: 0.7rem;
     background: var(--rh-red);
     border: 1px solid var(--rh-red);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     color: #fff;
     font-size: 0.8125rem;
     font-weight: 600;

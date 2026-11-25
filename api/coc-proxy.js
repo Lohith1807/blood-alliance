@@ -10,38 +10,17 @@ const DB_NAME = "ClansData";
 const COLLECTION_NAME = "system_config";
 const CONFIG_KEY = "backend_tunnel_url";
 
+// In-memory TTL cache for GET requests (2 minutes)
+const responseCache = new Map();
+const CACHE_TTL_MS = 120 * 1000;
+
 async function getBackendUrl() {
-    if (!MONGO_URL) {
-        throw new Error("MONGO_URL or MONGODB_URI environment variable is not defined");
-    }
-    // Return cached URL if fresh (< 60 seconds)
-    if (cachedBackendUrl && (Date.now() - cacheTime < 60000)) {
-        return cachedBackendUrl;
-    }
-
-    if (!cachedClient) {
-        cachedClient = new MongoClient(MONGO_URL);
-        await cachedClient.connect();
-    }
-
-    const db = cachedClient.db(DB_NAME);
-    const collection = db.collection(COLLECTION_NAME);
-
-    const doc = await collection.findOne({ key: CONFIG_KEY });
-
-    if (doc && doc.value) {
-        cachedBackendUrl = doc.value;
-        cacheTime = Date.now();
-        console.log(`[PROXY-CONFIG] Refreshed Backend URL: ${cachedBackendUrl}`);
-        return cachedBackendUrl;
-    }
-
-    console.warn(`[PROXY-CONFIG] No URL found in DB, falling back to IP`);
-    return "http://2.56.246.81:30267"; // Fallback
+    return process.env.COC_BACKEND_URL || "http://217.148.167.14:3002";
 }
 
 export default async function handler(req, res) {
-    const { path, ...queryParams } = req.query;
+    const { path, refresh, ...queryParams } = req.query;
+    const bypassCache = refresh === 'true';
 
     // Simple health check for the proxy itself
     if (path === 'internal-ping' || req.url.includes('internal-ping')) {
@@ -76,6 +55,17 @@ export default async function handler(req, res) {
 
         console.log(`[PROXY-INVOKE] ${req.method} -> ${targetUrl}`);
 
+        // Serve from in-memory cache for GET requests if fresh
+        if (req.method === 'GET' && !bypassCache) {
+            const cached = responseCache.get(targetUrl);
+            if (cached && Date.now() - cached.ts < CACHE_TTL_MS) {
+                res.setHeader('X-Cache', 'HIT');
+                res.setHeader('Cache-Control', 'public, s-maxage=120, stale-while-revalidate=60');
+                if (cached.contentType) res.setHeader('Content-Type', cached.contentType);
+                return res.status(cached.status).send(cached.data);
+            }
+        }
+
         const fetchOptions = {
             method: req.method,
             headers: {
@@ -99,8 +89,6 @@ export default async function handler(req, res) {
         // Handle Setup-Cookie from Backend
         const setCookieHeader = response.headers.get('set-cookie');
         if (setCookieHeader) {
-            // Modify SameSite if needed, or just pass valid attributes
-            // Removing 'Secure' if localhost might be needed but Tunnel is HTTPS so it's fine.
             res.setHeader('Set-Cookie', setCookieHeader);
         }
 
@@ -118,6 +106,17 @@ export default async function handler(req, res) {
         const contentType = response.headers.get('content-type');
         if (contentType) {
             res.setHeader('Content-Type', contentType);
+        }
+
+        if (req.method === 'GET' && response.ok) {
+            responseCache.set(targetUrl, {
+                status: response.status,
+                data,
+                contentType,
+                ts: Date.now()
+            });
+            res.setHeader('X-Cache', bypassCache ? 'BYPASS' : 'MISS');
+            res.setHeader('Cache-Control', bypassCache ? 'no-store' : 'public, s-maxage=120, stale-while-revalidate=60');
         }
 
         return res.status(response.status).send(data);

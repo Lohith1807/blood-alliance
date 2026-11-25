@@ -46,8 +46,6 @@ function App() {
         <BrowserRouter>
           <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
             <div className="bg-grid"></div>
-            <div className="bg-noise"></div>
-            <div className="scanline"></div>
 
             <Navbar />
 

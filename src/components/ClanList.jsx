@@ -1,121 +1,76 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Users, ExternalLink, ShieldCheck, Activity, BarChart3, Database, Loader2 } from 'lucide-react';
+import { BarChart3, Swords, Trophy } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import '@/css/ClanList.css';
 
-// Helper to get leader/co-leaders from memberList
-const getLeaders = (memberList) => {
-    if (!memberList) return { leader: 'Unknown', coLeaders: [] };
-    const leader = memberList.find(m => m.role === 'leader');
-    const coLeaders = memberList.filter(m => m.role === 'coLeader').map(m => m.name);
-    return {
-        leader: leader?.name || 'Unknown',
-        coLeaders: coLeaders
-    };
-};
-
 const ClanCard = ({ clan, index }) => {
-    const { leader, coLeaders } = getLeaders(clan.memberList);
     const navigate = useNavigate();
 
     const handleClanClick = () => {
-        // Strip '#' from tag for cleaner URL
+        // Strip '#' from tag for cleaner URL -> opens full ClanDetail overview
         navigate(`/clan/${clan.tag.replace('#', '')}`);
     };
 
     return (
         <motion.div
-            className="clan-card"
-            initial={{ opacity: 0, y: 30 }}
+            className="clan-card clan-card-compact"
+            initial={{ opacity: 0, y: 12 }}
             whileInView={{ opacity: 1, y: 0 }}
             transition={{
-                duration: 0.5,
-                delay: (index % 3) * 0.1,
-                ease: [0.215, 0.61, 0.355, 1]
+                duration: 0.22,
+                delay: (index % 3) * 0.03,
+                ease: "easeOut"
             }}
-            viewport={{ once: true, margin: "-50px" }}
+            viewport={{ once: true, margin: "-20px" }}
             onClick={handleClanClick}
+            title={`View ${clan.name} full overview`}
         >
-            <div className="card-top-badges">
-                <div className="unit-tag">
-                    Clan {String(index + 1).padStart(2, '0')}
-                </div>
-                <div className={`clan-type-badge ${clan.clanType === 'WAR' ? 'badge-war' : 'badge-fwa'}`}>
-                    {clan.clanType || 'FWA'}
-                </div>
+            <div className="compact-badge-wrap">
+                <img
+                    src={clan.badgeUrls?.medium || clan.badgeUrls?.large}
+                    alt={clan.name}
+                    className="compact-badge"
+                    onError={(e) => { e.target.src = 'https://api-assets.clashofclans.com/badges/200/empty.png'; }}
+                />
             </div>
 
-            <div className="main-content">
-                <div className="badge-frame">
-                    <img
-                        src={clan.badgeUrls?.medium || clan.badgeUrls?.large}
-                        alt={clan.name}
-                        className="clan-badge"
-                        onError={(e) => { e.target.src = 'https://api-assets.clashofclans.com/badges/200/empty.png'; }}
-                    />
-                    <div className="badge-glow"></div>
+            <div className="compact-info">
+                <div className="compact-top-row">
+                    <h3 className="compact-clan-name">{clan.name}</h3>
+                    <span className="compact-lvl-pill">Lvl {clan.clanLevel}</span>
+                    <span className={`compact-type-pill ${clan.clanType === 'WAR' ? 'compact-type-war' : 'compact-type-fwa'}`}>
+                        {clan.clanType || 'FWA'}
+                    </span>
                 </div>
 
-                <div className="info-panel">
-                    <h3 className="clan-title">{clan.name}</h3>
-                    <span className="clan-hash mono">{clan.tag}</span>
+                <div className="compact-stats-row">
+                    <span className="compact-stat" title="Members">
+                        <span className="compact-green-dot" />
+                        <span>{clan.members}/50</span>
+                    </span>
+                    <span className="compact-stat" title="Wars Won">
+                        <Swords size={13} color="#f59e0b" />
+                        <span>{clan.warWins?.toLocaleString?.() ?? clan.warWins}</span>
+                    </span>
+                    <span className="compact-stat" title="Clan Trophies">
+                        <Trophy size={12} color="#fbbf24" />
+                        <span>{clan.clanPoints?.toLocaleString?.() ?? clan.clanPoints}</span>
+                    </span>
                 </div>
             </div>
-
-            <div className="metrics-horizontal">
-                <div className="metric-card">
-                    <span className="metric-key">Level</span>
-                    <span className="metric-val mono">{clan.clanLevel}</span>
-                </div>
-                <div className="metric-card">
-                    <span className="metric-key">Members</span>
-                    <span className="metric-val mono">{clan.members}/50</span>
-                </div>
-                <div className="metric-card">
-                    <span className="metric-key">War Wins</span>
-                    <span className="metric-val mono" style={{ color: '#10b981' }}>{clan.warWins}</span>
-                </div>
-            </div>
-
-            <div className="hierarchy-box">
-                <div className="hierarchy-label">
-                    <ShieldCheck size={12} /> Clan Hierarchy
-                </div>
-                <div className="commander-text">
-                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>Leader:</span> <span className="commander-name">{leader}</span>
-                </div>
-                <div className="commander-text" style={{ marginTop: '0.25rem' }}>
-                    <span className="metric-key" style={{ fontSize: '0.6rem' }}>Co-Leaders:</span> {coLeaders.slice(0, 1).join(', ')}{coLeaders.length > 1 ? ` +${coLeaders.length - 1}` : ''}
-                </div>
-            </div>
-
-            <button
-                className="view-btn"
-                onClick={(e) => {
-                    e.stopPropagation();
-                    handleClanClick();
-                }}
-            >
-                View Clan <ExternalLink size={14} />
-            </button>
         </motion.div>
     );
 };
 
 // Loading skeleton card
-const SkeletonCard = ({ index }) => (
-    <div className="clan-card skeleton-card">
-        <div className="card-top" style={{ border: 'none' }}>
-            <div className="unit-tag" style={{ opacity: 0.3 }}>Loading...</div>
-        </div>
-        <div className="main-content">
-            <div className="badge-frame" style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }}></div>
-            <div className="info-panel">
-                <div style={{ width: '120px', height: '18px', background: 'rgba(255,255,255,0.05)', marginBottom: '8px' }}></div>
-                <div style={{ width: '80px', height: '12px', background: 'rgba(255,255,255,0.05)' }}></div>
-            </div>
+const SkeletonCard = () => (
+    <div className="clan-card clan-card-compact skeleton-card">
+        <div className="compact-badge-wrap" style={{ background: 'rgba(255,255,255,0.05)', borderRadius: '50%' }} />
+        <div className="compact-info">
+            <div style={{ width: '130px', height: '16px', background: 'rgba(255,255,255,0.06)', borderRadius: '6px', marginBottom: '8px' }} />
+            <div style={{ width: '170px', height: '12px', background: 'rgba(255,255,255,0.04)', borderRadius: '6px' }} />
         </div>
     </div>
 );
@@ -126,14 +81,14 @@ const ClanList = () => {
     return (
         <section id="clans" className="container clan-list-section">
             <div className="section-header">
-                <div className="tech-label mono">
-                    <BarChart3 size={16} /> Clan Information
+                <div className="tech-label">
+                    <BarChart3 size={14} /> Our Family
                 </div>
                 <h2 className="section-title">Alliance Clans</h2>
                 <p className="section-subtitle">
                     {loading
                         ? 'Loading clans...'
-                        : `Blood Alliance has ${clans.length} active clans registered.`
+                        : `${clans.length} active clans — click any clan for full details.`
                     }
                 </p>
             </div>

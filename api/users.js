@@ -33,6 +33,7 @@ export default async function handler(req, res) {
 
             const sanitizedUsers = users.map(u => ({
                 id: u._id.toString(),
+                name: u.name || '',
                 email: u.email,
                 role: u.role,
                 isOwner: u.email?.toLowerCase() === 'lohithreddy1819@gmail.com',
@@ -51,11 +52,13 @@ export default async function handler(req, res) {
 
         // 2. CREATE NEW USER
         if (req.method === 'POST') {
-            const { email, password, role, canViewLogs, canManageCommands, assignedClans } = req.body || {};
+            const { name, email, password, role, canViewLogs, canManageCommands, assignedClans } = req.body || {};
 
             if (!email || !password || !role) {
                 return res.status(400).json({ error: 'Email, password, and role are required' });
             }
+
+            const cleanName = name ? String(name).trim() : '';
 
             const cleanEmail = String(email).trim().toLowerCase();
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -85,6 +88,7 @@ export default async function handler(req, res) {
 
             const { salt, hash } = hashPassword(password);
             const newUser = {
+                name: cleanName,
                 email: cleanEmail,
                 passwordHash: hash,
                 salt: salt,
@@ -102,7 +106,7 @@ export default async function handler(req, res) {
                 user: auth.user,
                 action: 'USER_CREATE',
                 target: cleanEmail,
-                details: `Created user ${cleanEmail} with role '${cleanRole}'${sanitizedClans.length ? ` (assigned to ${sanitizedClans.length} clans: ${sanitizedClans.join(', ')})` : ''}${newUser.canViewLogs ? ' (granted log access)' : ''}${newUser.canManageCommands ? ' (granted command management)' : ''}`,
+                details: `Created user ${cleanName ? `${cleanName} (${cleanEmail})` : cleanEmail} with role '${cleanRole}'${sanitizedClans.length ? ` (assigned to ${sanitizedClans.length} clans: ${sanitizedClans.join(', ')})` : ''}${newUser.canViewLogs ? ' (granted log access)' : ''}${newUser.canManageCommands ? ' (granted command management)' : ''}`,
                 req
             });
 
@@ -111,6 +115,7 @@ export default async function handler(req, res) {
                 message: 'User created successfully',
                 user: {
                     id: result.insertedId.toString(),
+                    name: cleanName,
                     email: cleanEmail,
                     role: cleanRole,
                     assignedClans: newUser.assignedClans,
@@ -123,7 +128,7 @@ export default async function handler(req, res) {
 
         // 3. EDIT USER
         if (req.method === 'PUT') {
-            const { id, email, role, password, canViewLogs, canManageCommands } = req.body || {};
+            const { id, name, email, role, password, canViewLogs, canManageCommands } = req.body || {};
 
             if (!id) {
                 return res.status(400).json({ error: 'User ID is required' });
@@ -147,6 +152,11 @@ export default async function handler(req, res) {
             }
 
             const updateFields = { updatedAt: new Date() };
+
+            // Update Name
+            if (name !== undefined) {
+                updateFields.name = String(name).trim();
+            }
 
             // Update Email
             if (email) {

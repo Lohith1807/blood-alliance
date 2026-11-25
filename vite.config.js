@@ -63,6 +63,19 @@ function apiDevPlugin() {
               return res;
             };
           }
+          if (!res.send) {
+            res.send = function (data) {
+              if (typeof data === 'object' && data !== null && !Buffer.isBuffer(data)) {
+                if (!res.headersSent) {
+                  res.setHeader('Content-Type', 'application/json');
+                }
+                res.end(JSON.stringify(data));
+              } else {
+                res.end(data ?? '');
+              }
+              return res;
+            };
+          }
 
           await handler(req, res);
         } catch (err) {
@@ -89,9 +102,9 @@ export default defineConfig({
   server: {
     proxy: {
       '/coc-api': {
-        target: 'https://blood-alliance.vercel.app',
+        target: 'http://217.148.167.14:3002',
         changeOrigin: true,
-        secure: false,
+        rewrite: (p) => p.replace(/^\/coc-api/, ''),
       },
     },
   },

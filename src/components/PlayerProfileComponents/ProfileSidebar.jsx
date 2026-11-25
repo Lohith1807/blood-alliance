@@ -14,7 +14,7 @@ const ProfileSidebar = ({ playerData, progressStats, itemVariants }) => (
                         <div className={styles.leagueName}> {(playerData.league || playerData.leagueTier)?.name}</div>
                     </>
                 ) : (
-                    <Shield size={48} color="#EE0000" />
+                    <Shield size={48} color="#da070a" />
                 )}
             </div>
         </div>

@@ -3,6 +3,47 @@ import clientPromise from '../lib/mongodb.js';
 import { requireAuth } from '../lib/auth.js';
 import { logActivity } from '../lib/auditLog.js';
 
+const COC_BACKEND_URL = (process.env.COC_BACKEND_URL || 'http://217.148.167.14:3002').replace(/\/+$/, '');
+const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
+
+let clansListCache = null; // { ts, data }
+const singleClanCache = new Map(); // tag -> { ts, data }
+
+function clearClansCache() {
+    clansListCache = null;
+    singleClanCache.clear();
+}
+
+async function fetchLiveClan(mongoClan) {
+    const rawTag = mongoClan.tag || (typeof mongoClan._id === 'string' && mongoClan._id.startsWith('#') ? mongoClan._id : null);
+    if (!rawTag) return mongoClan;
+
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 5000);
+    try {
+        const res = await fetch(`${COC_BACKEND_URL}/api/clan/${encodeURIComponent(rawTag)}`, {
+            signal: controller.signal,
+            headers: { Accept: 'application/json' }
+        });
+        if (!res.ok) return mongoClan;
+        const live = await res.json();
+        if (!live || !live.tag) return mongoClan;
+
+        return {
+            ...mongoClan,
+            ...live,
+            _id: mongoClan._id,
+            order: mongoClan.order,
+            clanType: mongoClan.clanType || live.clanType || 'FWA',
+            lastSyncedAt: new Date().toISOString()
+        };
+    } catch {
+        return mongoClan;
+    } finally {
+        clearTimeout(timer);
+    }
+}
+
 export default async function handler(req, res) {
     // 1. CORS & Security Headers
     const origin = req.headers.origin;
@@ -33,39 +74,62 @@ export default async function handler(req, res) {
 
         // PUBLIC GET
         if (req.method === 'GET') {
-            res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=30');
-            const { tag } = req.query;
+            res.setHeader('Cache-Control', 'public, s-maxage=300, stale-while-revalidate=60');
+            const { tag, refresh } = req.query;
+            const bypassCache = refresh === 'true';
 
             if (tag) {
                 const cleanTag = String(tag).trim();
-                const clanTag = cleanTag.startsWith('#') ? cleanTag : `#${cleanTag}`;
+                const clanTag = cleanTag.startsWith('#') ? cleanTag.toUpperCase() : `#${cleanTag.toUpperCase()}`;
+
+                if (!bypassCache) {
+                    const cachedSingle = singleClanCache.get(clanTag);
+                    if (cachedSingle && Date.now() - cachedSingle.ts < CACHE_TTL_MS) {
+                        res.setHeader('X-Cache', 'HIT');
+                        return res.status(200).json(cachedSingle.data);
+                    }
+                }
 
                 let clan = await collection.findOne({ _id: clanTag });
                 if (!clan) {
-                    // Also try finding by tag field or ObjectId if _id is not tag
                     clan = await collection.findOne({ tag: clanTag });
                 }
 
                 if (!clan) {
                     return res.status(404).json({ error: 'Clan not found' });
                 }
-                return res.status(200).json(clan);
+
+                const mergedClan = await fetchLiveClan(clan);
+                singleClanCache.set(clanTag, { ts: Date.now(), data: mergedClan });
+                res.setHeader('X-Cache', 'MISS');
+                return res.status(200).json(mergedClan);
             }
 
-            // Fetch all clans, sorting by order if present
-            const clans = await collection.find({}).sort({ order: 1, name: 1 }).toArray();
+            if (!bypassCache && clansListCache && Date.now() - clansListCache.ts < CACHE_TTL_MS) {
+                res.setHeader('X-Cache', 'HIT');
+                return res.status(200).json(clansListCache.data);
+            }
 
-            return res.status(200).json({
+            // Fetch alliance clan list from MongoDB, sorted by order
+            const mongoClans = await collection.find({}).sort({ order: 1, name: 1 }).toArray();
+            const liveClans = await Promise.all(mongoClans.map(fetchLiveClan));
+
+            const payload = {
                 success: true,
-                count: clans.length,
-                source: 'mongodb',
-                clans: clans
-            });
+                count: liveClans.length,
+                source: 'mongodb+coc-live',
+                clans: liveClans
+            };
+            clansListCache = { ts: Date.now(), data: payload };
+            res.setHeader('X-Cache', 'MISS');
+
+            return res.status(200).json(payload);
         }
 
         // MUTATIONS (POST, PUT, PATCH, DELETE) REQUIRE AUTH
         const auth = await requireAuth(req, res, null, { requiredModule: 'manage-clans' });
         if (!auth) return; // response handled by requireAuth
+        clearClansCache();
 
         // REORDER CLANS (PATCH or POST with action === 'reorder')
         if (req.method === 'PATCH' || (req.method === 'POST' && req.body?.action === 'reorder')) {

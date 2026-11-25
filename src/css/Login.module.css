@@ -13,7 +13,7 @@
     max-width: 440px;
     background: var(--bg-secondary);
     border: 1px solid var(--border-color);
-    border-radius: 4px;
+    border-radius: var(--radius-md);
     padding: 2.25rem 2rem;
     box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6);
     position: relative;
@@ -40,9 +40,9 @@
     align-items: center;
     gap: 0.5rem;
     padding: 0.25rem 0.6rem;
-    background: rgba(238, 0, 0, 0.1);
-    border: 1px solid rgba(238, 0, 0, 0.3);
-    border-radius: 2px;
+    background: rgba(218, 7, 10, 0.1);
+    border: 1px solid rgba(218, 7, 10, 0.3);
+    border-radius: var(--radius-md);
     color: var(--rh-red);
     font-size: 0.75rem;
     font-weight: 600;
@@ -104,10 +104,10 @@
     padding: 0.75rem 0.85rem 0.75rem 2.5rem;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     color: var(--text-primary);
     font-size: 0.875rem;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     outline: none;
     transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
 }
@@ -144,7 +144,7 @@
 
 .alertBox {
     padding: 0.75rem 1rem;
-    border-radius: 3px;
+    border-radius: var(--radius-md);
     font-size: 0.8125rem;
     display: flex;
     align-items: center;
@@ -153,8 +153,8 @@
 }
 
 .errorAlert {
-    background: rgba(238, 0, 0, 0.12);
-    border: 1px solid rgba(238, 0, 0, 0.4);
+    background: rgba(218, 7, 10, 0.12);
+    border: 1px solid rgba(218, 7, 10, 0.4);
     color: #ff6b6b;
 }
 

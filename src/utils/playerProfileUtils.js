@@ -22,6 +22,7 @@ export const getTownHallImage = (level) => {
         16: 'static.wikia.nocookie.net/clashofclans/images/5/53/Town_Hall16.png/revision/latest/scale-to-width-down/200',
         17: 'static.wikia.nocookie.net/clashofclans/images/2/24/Town_Hall17-1.png/revision/latest/scale-to-width-down/200',
         18: 'static.wikia.nocookie.net/clashofclans/images/7/76/Town_Hall18.png/revision/latest/scale-to-width-down/200',
+        19: 'static.wikia.nocookie.net/clashofclans/images/7/77/Town_Hall19.png/revision/latest/scale-to-width-down/200',
     };
     return townHallImages[level] ? `${baseProxy}${townHallImages[level]}` : null;
 };

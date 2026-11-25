@@ -3,7 +3,10 @@
     display: flex;
     align-items: center;
     position: relative;
-    background: radial-gradient(circle at 30% 50%, rgba(238, 0, 0, 0.05) 0%, transparent 50%);
+    padding-top: var(--nav-height);
+    background:
+        radial-gradient(circle at 18% 28%, rgba(218, 7, 10, 0.14) 0%, transparent 48%),
+        radial-gradient(circle at 82% 72%, rgba(16, 185, 129, 0.07) 0%, transparent 45%);
     overflow: hidden;
 }
 
@@ -63,48 +66,113 @@
 
 .btnRow {
     display: flex;
-    gap: 1rem;
-    margin-bottom: 3rem;
+    gap: 0.85rem;
+    margin-bottom: 2.25rem;
     flex-wrap: wrap;
 }
 
-.btn {
-    padding: 0.625rem 1.5rem;
+.bevelBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.65rem 1.25rem;
+    font-family: var(--font-sans);
     font-size: 0.8125rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    gap: 8px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    border-radius: var(--radius-xl);
+    cursor: pointer;
+    text-decoration: none;
+    color: #ffffff;
+    border: 1px solid transparent;
+    transition: background-color 0.2s ease, border-color 0.2s ease, filter 0.2s ease;
 }
 
-.statusBox {
-    display: flex;
-    gap: 1.5rem;
-    padding-top: 2rem;
-    border-top: 1px solid var(--border-color);
-    flex-wrap: wrap;
+.bevelBtn:hover {
+    filter: brightness(1.08);
 }
 
-.statusItem {
+.bevelPrimary {
+    background-color: var(--primary);
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.bevelDiscord {
+    background-color: #5865f2;
+    border-color: rgba(255, 255, 255, 0.08);
+}
+
+.bevelDark {
+    background-color: var(--card);
+    border-color: var(--border-color);
+}
+
+.bevelDark:hover {
+    background-color: var(--accent);
+    filter: none;
+}
+
+/* Live 4-Stat Strip */
+.statsStrip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 0.75rem;
+    padding: 0.75rem;
+    background: rgba(11, 11, 12, 0.94);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), 0 12px 30px rgba(0, 0, 0, 0.45);
+}
+
+.statCell {
     display: flex;
     align-items: center;
-    gap: 6px;
-    color: var(--text-muted);
+    gap: 0.65rem;
+    padding: 0.45rem 0.6rem;
+    border-radius: var(--radius-lg);
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.04);
 }
 
-.statusLabel {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.65rem;
+.statIconWrap {
+    width: 32px;
+    height: 32px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.statMeta {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.statValue {
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.15;
+    font-variant-numeric: tabular-nums;
+}
+
+.statLabel {
+    font-family: var(--font-mono);
+    font-size: 0.6rem;
     font-weight: 600;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.06em;
+    color: var(--text-muted);
+    white-space: nowrap;
 }
 
-.pulsingDot {
-    width: 6px;
-    height: 6px;
-    background-color: #10b981;
-    border-radius: 50%;
-    box-shadow: 0 0 8px #10b981;
-    animation: pulse 2s infinite;
+@media (max-width: 640px) {
+    .statsStrip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
 }
 
 .carouselSection {

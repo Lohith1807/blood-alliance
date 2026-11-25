@@ -5,7 +5,7 @@
     width: 100%;
     max-width: 1200px;
     margin: 0 auto;
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     color: #fff;
     min-height: 100vh;
 }
@@ -35,7 +35,7 @@
 }
 
 .highlight {
-    color: #EE0000;
+    color: #da070a;
 }
 
 .form {
@@ -56,45 +56,46 @@
 .input {
     display: block;
     width: 100%;
-    padding: 1rem 1rem 1rem 3rem;
-    background-color: #1a1a1a;
-    border: 1px solid #333;
+    padding: 1rem 7.5rem 1rem 3rem;
+    background-color: var(--muted);
+    border: 1px solid var(--border-color);
     color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-mono);
     font-size: 0.9rem;
     letter-spacing: 0.05em;
-    border-radius: 0;
-    transition: all 0.2s;
+    border-radius: var(--radius-xl);
+    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
 .input:focus {
     outline: none;
-    border-color: #EE0000;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 2px rgba(218, 7, 10, 0.25);
 }
 
 .searchBtn {
     position: absolute;
-    right: 0.5rem;
-    height: calc(100% - 1rem);
-    /* 0.5rem padding top/bottom */
-    background-color: #EE0000;
+    right: 0.45rem;
+    height: calc(100% - 0.9rem);
+    background-color: var(--primary);
     color: white;
-    padding: 0 1.5rem;
+    padding: 0 1.4rem;
     border: none;
-    border-radius: 0;
-    font-weight: 900;
-    font-size: 0.75rem;
+    border-radius: var(--radius-lg);
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 0.78rem;
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.06em;
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background-color 0.2s, transform 0.15s;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .searchBtn:hover {
-    background-color: #CC0000;
+    background-color: #b80608;
 }
 
 .systemStatus {
@@ -121,15 +122,15 @@
     text-transform: uppercase;
     letter-spacing: 0.1em;
     padding: 4px 8px;
-    border: 1px solid #333;
+    border: 1px solid var(--border-color);
     transition: all 0.2s;
     font-family: 'JetBrains Mono', monospace;
 }
 
 .refreshBtn:hover {
-    color: #EE0000;
-    border-color: #EE0000;
-    background: rgba(238, 0, 0, 0.1);
+    color: #da070a;
+    border-color: #da070a;
+    background: rgba(218, 7, 10, 0.1);
 }
 
 .refreshBtn:disabled {
@@ -164,9 +165,9 @@
     display: grid;
     grid-template-columns: 1.2fr 1fr 1fr;
     /* Add third column for stats */
-    background: #1a1a1a;
-    border: 1px solid #333;
-    border-left: 4px solid #EE0000;
+    background: var(--card);
+    border: 1px solid var(--border-color);
+    border-left: 4px solid #da070a;
 }
 
 @media (max-width: 1024px) {
@@ -185,12 +186,12 @@
 }
 
 .playerSection {
-    border-right: 1px solid #333;
-    background: linear-gradient(90deg, #1a1a1a 0%, #242424 100%);
+    border-right: 1px solid var(--border-color);
+    background: linear-gradient(90deg, var(--card) 0%, var(--secondary) 100%);
 }
 
 .clanSection {
-    border-right: 1px solid #333;
+    border-right: 1px solid var(--border-color);
 }
 
 .leagueIconWrapper {
@@ -207,8 +208,8 @@
 .clanCardBadge {
     width: 60px;
     height: 60px;
-    background: #242424;
-    border: 1px solid #333;
+    background: var(--secondary);
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -250,7 +251,7 @@
 .expLevel {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
-    color: #EE0000;
+    color: #da070a;
     font-weight: 800;
 }
 
@@ -276,12 +277,12 @@
 }
 
 .thBadge {
-    background: #EE0000;
+    background: #da070a;
     color: #fff;
 }
 
 .warPrefBadge {
-    background: #333;
+    background: var(--border-color);
     color: #aaa;
     border: 1px solid #444;
 }
@@ -300,7 +301,7 @@
 
 .playerRole {
     font-size: 0.7rem;
-    color: #EE0000;
+    color: #da070a;
     text-transform: uppercase;
     font-weight: 700;
     letter-spacing: 0.05em;
@@ -360,8 +361,8 @@
 }
 
 .thHeroSection {
-    background: #1a1a1a;
-    border: 1px solid #333;
+    background: var(--card);
+    border: 1px solid var(--border-color);
     padding: 1.5rem;
     text-align: center;
 }
@@ -369,7 +370,7 @@
 .thHeroImageWrapper {
     width: 140px;
     margin: 0 auto;
-    filter: drop-shadow(0 0 10px rgba(238, 0, 0, 0.2));
+    filter: drop-shadow(0 0 10px rgba(218, 7, 10, 0.2));
 }
 
 .sidebarLeagueImg {
@@ -386,7 +387,7 @@
 }
 
 .leagueName {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     font-size: 14px;
     font-weight: 700;
     color: #fff;
@@ -397,8 +398,8 @@
 
 /* Progress Box */
 .progressBox {
-    background: #1a1a1a;
-    border: 1px solid #333;
+    background: var(--card);
+    border: 1px solid var(--border-color);
     padding: 1rem;
     display: flex;
     flex-direction: column;
@@ -408,9 +409,9 @@
 .progressHeader {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.7rem;
-    color: #EE0000;
+    color: #da070a;
     font-weight: 800;
-    border-bottom: 1px solid #333;
+    border-bottom: 1px solid var(--border-color);
     padding-bottom: 4px;
     margin-bottom: 4px;
 }
@@ -429,12 +430,12 @@
 
 .progBarBg {
     height: 6px;
-    background: #333;
+    background: var(--border-color);
 }
 
 .progBarFill {
     height: 100%;
-    background: #EE0000;
+    background: #da070a;
     transition: width 1s ease-out;
 }
 
@@ -466,7 +467,7 @@
     content: '';
     height: 1px;
     flex: 1;
-    background: linear-gradient(90deg, #EE0000, transparent);
+    background: linear-gradient(90deg, #da070a, transparent);
     opacity: 0.5;
 }
 
@@ -479,8 +480,8 @@
 /* Unit Cards */
 .troopCard {
     aspect-ratio: 1;
-    background: #242424;
-    border: 1px solid #333;
+    background: var(--secondary);
+    border: 1px solid var(--border-color);
     position: relative;
     overflow: hidden;
     cursor: help;
@@ -510,17 +511,17 @@
     position: absolute;
     bottom: 0;
     right: 0;
-    background: #333;
+    background: var(--border-color);
     color: #fff;
     font-family: 'JetBrains Mono', monospace;
     font-size: 9px;
     padding: 1px 4px;
-    border-top: 1px solid #EE0000;
+    border-top: 1px solid #da070a;
     z-index: 2;
 }
 
 .troopLevelMax {
-    background: #EE0000;
+    background: #da070a;
     color: #fff;
     font-weight: 900;
     text-shadow: 0 0 5px rgba(0, 0, 0, 0.9);
@@ -558,7 +559,7 @@
     }
 
     100% {
-        box-shadow: 0 -2px 10px #EE0000, 0 0 8px #FF4500, inset 0 0 4px #FFD700;
+        box-shadow: 0 -2px 10px #da070a, 0 0 8px #FF4500, inset 0 0 4px #FFD700;
         filter: brightness(1.1);
         transform: scale(1);
     }
@@ -588,18 +589,18 @@
 }
 
 .recordsCard {
-    background: #1a1a1a;
-    border: 1px solid #333;
+    background: var(--card);
+    border: 1px solid var(--border-color);
     padding: 1.2rem;
     position: relative;
-    border-left: 3px solid #EE0000;
+    border-left: 3px solid #da070a;
 }
 
 .recordsTitle {
-    font-family: 'Inter', sans-serif;
+    font-family: var(--font-sans);
     font-size: 11px;
     font-weight: 800;
-    color: #EE0000;
+    color: #da070a;
     letter-spacing: 0.1em;
     margin-bottom: 1rem;
     text-transform: uppercase;
@@ -656,9 +657,9 @@
 }
 
 .error {
-    background: rgba(238, 0, 0, 0.1);
-    color: #EE0000;
-    border: 1px solid #EE0000;
+    background: rgba(218, 7, 10, 0.1);
+    color: #da070a;
+    border: 1px solid #da070a;
     padding: 1rem;
     text-align: center;
     font-family: 'JetBrains Mono', monospace;
@@ -694,5 +695,5 @@
 }
 
 .backNav:hover {
-    color: #EE0000;
+    color: #da070a;
 }

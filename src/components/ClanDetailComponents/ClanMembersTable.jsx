@@ -26,6 +26,7 @@ const getTownHallImage = (level) => {
         16: 'static.wikia.nocookie.net/clashofclans/images/5/53/Town_Hall16.png/revision/latest/scale-to-width-down/105',
         17: 'static.wikia.nocookie.net/clashofclans/images/2/24/Town_Hall17-1.png/revision/latest/scale-to-width-down/115',
         18: 'static.wikia.nocookie.net/clashofclans/images/7/76/Town_Hall18.png/revision/latest/scale-to-width-down/121',
+        19: 'static.wikia.nocookie.net/clashofclans/images/7/77/Town_Hall19.png/revision/latest/scale-to-width-down/121',
     };
     return townHallImages[level] ? `${baseProxy}${townHallImages[level]}` : null;
 };
@@ -92,7 +93,7 @@ const ClanMembersTable = ({ memberList }) => {
 
     const getRoleColor = (role) => {
         switch (role) {
-            case 'leader': return '#EE0000';
+            case 'leader': return '#da070a';
             case 'coLeader': return '#FFD700';
             case 'admin': return '#10b981';
             default: return 'var(--text-muted)';

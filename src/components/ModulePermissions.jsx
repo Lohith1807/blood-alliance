@@ -125,7 +125,7 @@ const ModulePermissions = () => {
                             <span style={{
                                 fontSize: '0.7rem',
                                 padding: '0.2rem 0.5rem',
-                                background: 'rgba(238, 0, 0, 0.15)',
+                                background: 'rgba(218, 7, 10, 0.15)',
                                 border: '1px solid var(--rh-red)',
                                 color: 'var(--rh-red)',
                                 borderRadius: 2,
@@ -137,7 +137,7 @@ const ModulePermissions = () => {
                             </span>
                         </h1>
                         <p className={styles.subtitle}>
-                            Configure role-based access control (RBAC). Changes take effect across user navigation and APIs in real-time.
+                            Choose which roles can access each section of the site.
                         </p>
                     </div>
 
@@ -174,7 +174,7 @@ const ModulePermissions = () => {
                             alignItems: 'center',
                             gap: '0.5rem',
                             fontSize: '0.8125rem',
-                            backgroundColor: feedback.type === 'error' ? 'rgba(238, 0, 0, 0.15)' : 'rgba(0, 180, 50, 0.15)',
+                            backgroundColor: feedback.type === 'error' ? 'rgba(218, 7, 10, 0.15)' : 'rgba(0, 180, 50, 0.15)',
                             border: `1px solid ${feedback.type === 'error' ? 'var(--rh-red)' : '#00b432'}`,
                             color: feedback.type === 'error' ? '#ff6b6b' : '#4ade80'
                         }}

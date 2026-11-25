@@ -1,18 +1,64 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap');
 
-:root {
-  /* Red Hat / Ansible Inspired Palette */
-  --rh-red: #EE0000;
-  --rh-red-hover: #CC0000;
-  --bg-primary: #151515;
-  --bg-secondary: #212121;
-  --border-color: #3c3f42;
-  --text-primary: #ffffff;
-  --text-secondary: #d2d2d2;
-  --text-muted: #8a8d90;
-  --surface-hover: #2c2e30;
+@font-face {
+  font-family: 'ClashKing';
+  src: url('/fonts/clashking.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
 
-  /* FAANG Density Config */
+:root {
+  /* ClashKing Dashboard Dark Theme Tokens */
+  --background: hsl(300 14% 1.4%);
+  --foreground: #ffffff;
+  --card: hsl(240 4% 4.5%);
+  --card-foreground: #ffffff;
+  --popover: hsl(240 5% 6.7%);
+  --popover-foreground: #ffffff;
+  --primary: hsl(359 94% 44%);
+  --primary-foreground: #ffffff;
+  --secondary: hsl(240 2% 8.4%);
+  --secondary-foreground: #ffffff;
+  --muted: hsl(240 2% 10%);
+  --muted-foreground: hsl(240 3% 66%);
+  --accent: hsl(240 3% 13%);
+  --accent-foreground: #ffffff;
+  --destructive: hsl(5 72% 60%);
+  --destructive-foreground: #ffffff;
+  --border: hsl(240 4% 19%);
+  --input: hsl(240 3% 24%);
+  --ring: hsl(359 94% 44%);
+
+  --info: hsl(207 98% 38%);
+  --war: hsl(39 80% 53%);
+  --success: hsl(163 79% 36%);
+  --capital: hsl(263 61% 62%);
+
+  /* Mapped App Palette Variables */
+  --rh-red: #da070a;
+  --rh-red-hover: #b80608;
+  --bg-primary: hsl(300 14% 1.4%);
+  --bg-secondary: hsl(240 4% 4.5%);
+  --border-color: hsl(240 4% 19%);
+  --text-primary: #ffffff;
+  --text-secondary: #e4e4e7;
+  --text-muted: hsl(240 3% 66%);
+  --surface-hover: hsl(240 3% 13%);
+
+  /* Radii & Shadows */
+  --radius: 0.75rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.625rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+  --radius-card: 24px;
+  --shadow-card: 0 1px 3px 0 rgba(0, 0, 0, 0.25), 0 1px 2px -1px rgba(0, 0, 0, 0.2);
+
+  --font-sans: 'ClashKing', 'Inter', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", 'JetBrains Mono', monospace;
+
+  /* Layout Config */
   --nav-height: 56px;
   --container-max-width: 1200px;
   --transition-speed: 0.2s;
@@ -22,10 +68,13 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  border-color: var(--border-color);
 }
 
 body {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-family: var(--font-sans);
+  font-feature-settings: "rlig" 1, "calt" 1;
+  text-rendering: optimizelegibility;
   background-color: var(--bg-primary);
   color: var(--text-primary);
   line-height: 1.5;
@@ -68,7 +117,7 @@ small {
 
 /* Monospace for Stats/Tags */
 .mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
 }
 
 /* Custom Scrollbar - Minimalist */
@@ -81,7 +130,7 @@ small {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #444;
+  background: hsl(240 4% 24%);
   border-radius: 10px;
 }
 
@@ -108,7 +157,7 @@ section {
   padding: 0.5rem 1rem;
   font-size: 0.875rem;
   font-weight: 600;
-  border-radius: 4px;
+  border-radius: var(--radius-xl);
   cursor: pointer;
   transition: all var(--transition-speed);
   border: none;
@@ -125,14 +174,14 @@ section {
 }
 
 .btn-secondary {
-  background-color: transparent;
+  background-color: rgba(25, 25, 26, 0.55);
   border: 1px solid var(--border-color);
   color: var(--text-primary);
 }
 
 .btn-secondary:hover {
   background-color: var(--surface-hover);
-  border-color: #555;
+  border-color: hsl(240 3% 28%);
 }
 
 /* Background Texture & Grid */
@@ -166,7 +215,7 @@ section {
   width: 100%;
   height: 100px;
   z-index: 10;
-  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(238, 0, 0, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
+  background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(218, 7, 10, 0.05) 50%, rgba(0, 0, 0, 0) 100%);
   opacity: 0.1;
   position: absolute;
   top: 0;
@@ -201,7 +250,7 @@ section {
 }
 
 .stat-label-mono {
-  font-family: 'JetBrains Mono', monospace;
+  font-family: var(--font-mono);
   font-size: 0.65rem;
   text-transform: uppercase;
   letter-spacing: 0.1em;

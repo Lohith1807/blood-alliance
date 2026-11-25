@@ -50,6 +50,7 @@ export default async function handler(req, res) {
                 expiresAt: sessionData.expiresAt,
                 expiresAtMs: sessionData.expiresAtMs,
                 user: {
+                    name: user.name || '',
                     email: user.email,
                     role: user.role
                 }

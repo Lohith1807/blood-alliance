@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Database, Shield, Terminal, Loader2 } from 'lucide-react';
+import { ChevronRight, Shield, Terminal, Loader2, Users, Trophy, Star } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import ClanCarousel from './ClanCarousel';
@@ -12,6 +12,19 @@ const Hero = () => {
     const [isTypingComplete, setIsTypingComplete] = useState(false);
     const fullText = 'Blood Alliance';
     const navigate = useNavigate();
+
+    const familyStats = useMemo(() => {
+        if (!clans || clans.length === 0) {
+            return { clansCount: 0, members: 0, warWins: 0, trophies: '0' };
+        }
+        const members = clans.reduce((sum, c) => sum + (Number(c.members) || 0), 0);
+        const warWins = clans.reduce((sum, c) => sum + (Number(c.warWins) || 0), 0);
+        const totalTrophies = clans.reduce((sum, c) => sum + (Number(c.clanPoints) || 0), 0);
+        const trophies = totalTrophies >= 1_000_000
+            ? `${(totalTrophies / 1_000_000).toFixed(1)}M`
+            : totalTrophies.toLocaleString();
+        return { clansCount: clans.length, members, warWins, trophies };
+    }, [clans]);
 
     // Typing animation effect
     useEffect(() => {
@@ -90,42 +103,90 @@ const Hero = () => {
 
                     {/* Body Text */}
                     <motion.p variants={itemVariants} className={styles.description}>
-                        Strategic distributed warfare unit specializing in synchronized FWA protocols
-                        and CWL registration management. Unified systems, absolute victory.
+                        Stress-free FWA war farming, CWL every season, and a family of
+                        active clans with a spot for your Town Hall.
                     </motion.p>
 
                     {/* CTAs */}
                     <motion.div variants={itemVariants} className={styles.btnRow}>
                         <button
                             onClick={handleExploreClans}
-                            className={`btn btn-primary ${styles.btn}`}
+                            className={`${styles.bevelBtn} ${styles.bevelPrimary}`}
                         >
                             Explore Clans <ChevronRight size={16} />
                         </button>
+                        <a
+                            href="https://discord.gg/gGGEs5SV9z"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className={`${styles.bevelBtn} ${styles.bevelDiscord}`}
+                        >
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                            </svg>
+                            Join Discord
+                        </a>
                         <button
                             onClick={() => window.location.href = 'https://bloodalliance-flax.vercel.app/auth'}
-                            className={`btn btn-secondary ${styles.btn}`}
+                            className={`${styles.bevelBtn} ${styles.bevelDark}`}
                         >
-                            CWL Registrations <Database size={14} style={{ marginLeft: '8px' }} />
+                            <img
+                                src="/images/cwl-medal.png"
+                                alt="CWL Medal"
+                                style={{ width: 17, height: 17, objectFit: 'contain' }}
+                            />
+                            CWL Registrations
                         </button>
                     </motion.div>
 
-                    {/* System Status Mockup */}
-                    <motion.div variants={itemVariants} className={styles.statusBox}>
-                        <div className={styles.statusItem}>
-                            <Shield size={12} />
-                            <span className={styles.statusLabel}>System Secure</span>
+                    {/* Live 4-Stat Strip */}
+                    <motion.div variants={itemVariants} className={styles.statsStrip}>
+                        <div className={styles.statCell}>
+                            <div className={styles.statIconWrap} style={{ color: 'var(--rh-red)', background: 'rgba(218, 7, 10, 0.12)' }}>
+                                <Shield size={16} />
+                            </div>
+                            <div className={styles.statMeta}>
+                                <span className={styles.statValue}>
+                                    {loading ? '—' : familyStats.clansCount}
+                                </span>
+                                <span className={styles.statLabel}>CLANS</span>
+                            </div>
                         </div>
-                        <div className={styles.statusItem}>
-                            <div className={styles.pulsingDot}></div>
-                            <span className={styles.statusLabel}>
-                                {loading ? 'Loading...' : 'Online'}
-                            </span>
+
+                        <div className={styles.statCell}>
+                            <div className={styles.statIconWrap} style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.12)' }}>
+                                <Users size={16} />
+                            </div>
+                            <div className={styles.statMeta}>
+                                <span className={styles.statValue}>
+                                    {loading ? '—' : familyStats.members.toLocaleString()}
+                                </span>
+                                <span className={styles.statLabel}>MEMBERS</span>
+                            </div>
                         </div>
-                        <div className={styles.statusItem}>
-                            <span className={styles.statusLabel} style={{ color: 'var(--rh-red)' }}>
-                                {loading ? 'Loading...' : `${clans.length} Clans Online`}
-                            </span>
+
+                        <div className={styles.statCell}>
+                            <div className={styles.statIconWrap} style={{ color: '#f59e0b', background: 'rgba(245, 158, 11, 0.12)' }}>
+                                <Star size={16} />
+                            </div>
+                            <div className={styles.statMeta}>
+                                <span className={styles.statValue}>
+                                    {loading ? '—' : familyStats.warWins.toLocaleString()}
+                                </span>
+                                <span className={styles.statLabel}>WARS WON</span>
+                            </div>
+                        </div>
+
+                        <div className={styles.statCell}>
+                            <div className={styles.statIconWrap} style={{ color: '#fbbf24', background: 'rgba(251, 191, 36, 0.12)' }}>
+                                <Trophy size={16} />
+                            </div>
+                            <div className={styles.statMeta}>
+                                <span className={styles.statValue}>
+                                    {loading ? '—' : familyStats.trophies}
+                                </span>
+                                <span className={styles.statLabel}>TROPHIES</span>
+                            </div>
                         </div>
                     </motion.div>
                 </motion.div>

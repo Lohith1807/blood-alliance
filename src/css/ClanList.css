@@ -4,78 +4,195 @@
 }
 
 .section-header {
-    margin-bottom: 2rem;
-    border-left: 4px solid var(--rh-red);
-    padding-left: 1.5rem;
-    position: relative;
-}
-
-.section-header::after {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -4px;
-    width: 4px;
-    height: 20%;
-    background: #fff;
-    opacity: 0.5;
+    margin-bottom: 1.75rem;
+    padding-left: 0.75rem;
 }
 
 .tech-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 0.7rem;
+    font-family: var(--font-sans);
+    font-size: 0.75rem;
     color: var(--rh-red);
     font-weight: 700;
-    letter-spacing: 0.2em;
-    margin-bottom: 0.5rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 0.35rem;
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 6px;
 }
 
 .section-title {
-    font-size: 2.25rem;
-    font-weight: 800;
+    font-size: 1.875rem;
+    font-weight: 700;
     color: #fff;
-    margin-bottom: 0.75rem;
-    letter-spacing: -0.03em;
-    text-transform: uppercase;
+    margin-bottom: 0.4rem;
+    letter-spacing: -0.025em;
 }
 
 .section-subtitle {
-    font-size: 0.9375rem;
+    font-size: 0.9rem;
     color: var(--text-muted);
-    max-width: 600px;
-    line-height: 1.6;
+    max-width: 560px;
+    line-height: 1.5;
 }
 
 .clan-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1rem;
+}
+
+@media (max-width: 1024px) {
+    .clan-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .clan-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Compact Centered Clan Card */
+.clan-card.clan-card-compact {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 0.65rem;
+    padding: 1.15rem;
+    border-radius: 16px;
+}
+
+.compact-badge-wrap {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.compact-badge {
+    width: 48px;
+    height: 48px;
+    object-fit: contain;
+    filter: drop-shadow(0 4px 10px rgba(0, 0, 0, 0.5));
+}
+
+.compact-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.4rem;
+    min-width: 0;
+    width: 100%;
+}
+
+.compact-top-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    min-width: 0;
+    flex-wrap: wrap;
+}
+
+.compact-clan-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    margin: 0;
+}
+
+.compact-lvl-pill {
+    font-family: var(--font-sans);
+    font-size: 0.68rem;
+    font-weight: 700;
+    color: #ff6b6d;
+    background: rgba(218, 7, 10, 0.16);
+    border: 1px solid rgba(218, 7, 10, 0.3);
+    padding: 0.12rem 0.48rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.compact-type-pill {
+    font-family: var(--font-mono);
+    font-size: 0.62rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    padding: 0.12rem 0.45rem;
+    border-radius: 8px;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.compact-type-fwa {
+    color: #34d399;
+    background: rgba(16, 185, 129, 0.14);
+    border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.compact-type-war {
+    color: #fbbf24;
+    background: rgba(245, 158, 11, 0.14);
+    border: 1px solid rgba(245, 158, 11, 0.35);
+}
+
+.compact-stats-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.85rem;
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    font-variant-numeric: tabular-nums;
+}
+
+.compact-stat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.32rem;
+    white-space: nowrap;
+}
+
+.compact-green-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background-color: #22c55e;
+    box-shadow: 0 0 6px rgba(34, 197, 94, 0.55);
+    display: inline-block;
 }
 
 /* Clan Card Redesign */
 .clan-card {
-    background: linear-gradient(135deg, rgba(30, 30, 30, 0.4) 0%, rgba(20, 20, 20, 0.4) 100%);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-    border-radius: 4px;
-    padding: 1.25rem;
+    background: linear-gradient(160deg, #141417 0%, #0b0b0c 100%);
+    border: 1px solid var(--border-color);
+    border-radius: 20px;
+    padding: 1.35rem;
     display: flex;
     flex-direction: column;
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04), 0 8px 24px rgba(0, 0, 0, 0.35);
+    transition: transform 0.22s ease, border-color 0.22s ease, box-shadow 0.22s ease;
+    will-change: transform;
 }
 
 .clan-card:hover {
-    transform: translateY(-5px);
-    border-color: rgba(238, 0, 0, 0.3);
-    background: linear-gradient(135deg, rgba(40, 40, 40, 0.5) 0%, rgba(25, 25, 25, 0.5) 100%);
-    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(238, 0, 0, 0.05);
+    transform: translateY(-4px);
+    border-color: rgba(218, 7, 10, 0.45);
+    background: linear-gradient(160deg, #1a1a1e 0%, #0e0e11 100%);
+    box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 16px 32px rgba(0, 0, 0, 0.5), 0 0 20px rgba(218, 7, 10, 0.12);
 }
 
 .clan-card::before {
@@ -123,10 +240,10 @@
 .unit-tag {
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.55rem;
-    background: rgba(238, 0, 0, 0.1);
+    background: rgba(218, 7, 10, 0.1);
     color: var(--rh-red);
     padding: 2px 6px;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     letter-spacing: 0.1em;
     font-weight: 700;
     position: absolute;
@@ -138,7 +255,7 @@
     font-family: 'JetBrains Mono', monospace;
     font-size: 0.55rem;
     padding: 2px 6px;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
     letter-spacing: 0.1em;
     font-weight: 800;
     text-transform: uppercase;
@@ -317,7 +434,7 @@
 .clan-card:hover .view-btn {
     background: var(--rh-red);
     border-color: var(--rh-red);
-    box-shadow: 0 4px 15px rgba(238, 0, 0, 0.3);
+    box-shadow: 0 4px 15px rgba(218, 7, 10, 0.3);
 }
 
 /* Mobile Styles */

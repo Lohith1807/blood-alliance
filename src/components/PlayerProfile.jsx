@@ -46,17 +46,6 @@ const PlayerProfile = () => {
 
             if (data.url) {
                 setApiBase(data.url);
-
-                // 2. Init Session directly with Backend via Proxy
-                try {
-                    await fetch(`/api/coc-proxy?path=/api/init`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        credentials: 'include'
-                    });
-                } catch (e) {
-                    // Silent fail
-                }
             } else {
                 throw new Error("No URL returned from DB");
             }
@@ -96,8 +85,20 @@ const PlayerProfile = () => {
         setPlayerData(null);
 
         try {
-            // Simplify path to avoid double-encoding issues
-            const targetPath = `/game/player/${formattedTag}`;
+            // Check short-lived client cache (2 minutes) to avoid duplicate CoC API hits
+            const cacheKey = `coc_player_${formattedTag}`;
+            const cachedRaw = sessionStorage.getItem(cacheKey);
+            if (cachedRaw) {
+                const cached = JSON.parse(cachedRaw);
+                if (Date.now() - cached.ts < 120000 && cached.data) {
+                    setPlayerData(cached.data);
+                    setLoading(false);
+                    return;
+                }
+            }
+
+            // Route to CoC backend's /api/player/:tag endpoint via coc-proxy
+            const targetPath = `/api/player/${formattedTag}`;
             const proxyUrl = `/api/coc-proxy?path=${encodeURIComponent(targetPath)}`;
             
             const response = await fetch(proxyUrl, {
@@ -121,10 +122,16 @@ const PlayerProfile = () => {
             }
 
             const result = await response.json();
-            if (result.success) {
-                setPlayerData(result.data);
+            const player = result?.success && result?.data ? result.data : (result?.tag ? result : null);
+            if (player) {
+                setPlayerData(player);
+                try {
+                    sessionStorage.setItem(cacheKey, JSON.stringify({ ts: Date.now(), data: player }));
+                } catch {
+                    // Ignore storage quota errors
+                }
             } else {
-                throw new Error(result.message || "Invalid Data Format");
+                throw new Error(result?.message || "Invalid Data Format");
             }
         } catch (err) {
             if (err.name === 'TypeError' && err.message === 'Failed to fetch') {

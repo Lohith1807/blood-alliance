@@ -31,8 +31,8 @@
 
 .card {
     padding: 1.5rem;
-    border-radius: 2px;
-    background: linear-gradient(135deg, #212121 0%, #1a1a1a 100%);
+    border-radius: var(--radius-md);
+    background: linear-gradient(135deg, #0b0b0c 0%, #1a1a1a 100%);
     border: 1px solid var(--border-color);
 }
 
@@ -91,7 +91,7 @@
     letter-spacing: 1px;
     font-weight: 700;
     font-family: 'JetBrains Mono', monospace;
-    border-radius: 2px;
+    border-radius: var(--radius-md);
 }
 
 .ctaBtnPrimary {

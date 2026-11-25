@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
     Users, UserPlus, Edit2, Trash2, Shield, User, RefreshCw,
-    AlertCircle, CheckCircle2, X, Lock, Mail, Eye, EyeOff, KeyRound
+    AlertCircle, CheckCircle2, X, Lock, Mail, Eye, EyeOff, KeyRound, Search
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import styles from '@/css/UserManagement.module.css';
@@ -15,9 +15,11 @@ const UserManagement = () => {
     const [loading, setLoading] = useState(true);
     const [submitting, setSubmitting] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
+    const [searchQuery, setSearchQuery] = useState('');
 
     // Add User Form
     const [createForm, setCreateForm] = useState({
+        name: '',
         email: '',
         password: '',
         role: 'leader',
@@ -31,6 +33,7 @@ const UserManagement = () => {
     const [editModalOpen, setEditModalOpen] = useState(false);
     const [editForm, setEditForm] = useState({
         id: '',
+        name: '',
         email: '',
         role: 'leader',
         password: '',
@@ -102,8 +105,8 @@ const UserManagement = () => {
             const data = await res.json();
             if (!res.ok) throw new Error(data.error || 'Failed to create user');
 
-            setCreateForm({ email: '', password: '', role: 'leader', assignedClans: [], canViewLogs: false, canManageCommands: false });
-            showFeedback(`User ${data.user.email} created successfully as ${data.user.role.toUpperCase()}`);
+            setCreateForm({ name: '', email: '', password: '', role: 'leader', assignedClans: [], canViewLogs: false, canManageCommands: false });
+            showFeedback(`User ${data.user.name || data.user.email} created successfully as ${data.user.role.toUpperCase()}`);
             fetchUsers();
         } catch (err) {
             showFeedback(err.message, 'error');
@@ -129,6 +132,7 @@ const UserManagement = () => {
     const openEditModal = (u) => {
         setEditForm({
             id: u.id,
+            name: u.name || '',
             email: u.email,
             role: u.role,
             password: '',
@@ -147,6 +151,7 @@ const UserManagement = () => {
         try {
             const payload = {
                 id: editForm.id,
+                name: editForm.name,
                 email: editForm.email,
                 role: editForm.role,
                 assignedClans: editForm.assignedClans || [],
@@ -217,7 +222,7 @@ const UserManagement = () => {
                             <span style={{
                                 fontSize: '0.7rem',
                                 padding: '0.2rem 0.5rem',
-                                background: 'rgba(238, 0, 0, 0.15)',
+                                background: 'rgba(218, 7, 10, 0.15)',
                                 border: '1px solid var(--rh-red)',
                                 color: 'var(--rh-red)',
                                 borderRadius: 2,
@@ -251,7 +256,7 @@ const UserManagement = () => {
                             alignItems: 'center',
                             gap: '0.5rem',
                             fontSize: '0.8125rem',
-                            backgroundColor: feedback.type === 'error' ? 'rgba(238, 0, 0, 0.15)' : 'rgba(0, 180, 50, 0.15)',
+                            backgroundColor: feedback.type === 'error' ? 'rgba(218, 7, 10, 0.15)' : 'rgba(0, 180, 50, 0.15)',
                             border: `1px solid ${feedback.type === 'error' ? 'var(--rh-red)' : '#00b432'}`,
                             color: feedback.type === 'error' ? '#ff6b6b' : '#4ade80'
                         }}
@@ -271,6 +276,26 @@ const UserManagement = () => {
                         </h2>
 
                         <form onSubmit={handleCreateUser}>
+                            <div className={styles.formGroup}>
+                                <label className={styles.label} htmlFor="create-name">
+                                    Name
+                                </label>
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <User size={15} style={{ position: 'absolute', left: 10, color: 'var(--text-muted)' }} />
+                                    <input
+                                        id="create-name"
+                                        type="text"
+                                        required
+                                        placeholder="Display name"
+                                        className={styles.input}
+                                        style={{ paddingLeft: '2.1rem' }}
+                                        value={createForm.name}
+                                        onChange={(e) => setCreateForm({ ...createForm, name: e.target.value })}
+                                        disabled={submitting}
+                                    />
+                                </div>
+                            </div>
+
                             <div className={styles.formGroup}>
                                 <label className={styles.label} htmlFor="create-email">
                                     Email Address
@@ -443,8 +468,8 @@ const UserManagement = () => {
                                     {createForm.role === 'admin' && (
                                         <div style={{
                                             padding: '0.65rem 0.75rem',
-                                            background: 'rgba(238, 0, 0, 0.06)',
-                                            border: '1px solid rgba(238, 0, 0, 0.25)',
+                                            background: 'rgba(218, 7, 10, 0.06)',
+                                            border: '1px solid rgba(218, 7, 10, 0.25)',
                                             borderRadius: 3
                                         }}>
                                             <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>
@@ -481,21 +506,45 @@ const UserManagement = () => {
                     <div className={styles.tableCard}>
                         <div style={{
                             padding: '1rem 1.25rem', borderBottom: '1px solid var(--border-color)',
-                            display: 'flex', justifyContent: 'space-between', alignItems: 'center'
+                            display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+                            gap: '1rem', flexWrap: 'wrap'
                         }}>
                             <span style={{ fontWeight: 600, fontSize: '0.875rem' }}>
                                 Registered Accounts ({usersList.length})
                             </span>
-                            <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
-                                {adminCount} Admin{adminCount !== 1 ? 's' : ''} • {usersList.length - adminCount} Mod{usersList.length - adminCount !== 1 ? 's' : ''}
-                            </span>
+                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                                <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+                                    <Search size={14} style={{ position: 'absolute', left: 10, color: 'var(--text-muted)', pointerEvents: 'none' }} />
+                                    <input
+                                        type="text"
+                                        placeholder="Search name, email, role..."
+                                        className={styles.input}
+                                        style={{ paddingLeft: '2rem', paddingRight: searchQuery ? '1.8rem' : '0.75rem', height: 32, fontSize: '0.78rem', width: 220 }}
+                                        value={searchQuery}
+                                        onChange={(e) => setSearchQuery(e.target.value)}
+                                    />
+                                    {searchQuery && (
+                                        <button
+                                            type="button"
+                                            onClick={() => setSearchQuery('')}
+                                            style={{ position: 'absolute', right: 8, background: 'none', border: 'none', color: 'var(--text-muted)', cursor: 'pointer', padding: 0 }}
+                                            title="Clear search"
+                                        >
+                                            <X size={13} />
+                                        </button>
+                                    )}
+                                </div>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                    {adminCount} Admin{adminCount !== 1 ? 's' : ''} • {usersList.length - adminCount} Mod{usersList.length - adminCount !== 1 ? 's' : ''}
+                                </span>
+                            </div>
                         </div>
 
                         <div style={{ overflowX: 'auto' }}>
                             <table className={styles.table}>
                                 <thead>
                                     <tr>
-                                        <th>Email Address</th>
+                                        <th>User</th>
                                         <th>Role</th>
                                         <th>Created Date</th>
                                         <th style={{ textAlign: 'right' }}>Actions</th>
@@ -508,31 +557,52 @@ const UserManagement = () => {
                                                 Loading user accounts...
                                             </td>
                                         </tr>
-                                    ) : usersList.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="4" style={{ textAlign: 'center', padding: '3rem' }}>
-                                                No users registered yet.
-                                            </td>
-                                        </tr>
-                                    ) : (
-                                        usersList.map((u) => {
+                                    ) : (() => {
+                                        const q = searchQuery.trim().toLowerCase();
+                                        const filteredUsers = q
+                                            ? usersList.filter(u =>
+                                                (u.name || '').toLowerCase().includes(q) ||
+                                                (u.email || '').toLowerCase().includes(q) ||
+                                                (u.role || '').toLowerCase().includes(q) ||
+                                                (u.assignedClans || []).some(t => t.toLowerCase().includes(q))
+                                            )
+                                            : usersList;
+
+                                        if (filteredUsers.length === 0) {
+                                            return (
+                                                <tr>
+                                                    <td colSpan="4" style={{ textAlign: 'center', padding: '3rem' }}>
+                                                        {q ? `No users matching "${searchQuery}"` : 'No users registered yet.'}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        }
+
+                                        return filteredUsers.map((u) => {
                                             const isCurrentUser = currentUser?.email?.toLowerCase() === u.email?.toLowerCase();
                                             const isSoleAdmin = u.role === 'admin' && adminCount <= 1;
 
                                             return (
                                                 <tr key={u.id}>
                                                     <td>
-                                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                            <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
-                                                                {u.email}
-                                                            </span>
-                                                            {isCurrentUser && (
-                                                                <span style={{
-                                                                    fontSize: '0.68rem', padding: '1px 5px',
-                                                                    background: '#2b2b2b', color: 'var(--text-muted)',
-                                                                    borderRadius: 2, fontFamily: 'JetBrains Mono'
-                                                                }}>
-                                                                    You
+                                                        <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                                                                <span style={{ fontWeight: 600, color: 'var(--text-primary)' }}>
+                                                                    {u.name || u.email}
+                                                                </span>
+                                                                {isCurrentUser && (
+                                                                    <span style={{
+                                                                        fontSize: '0.68rem', padding: '1px 5px',
+                                                                        background: '#2b2b2b', color: 'var(--text-muted)',
+                                                                        borderRadius: 2, fontFamily: 'JetBrains Mono'
+                                                                    }}>
+                                                                        You
+                                                                    </span>
+                                                                )}
+                                                            </div>
+                                                            {u.name && (
+                                                                <span style={{ fontSize: '0.74rem', color: 'var(--text-muted)' }}>
+                                                                    {u.email}
                                                                 </span>
                                                             )}
                                                         </div>
@@ -565,9 +635,9 @@ const UserManagement = () => {
                                                                     <span style={{
                                                                         fontSize: '0.62rem',
                                                                         padding: '1px 5px',
-                                                                        background: 'rgba(238, 0, 0, 0.15)',
+                                                                        background: 'rgba(218, 7, 10, 0.15)',
                                                                         color: 'var(--rh-red)',
-                                                                        border: '1px solid rgba(238, 0, 0, 0.3)',
+                                                                        border: '1px solid rgba(218, 7, 10, 0.3)',
                                                                         borderRadius: 2,
                                                                         fontFamily: 'JetBrains Mono',
                                                                         fontWeight: 700
@@ -629,8 +699,8 @@ const UserManagement = () => {
                                                     </td>
                                                 </tr>
                                             );
-                                        })
-                                    )}
+                                        });
+                                    })()}
                                 </tbody>
                             </table>
                         </div>
@@ -662,6 +732,18 @@ const UserManagement = () => {
 
                             <form onSubmit={handleEditUser}>
                                 <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem', marginBottom: '1.5rem' }}>
+                                    <div>
+                                        <label className={styles.label}>Name</label>
+                                        <input
+                                            type="text"
+                                            placeholder="Display name"
+                                            className={styles.input}
+                                            value={editForm.name}
+                                            onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                                            disabled={submitting}
+                                        />
+                                    </div>
+
                                     <div>
                                         <label className={styles.label}>Email Address</label>
                                         <input
@@ -826,8 +908,8 @@ const UserManagement = () => {
                                             {editForm.role === 'admin' && (
                                                 <div style={{
                                                     padding: '0.65rem 0.75rem',
-                                                    background: 'rgba(238, 0, 0, 0.06)',
-                                                    border: '1px solid rgba(238, 0, 0, 0.25)',
+                                                    background: 'rgba(218, 7, 10, 0.06)',
+                                                    border: '1px solid rgba(218, 7, 10, 0.25)',
                                                     borderRadius: 3
                                                 }}>
                                                     <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', cursor: 'pointer', fontSize: '0.78rem', color: 'var(--text-primary)' }}>

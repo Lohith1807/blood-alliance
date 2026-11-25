@@ -758,7 +758,7 @@ const ClanRulesManagement = () => {
                             alignItems: 'center',
                             gap: '0.5rem',
                             fontSize: '0.8125rem',
-                            backgroundColor: feedback.type === 'error' ? 'rgba(238, 0, 0, 0.15)' : 'rgba(0, 180, 50, 0.15)',
+                            backgroundColor: feedback.type === 'error' ? 'rgba(218, 7, 10, 0.15)' : 'rgba(0, 180, 50, 0.15)',
                             border: `1px solid ${feedback.type === 'error' ? 'var(--rh-red)' : '#00b432'}`,
                             color: feedback.type === 'error' ? '#ff6b6b' : '#4ade80'
                         }}
@@ -928,7 +928,7 @@ const ClanRulesManagement = () => {
                                                         alignItems: 'center',
                                                         gap: '0.5rem',
                                                         fontSize: '0.8125rem',
-                                                        backgroundColor: feedback.type === 'error' ? 'rgba(238, 0, 0, 0.15)' : 'rgba(0, 180, 50, 0.15)',
+                                                        backgroundColor: feedback.type === 'error' ? 'rgba(218, 7, 10, 0.15)' : 'rgba(0, 180, 50, 0.15)',
                                                         border: `1px solid ${feedback.type === 'error' ? 'var(--rh-red)' : '#00b432'}`,
                                                         color: feedback.type === 'error' ? '#ff6b6b' : '#4ade80'
                                                     }}

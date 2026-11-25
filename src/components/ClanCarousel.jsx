@@ -92,7 +92,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                     setTimeout(() => setIsAutoPlaying(true), 5000);
                 }}
                 className={`${styles.navButton} ${styles.navButtonLeft}`}
-                whileHover={{ scale: 1.1, backgroundColor: 'rgba(238, 0, 0, 0.2)' }}
+                whileHover={{ scale: 1.1, backgroundColor: 'rgba(218, 7, 10, 0.2)' }}
                 whileTap={{ scale: 0.9 }}
             >
                 <ChevronLeft size={20} />
@@ -105,7 +105,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                     setTimeout(() => setIsAutoPlaying(true), 5000);
                 }}
                 className={`${styles.navButton} ${styles.navButtonRight}`}
-                whileHover={{ scale: 1.1, backgroundColor: 'rgba(238, 0, 0, 0.2)' }}
+                whileHover={{ scale: 1.1, backgroundColor: 'rgba(218, 7, 10, 0.2)' }}
                 whileTap={{ scale: 0.9 }}
             >
                 <ChevronRight size={20} />
@@ -144,7 +144,7 @@ const ClanCarousel = ({ clans, autoSlideInterval = 4000 }) => {
                                 className={styles.cardInner}
                                 style={{
                                     boxShadow: props.isCenter
-                                        ? '0 0 40px rgba(238, 0, 0, 0.4), 0 20px 40px rgba(0, 0, 0, 0.5)'
+                                        ? '0 0 40px rgba(218, 7, 10, 0.4), 0 20px 40px rgba(0, 0, 0, 0.5)'
                                         : '0 10px 30px rgba(0, 0, 0, 0.3)',
                                     border: props.isCenter
                                         ? '2px solid var(--rh-red)'

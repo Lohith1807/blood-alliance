@@ -618,7 +618,7 @@ const CommandManagement = () => {
             {/* Stats Overview */}
             <div className={styles.statsGrid}>
                 <div className={styles.statCard}>
-                    <div className={styles.statIconWrap} style={{ color: 'var(--rh-red)', borderColor: 'rgba(238, 0, 0, 0.3)' }}>
+                    <div className={styles.statIconWrap} style={{ color: 'var(--rh-red)', borderColor: 'rgba(218, 7, 10, 0.3)' }}>
                         <Terminal size={20} />
                     </div>
                     <div>
