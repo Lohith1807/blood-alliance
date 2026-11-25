@@ -102,7 +102,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/coc-api': {
-        target: 'http://217.148.167.14:3002',
+        target: 'http://bloodalliance.duckdns.org:3002',
         changeOrigin: true,
         rewrite: (p) => p.replace(/^\/coc-api/, ''),
       },

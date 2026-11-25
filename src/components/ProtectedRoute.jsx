@@ -33,11 +33,11 @@ const ProtectedRoute = ({ children, requiredRole = null, requiredModule = null, 
         return <Navigate to="/" replace />;
     }
 
-    if (requireLogsAccess && !canViewLogs) {
+    if (requireLogsAccess && !canViewLogs && !hasModuleAccess('audit-logs')) {
         return <Navigate to="/" replace />;
     }
 
-    if (requireCommandManagementAccess && !canManageCommands) {
+    if (requireCommandManagementAccess && !canManageCommands && !hasModuleAccess('command-management')) {
         return <Navigate to="/" replace />;
     }
 

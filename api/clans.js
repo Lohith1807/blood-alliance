@@ -3,7 +3,7 @@ import clientPromise from '../lib/mongodb.js';
 import { requireAuth } from '../lib/auth.js';
 import { logActivity } from '../lib/auditLog.js';
 
-const COC_BACKEND_URL = (process.env.COC_BACKEND_URL || 'http://217.148.167.14:3002').replace(/\/+$/, '');
+const COC_BACKEND_URL = (process.env.COC_BACKEND_URL || 'http://bloodalliance.duckdns.org:3002').replace(/\/+$/, '');
 const CACHE_TTL_MS = 5 * 60 * 1000; // 5 minutes
 
 let clansListCache = null; // { ts, data }

@@ -55,7 +55,7 @@ const Navbar = () => {
     // Close mobile drawer automatically if window is resized to desktop width
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth > 992 && isMenuOpen) {
+            if (window.innerWidth > 768 && isMenuOpen) {
                 setIsMenuOpen(false);
             }
         };
@@ -109,22 +109,25 @@ const Navbar = () => {
     }, [location, isHomePage]);
 
     const handleNavClick = (path, hash = '') => {
+        document.body.style.overflow = '';
         setIsMenuOpen(false);
         setIsDropdownOpen(false);
 
         if (path === '/') {
             if (isHomePage) {
-                if (hash) {
-                    const id = hash.replace('#', '');
-                    const element = document.getElementById(id);
-                    if (element) {
-                        const yOffset = -56;
-                        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-                        window.scrollTo({ top: y, behavior: 'smooth' });
+                requestAnimationFrame(() => {
+                    if (hash) {
+                        const id = hash.replace('#', '');
+                        const element = document.getElementById(id);
+                        if (element) {
+                            const yOffset = -56;
+                            const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+                            window.scrollTo({ top: y, behavior: 'smooth' });
+                        }
+                    } else {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
                     }
-                } else {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                }
+                });
             } else {
                 navigate('/' + hash);
             }
@@ -134,6 +137,7 @@ const Navbar = () => {
     };
 
     const handleLogout = async () => {
+        document.body.style.overflow = '';
         setIsMenuOpen(false);
         setIsDropdownOpen(false);
         await logout();
@@ -516,23 +520,24 @@ const Navbar = () => {
 
             {/* Mobile Bottom Sheet Menu */}
             <AnimatePresence>
-                {isMenuOpen && (
-                    <>
-                        <motion.div
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            exit={{ opacity: 0 }}
-                            transition={{ duration: 0.2 }}
-                            className={styles.mobileBackdrop}
-                            onClick={() => setIsMenuOpen(false)}
-                        />
-                        <motion.div
-                            initial={{ y: '100%' }}
-                            animate={{ y: 0 }}
-                            exit={{ y: '100%' }}
-                            transition={{ type: 'spring', damping: 28, stiffness: 320 }}
-                            className={styles.mobileBottomSheet}
-                        >
+                {isMenuOpen && [
+                    <motion.div
+                        key="mobile-backdrop"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.2 }}
+                        className={styles.mobileBackdrop}
+                        onClick={() => setIsMenuOpen(false)}
+                    />,
+                    <motion.div
+                        key="mobile-sheet"
+                        initial={{ y: '100%' }}
+                        animate={{ y: 0 }}
+                        exit={{ y: '100%' }}
+                        transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+                        className={styles.mobileBottomSheet}
+                    >
                             <div className={styles.mobileHandle} />
 
                             {/* Top: User Name + Role (if logged in) or Login button */}
@@ -694,8 +699,7 @@ const Navbar = () => {
                                 </>
                             )}
                         </motion.div>
-                    </>
-                )}
+                ]}
             </AnimatePresence>
         </header>
     );

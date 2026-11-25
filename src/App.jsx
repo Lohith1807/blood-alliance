@@ -1,4 +1,4 @@
-import React, { Suspense, lazy } from 'react';
+import React, { Component, Suspense, lazy } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -9,21 +9,78 @@ import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Loader2 } from 'lucide-react';
 
+// Retry lazy-loaded route chunks once and recover from stale deploy chunk hashes
+const lazyRetry = (importer) =>
+  lazy(() =>
+    importer().catch((err) => {
+      const reloadKey = 'ba_chunk_reload';
+      const hasReloaded = sessionStorage.getItem(reloadKey);
+      if (!hasReloaded) {
+        sessionStorage.setItem(reloadKey, '1');
+        window.location.reload();
+        return new Promise(() => {});
+      }
+      sessionStorage.removeItem(reloadKey);
+      throw err;
+    })
+  );
+
+class RouteErrorBoundary extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: '50vh',
+          gap: '1rem',
+          padding: '2rem',
+          textAlign: 'center',
+          color: 'var(--text-primary)'
+        }}>
+          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>
+            This page failed to load. Please reload to get the latest version.
+          </p>
+          <button
+            type="button"
+            className="btn btn-primary"
+            onClick={() => window.location.reload()}
+          >
+            Reload Page
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
 // Lazy Load Heavy Components
-const ClanList = lazy(() => import('./components/ClanList'));
-const PlayerTracker = lazy(() => import('./components/PlayerTracker'));
-const ClanDetail = lazy(() => import('./components/ClanDetail'));
-const PlayerProfile = lazy(() => import('./components/PlayerProfile'));
+const ClanList = lazyRetry(() => import('./components/ClanList'));
+const PlayerTracker = lazyRetry(() => import('./components/PlayerTracker'));
+const ClanDetail = lazyRetry(() => import('./components/ClanDetail'));
+const PlayerProfile = lazyRetry(() => import('./components/PlayerProfile'));
 
 // Authenticated & Access Components
-const Login = lazy(() => import('./components/Login'));
-const ManageClans = lazy(() => import('./components/ManageClans'));
-const TicketManagement = lazy(() => import('./components/TicketManagement'));
-const UserManagement = lazy(() => import('./components/UserManagement'));
-const AuditLogs = lazy(() => import('./components/AuditLogs'));
-const ClanRulesManagement = lazy(() => import('./components/ClanRulesManagement'));
-const ModulePermissions = lazy(() => import('./components/ModulePermissions'));
-const CommandManagement = lazy(() => import('./components/CommandManagement'));
+const Login = lazyRetry(() => import('./components/Login'));
+const ManageClans = lazyRetry(() => import('./components/ManageClans'));
+const TicketManagement = lazyRetry(() => import('./components/TicketManagement'));
+const UserManagement = lazyRetry(() => import('./components/UserManagement'));
+const AuditLogs = lazyRetry(() => import('./components/AuditLogs'));
+const ClanRulesManagement = lazyRetry(() => import('./components/ClanRulesManagement'));
+const ModulePermissions = lazyRetry(() => import('./components/ModulePermissions'));
+const CommandManagement = lazyRetry(() => import('./components/CommandManagement'));
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -50,7 +107,8 @@ function App() {
             <Navbar />
 
             <main>
-              <Suspense fallback={<PageLoader />}>
+              <RouteErrorBoundary>
+                <Suspense fallback={<PageLoader />}>
                 <Routes>
                   {/* HOME ROUTE */}
                   <Route path="/" element={
@@ -120,7 +178,8 @@ function App() {
                   {/* FALLBACK */}
                   <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
-              </Suspense>
+                </Suspense>
+              </RouteErrorBoundary>
             </main>
 
             <Footer />

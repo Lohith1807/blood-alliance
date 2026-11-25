@@ -15,7 +15,7 @@ const responseCache = new Map();
 const CACHE_TTL_MS = 120 * 1000;
 
 async function getBackendUrl() {
-    return process.env.COC_BACKEND_URL || "http://217.148.167.14:3002";
+    return process.env.COC_BACKEND_URL || "http://bloodalliance.duckdns.org:3002";
 }
 
 export default async function handler(req, res) {
