@@ -249,7 +249,7 @@ const Navbar = () => {
                                                         handleNavClick('/manage-clans');
                                                     }}
                                                 >
-                                                    <Layers size={15} style={{ color: 'var(--rh-red)' }} />
+                                                    <img src="/images/clan-castle.png" alt="Clans" style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0 }} />
                                                     <span>Manage Clan List & Order</span>
                                                 </div>
                                             )}
@@ -262,7 +262,9 @@ const Navbar = () => {
                                                         handleNavClick('/ticket-management');
                                                     }}
                                                 >
-                                                    <Ticket size={15} style={{ color: '#60a5fa' }} />
+                                                    <svg width="17" height="17" viewBox="0 0 24 24" fill="#5865f2" aria-hidden="true" style={{ flexShrink: 0 }}>
+                                                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                                                    </svg>
                                                     <span>Discord Ticket Management</span>
                                                 </div>
                                             )}
@@ -275,16 +277,16 @@ const Navbar = () => {
                                                         handleNavClick('/clan-rules');
                                                     }}
                                                 >
-                                                    <FileText size={15} style={{ color: '#c084fc' }} />
+                                                    <img src="/images/clan-rules.png" alt="Clan Rules" style={{ width: 20, height: 20, transform: 'scale(1.45)', objectFit: 'contain', flexShrink: 0 }} />
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
                                                         <span>Clan Rules Management</span>
                                                         <span style={{
                                                             fontSize: '0.62rem',
-                                                            padding: '1px 4px',
+                                                            padding: '1px 5px',
                                                             background: 'rgba(168, 85, 247, 0.2)',
                                                             color: '#c084fc',
-                                                            borderRadius: 2,
-                                                            fontFamily: 'JetBrains Mono',
+                                                            borderRadius: 6,
+                                                            fontFamily: 'var(--font-sans)',
                                                             fontWeight: 700
                                                         }}>
                                                             LEADER
@@ -301,16 +303,16 @@ const Navbar = () => {
                                                         handleNavClick('/user-management');
                                                     }}
                                                 >
-                                                    <Users size={15} style={{ color: '#f87171' }} />
+                                                    <img src="/images/members.png" alt="Users" style={{ width: 18, height: 18, objectFit: 'contain', flexShrink: 0 }} />
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
                                                         <span>User Management</span>
                                                         <span style={{
                                                             fontSize: '0.62rem',
-                                                            padding: '1px 4px',
+                                                            padding: '1px 5px',
                                                             background: 'rgba(218, 7, 10, 0.2)',
                                                             color: 'var(--rh-red)',
-                                                            borderRadius: 2,
-                                                            fontFamily: 'JetBrains Mono',
+                                                            borderRadius: 6,
+                                                            fontFamily: 'var(--font-sans)',
                                                             fontWeight: 700
                                                         }}>
                                                             ADMIN
@@ -327,16 +329,16 @@ const Navbar = () => {
                                                         handleNavClick('/module-permissions');
                                                     }}
                                                 >
-                                                    <Sliders size={15} style={{ color: '#34d399' }} />
+                                                    <img src="/images/module-perms.png" alt="Permissions" style={{ width: 20, height: 20, transform: 'scale(1.45)', objectFit: 'contain', flexShrink: 0 }} />
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
                                                         <span>Module Permissions</span>
                                                         <span style={{
                                                             fontSize: '0.62rem',
-                                                            padding: '1px 4px',
+                                                            padding: '1px 5px',
                                                             background: 'rgba(16, 185, 129, 0.2)',
                                                             color: '#34d399',
-                                                            borderRadius: 2,
-                                                            fontFamily: 'JetBrains Mono',
+                                                            borderRadius: 6,
+                                                            fontFamily: 'var(--font-sans)',
                                                             fontWeight: 700
                                                         }}>
                                                             RBAC
@@ -353,16 +355,16 @@ const Navbar = () => {
                                                         handleNavClick('/audit-logs');
                                                     }}
                                                 >
-                                                    <Shield size={15} style={{ color: '#fbbf24' }} />
+                                                    <img src="/images/audit-logs.png" alt="Logs" style={{ width: 20, height: 20, transform: 'scale(1.45)', objectFit: 'contain', flexShrink: 0 }} />
                                                     <span style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'space-between', width: '100%' }}>
                                                         <span>Audit & Activity Logs</span>
                                                         <span style={{
                                                             fontSize: '0.62rem',
-                                                            padding: '1px 4px',
+                                                            padding: '1px 5px',
                                                             background: 'rgba(251, 191, 36, 0.2)',
                                                             color: '#fbbf24',
-                                                            borderRadius: 2,
-                                                            fontFamily: 'JetBrains Mono',
+                                                            borderRadius: 6,
+                                                            fontFamily: 'var(--font-sans)',
                                                             fontWeight: 700
                                                         }}>
                                                             {isOwner ? 'OWNER' : 'LOGS'}
@@ -388,7 +390,7 @@ const Navbar = () => {
                                                             background: 'rgba(236, 72, 153, 0.2)',
                                                             color: '#f472b6',
                                                             borderRadius: 2,
-                                                            fontFamily: 'JetBrains Mono',
+                                                            fontFamily: 'var(--font-sans)',
                                                             fontWeight: 700
                                                         }}>
                                                             BOT
@@ -573,7 +575,7 @@ const Navbar = () => {
                                         padding: '0.5rem 1rem 0.2rem',
                                         fontSize: '0.7rem',
                                         color: 'var(--text-muted)',
-                                        fontFamily: 'JetBrains Mono',
+                                        fontFamily: 'var(--font-sans)',
                                         textTransform: 'uppercase',
                                         letterSpacing: '0.05em'
                                     }}>
@@ -651,7 +653,7 @@ const Navbar = () => {
                                             <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600 }}>
                                                 {user?.name || user?.email}
                                             </div>
-                                            <div style={{ fontSize: '0.68rem', color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa', fontFamily: 'JetBrains Mono', textTransform: 'uppercase' }}>
+                                            <div style={{ fontSize: '0.68rem', color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa', fontFamily: 'var(--font-sans)', textTransform: 'uppercase' }}>
                                                 Role: {user?.role}
                                             </div>
                                         </div>

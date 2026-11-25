@@ -1,6 +1,5 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Shield, Swords, Trophy, Users, Activity } from 'lucide-react';
 import styles from '@/css/ClanDetail.module.css';
 
 const ClanStats = ({ clan }) => {
@@ -14,7 +13,7 @@ const ClanStats = ({ clan }) => {
             {/* Card 1: Clan Level & Points */}
             <div className={styles.statCard}>
                 <div className={styles.cardHeader}>
-                    <Shield size={16} style={{ color: 'var(--rh-red)' }} />
+                    <img src="/images/clan-castle.png" alt="Clan Stats" style={{ width: 20, height: 20, objectFit: 'contain' }} />
                     <span>Clan Stats</span>
                 </div>
                 <div className={styles.cardContent}>
@@ -36,7 +35,7 @@ const ClanStats = ({ clan }) => {
             {/* Card 2: War Statistics */}
             <div className={styles.statCard}>
                 <div className={styles.cardHeader}>
-                    <Swords size={16} style={{ color: 'var(--rh-red)' }} />
+                    <img src="/images/swords.gif" alt="War Record" style={{ width: 20, height: 20, objectFit: 'contain' }} />
                     <span>War Record</span>
                 </div>
                 <div className={styles.cardContent}>
@@ -58,7 +57,7 @@ const ClanStats = ({ clan }) => {
             {/* Card 3: League Information */}
             <div className={styles.statCard}>
                 <div className={styles.cardHeader}>
-                    <Trophy size={16} style={{ color: 'var(--rh-red)' }} />
+                    <img src="/images/cwl-medal.png" alt="Leagues" style={{ width: 20, height: 20, objectFit: 'contain' }} />
                     <span>Leagues</span>
                 </div>
                 <div className={styles.cardContent}>
@@ -76,7 +75,7 @@ const ClanStats = ({ clan }) => {
             {/* Card 4: Member Stats */}
             <div className={styles.statCard}>
                 <div className={styles.cardHeader}>
-                    <Users size={16} style={{ color: 'var(--rh-red)' }} />
+                    <img src="/images/members.png" alt="Members" style={{ width: 20, height: 20, objectFit: 'contain' }} />
                     <span>Members</span>
                 </div>
                 <div className={styles.cardContent}>
@@ -98,7 +97,7 @@ const ClanStats = ({ clan }) => {
             {/* Card 5: War Frequency & Settings */}
             <div className={styles.statCard}>
                 <div className={styles.cardHeader}>
-                    <Activity size={16} style={{ color: 'var(--rh-red)' }} />
+                    <img src="/images/settings.png" alt="Settings" style={{ width: 20, height: 20, objectFit: 'contain' }} />
                     <span>Settings</span>
                 </div>
                 <div className={styles.cardContent}>

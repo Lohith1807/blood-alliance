@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { ChevronRight, Shield, Terminal, Loader2, Users, Trophy, Star } from 'lucide-react';
+import { ChevronRight, Terminal, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import ClanCarousel from './ClanCarousel';
@@ -147,50 +147,50 @@ const Hero = () => {
                     {/* Live 4-Stat Strip */}
                     <motion.div variants={itemVariants} className={styles.statsStrip}>
                         <div className={styles.statCell}>
-                            <div className={styles.statIconWrap} style={{ color: 'var(--rh-red)', background: 'rgba(218, 7, 10, 0.12)' }}>
-                                <Shield size={16} />
+                            <div className={styles.statIconWrap} style={{ background: 'var(--muted)' }}>
+                                <img src="/images/clan-castle.png" alt="Clans" style={{ width: 22, height: 22, objectFit: 'contain' }} />
                             </div>
                             <div className={styles.statMeta}>
                                 <span className={styles.statValue}>
                                     {loading ? '—' : familyStats.clansCount}
                                 </span>
-                                <span className={styles.statLabel}>CLANS</span>
+                                <span className={styles.statLabel}>Clans</span>
                             </div>
                         </div>
 
                         <div className={styles.statCell}>
-                            <div className={styles.statIconWrap} style={{ color: '#10b981', background: 'rgba(16, 185, 129, 0.12)' }}>
-                                <Users size={16} />
+                            <div className={styles.statIconWrap} style={{ background: 'var(--muted)' }}>
+                                <img src="/images/members.png" alt="Members" style={{ width: 22, height: 22, objectFit: 'contain' }} />
                             </div>
                             <div className={styles.statMeta}>
                                 <span className={styles.statValue}>
                                     {loading ? '—' : familyStats.members.toLocaleString()}
                                 </span>
-                                <span className={styles.statLabel}>MEMBERS</span>
+                                <span className={styles.statLabel}>Members</span>
                             </div>
                         </div>
 
                         <div className={styles.statCell}>
-                            <div className={styles.statIconWrap} style={{ color: '#f59e0b', background: 'rgba(245, 158, 11, 0.12)' }}>
-                                <Star size={16} />
+                            <div className={styles.statIconWrap} style={{ color: '#f59e0b', background: 'var(--muted)' }}>
+                                <img src="/images/swords.gif" alt="Wars Won" style={{ width: 20, height: 20, objectFit: 'contain' }} />
                             </div>
                             <div className={styles.statMeta}>
                                 <span className={styles.statValue}>
                                     {loading ? '—' : familyStats.warWins.toLocaleString()}
                                 </span>
-                                <span className={styles.statLabel}>WARS WON</span>
+                                <span className={styles.statLabel}>Wars Won</span>
                             </div>
                         </div>
 
                         <div className={styles.statCell}>
-                            <div className={styles.statIconWrap} style={{ color: '#fbbf24', background: 'rgba(251, 191, 36, 0.12)' }}>
-                                <Trophy size={16} />
+                            <div className={styles.statIconWrap} style={{ background: 'var(--muted)' }}>
+                                <img src="/images/throphies.png" alt="Trophies" style={{ width: 22, height: 22, objectFit: 'contain' }} />
                             </div>
                             <div className={styles.statMeta}>
                                 <span className={styles.statValue}>
                                     {loading ? '—' : familyStats.trophies}
                                 </span>
-                                <span className={styles.statLabel}>TROPHIES</span>
+                                <span className={styles.statLabel}>Trophies</span>
                             </div>
                         </div>
                     </motion.div>

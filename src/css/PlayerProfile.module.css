@@ -124,7 +124,7 @@
     padding: 4px 8px;
     border: 1px solid var(--border-color);
     transition: all 0.2s;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
 }
 
 .refreshBtn:hover {
@@ -249,14 +249,14 @@
 }
 
 .expLevel {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.7rem;
     color: #da070a;
     font-weight: 800;
 }
 
 .profileTag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     color: #888;
 }
@@ -334,7 +334,7 @@
 }
 
 .miniValue {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.8rem;
     font-weight: 700;
     color: #fff;
@@ -407,7 +407,7 @@
 }
 
 .progressHeader {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.7rem;
     color: #da070a;
     font-weight: 800;
@@ -501,7 +501,7 @@
 }
 
 .troopInitials {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 10px;
     color: #444;
     font-weight: bold;
@@ -513,7 +513,7 @@
     right: 0;
     background: var(--border-color);
     color: #fff;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 9px;
     padding: 1px 4px;
     border-top: 1px solid #da070a;
@@ -616,7 +616,7 @@
     display: flex;
     align-items: center;
     gap: 0.8rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
 }
 
 .recordIcon {
@@ -652,7 +652,7 @@
 .loadingText {
     color: #666;
     margin-top: 1.5rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     letter-spacing: 0.1em;
 }
 
@@ -662,7 +662,7 @@
     border: 1px solid #da070a;
     padding: 1rem;
     text-align: center;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
 }
 
 @keyframes fadeIn {
@@ -684,7 +684,7 @@
     display: flex;
     align-items: center;
     gap: 0.5rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 700;
     cursor: pointer;

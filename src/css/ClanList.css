@@ -178,9 +178,9 @@
     font-family: var(--font-sans);
     font-size: 0.68rem;
     font-weight: 700;
-    color: #ff6b6d;
-    background: rgba(218, 7, 10, 0.16);
-    border: 1px solid rgba(218, 7, 10, 0.3);
+    color: #fbbf24;
+    background: rgba(251, 191, 36, 0.14);
+    border: 1px solid rgba(251, 191, 36, 0.35);
     padding: 0.12rem 0.48rem;
     border-radius: 8px;
     white-space: nowrap;
@@ -188,7 +188,7 @@
 }
 
 .compact-type-pill {
-    font-family: var(--font-mono);
+    font-family: var(--font-sans);
     font-size: 0.62rem;
     font-weight: 700;
     text-transform: uppercase;
@@ -200,15 +200,15 @@
 }
 
 .compact-type-fwa {
-    color: #34d399;
-    background: rgba(16, 185, 129, 0.14);
-    border: 1px solid rgba(16, 185, 129, 0.3);
+    color: #60a5fa;
+    background: rgba(59, 130, 246, 0.14);
+    border: 1px solid rgba(59, 130, 246, 0.35);
 }
 
 .compact-type-war {
-    color: #fbbf24;
-    background: rgba(245, 158, 11, 0.14);
-    border: 1px solid rgba(245, 158, 11, 0.35);
+    color: #ff6b6d;
+    background: rgba(218, 7, 10, 0.16);
+    border: 1px solid rgba(218, 7, 10, 0.35);
 }
 
 .compact-stats-row {
@@ -304,7 +304,7 @@
 }
 
 .unit-tag {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.55rem;
     background: rgba(218, 7, 10, 0.1);
     color: var(--rh-red);
@@ -318,7 +318,7 @@
 }
 
 .clan-type-badge {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.55rem;
     padding: 2px 6px;
     border-radius: var(--radius-md);
@@ -345,7 +345,7 @@
     display: flex;
     align-items: center;
     gap: 4px;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.55rem;
     color: #10b981;
     font-weight: 700;
@@ -413,7 +413,7 @@
 }
 
 .clan-hash {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     color: var(--rh-red);
     font-weight: 600;
@@ -446,7 +446,7 @@
 }
 
 .metric-val {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 1rem;
     font-weight: 700;
     color: #fff;
@@ -485,7 +485,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
     color: #fff;
     padding: 0.75rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     font-weight: 700;
     display: flex;

@@ -131,7 +131,7 @@ const ModulePermissions = () => {
                                 borderRadius: 2,
                                 fontWeight: 700,
                                 letterSpacing: '0.05em',
-                                fontFamily: 'JetBrains Mono'
+                                fontFamily: 'var(--font-sans)'
                             }}>
                                 RBAC CONTROL
                             </span>

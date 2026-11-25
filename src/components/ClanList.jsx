@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart3, Swords, Trophy } from 'lucide-react';
+import { BarChart3 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { useClans } from '../context/ClanContext';
 import '@/css/ClanList.css';
@@ -47,15 +47,15 @@ const ClanCard = ({ clan, index }) => {
 
                 <div className="compact-stats-row">
                     <span className="compact-stat" title="Members">
-                        <span className="compact-green-dot" />
+                        <img src="/images/members.png" alt="Members" style={{ width: 15, height: 15, objectFit: 'contain' }} />
                         <span>{clan.members}/50</span>
                     </span>
                     <span className="compact-stat" title="Wars Won">
-                        <Swords size={13} color="#f59e0b" />
+                        <img src="/images/swords.gif" alt="Wars Won" style={{ width: 15, height: 15, objectFit: 'contain' }} />
                         <span>{clan.warWins?.toLocaleString?.() ?? clan.warWins}</span>
                     </span>
                     <span className="compact-stat" title="Clan Trophies">
-                        <Trophy size={12} color="#fbbf24" />
+                        <img src="/images/throphies.png" alt="Clan Trophies" style={{ width: 14, height: 14, objectFit: 'contain' }} />
                         <span>{clan.clanPoints?.toLocaleString?.() ?? clan.clanPoints}</span>
                     </span>
                 </div>
@@ -149,7 +149,7 @@ const errorBoxStyle = {
     border: '1px solid rgba(239, 68, 68, 0.2)',
     padding: '1.25rem',
     marginBottom: '2.5rem',
-    fontFamily: 'JetBrains Mono, monospace',
+    fontFamily: 'var(--font-sans)',
     fontSize: '0.8125rem',
     color: '#ef4444',
 };

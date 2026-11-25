@@ -3,7 +3,7 @@
 }
 
 .tagline {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.7rem;
     color: var(--rh-red);
     display: flex;
@@ -76,7 +76,7 @@
 
 .statsBadge {
     font-size: 0.7rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     padding: 0.25rem 0.5rem;
     border: 1px solid var(--rh-red);
     color: var(--rh-red);
@@ -137,7 +137,7 @@
     background: var(--rh-red);
     color: #fff;
     font-size: 0.6rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-weight: 800;
     padding: 1px 3px;
     border-radius: var(--radius-md);
@@ -193,7 +193,7 @@
     background: var(--bg-secondary);
     color: var(--text-muted);
     font-size: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
 }
 
 .refreshBtn {
@@ -223,12 +223,12 @@
 
 .regDate {
     font-size: 0.85rem;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     color: var(--text-secondary);
 }
 
 .sNo {
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     font-size: 0.75rem;
     color: var(--text-muted);
 }

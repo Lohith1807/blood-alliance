@@ -597,7 +597,7 @@ const CommandManagement = () => {
                             alignItems: 'center',
                             justifyContent: 'space-between',
                             gap: '1rem',
-                            fontFamily: 'JetBrains Mono',
+                            fontFamily: 'var(--font-sans)',
                             fontWeight: 600
                         }}
                     >
@@ -1047,7 +1047,7 @@ const CommandManagement = () => {
                                                                     </div>
 
                                                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                                                                        <span style={{ fontSize: '0.68rem', fontFamily: 'JetBrains Mono', color: 'var(--text-muted)' }}>
+                                                                        <span style={{ fontSize: '0.68rem', fontFamily: 'var(--font-sans)', color: 'var(--text-muted)' }}>
                                                                             {r.id}
                                                                         </span>
                                                                         {isAdded && (
@@ -1253,7 +1253,7 @@ const CommandManagement = () => {
                                             <span>You have unsaved changes</span>
                                         </span>
                                     ) : (
-                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                        <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>
                                             Permissions in sync with server
                                         </span>
                                     )}

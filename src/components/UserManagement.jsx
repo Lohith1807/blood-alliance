@@ -228,7 +228,7 @@ const UserManagement = () => {
                                 borderRadius: 2,
                                 fontWeight: 700,
                                 letterSpacing: '0.05em',
-                                fontFamily: 'JetBrains Mono'
+                                fontFamily: 'var(--font-sans)'
                             }}>
                                 ADMIN ONLY
                             </span>
@@ -384,7 +384,7 @@ const UserManagement = () => {
                                                 fontSize: '0.7rem',
                                                 cursor: 'pointer',
                                                 padding: 0,
-                                                fontFamily: 'JetBrains Mono'
+                                                fontFamily: 'var(--font-sans)'
                                             }}
                                         >
                                             {(createForm.assignedClans || []).length === clansList.length ? 'Clear All' : 'Select All'}
@@ -427,7 +427,7 @@ const UserManagement = () => {
                                                         style={{ accentColor: 'var(--rh-red)' }}
                                                     />
                                                     <span style={{ fontWeight: isChecked ? 600 : 400 }}>{clan.name}</span>
-                                                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                                    <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>
                                                         ({tag})
                                                     </span>
                                                 </label>
@@ -534,7 +534,7 @@ const UserManagement = () => {
                                         </button>
                                     )}
                                 </div>
-                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                <span style={{ fontSize: '0.75rem', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>
                                     {adminCount} Admin{adminCount !== 1 ? 's' : ''} • {usersList.length - adminCount} Mod{usersList.length - adminCount !== 1 ? 's' : ''}
                                 </span>
                             </div>
@@ -594,7 +594,7 @@ const UserManagement = () => {
                                                                     <span style={{
                                                                         fontSize: '0.68rem', padding: '1px 5px',
                                                                         background: '#2b2b2b', color: 'var(--text-muted)',
-                                                                        borderRadius: 2, fontFamily: 'JetBrains Mono'
+                                                                        borderRadius: 2, fontFamily: 'var(--font-sans)'
                                                                     }}>
                                                                         You
                                                                     </span>
@@ -625,7 +625,7 @@ const UserManagement = () => {
                                                                         background: 'rgba(251, 191, 36, 0.15)',
                                                                         color: '#fbbf24',
                                                                         borderRadius: 2,
-                                                                        fontFamily: 'JetBrains Mono',
+                                                                        fontFamily: 'var(--font-sans)',
                                                                         fontWeight: 700
                                                                     }}>
                                                                         LOGS
@@ -639,7 +639,7 @@ const UserManagement = () => {
                                                                         color: 'var(--rh-red)',
                                                                         border: '1px solid rgba(218, 7, 10, 0.3)',
                                                                         borderRadius: 2,
-                                                                        fontFamily: 'JetBrains Mono',
+                                                                        fontFamily: 'var(--font-sans)',
                                                                         fontWeight: 700
                                                                     }}>
                                                                         COMMANDS
@@ -659,7 +659,7 @@ const UserManagement = () => {
                                                                                 border: '1px solid rgba(168, 85, 247, 0.3)',
                                                                                 color: '#c084fc',
                                                                                 borderRadius: 2,
-                                                                                fontFamily: 'JetBrains Mono'
+                                                                                fontFamily: 'var(--font-sans)'
                                                                             }}>
                                                                                 {clan?.name || tag}
                                                                             </span>
@@ -796,7 +796,7 @@ const UserManagement = () => {
                                                         fontSize: '0.7rem',
                                                         cursor: 'pointer',
                                                         padding: 0,
-                                                        fontFamily: 'JetBrains Mono'
+                                                        fontFamily: 'var(--font-sans)'
                                                     }}
                                                 >
                                                     {(editForm.assignedClans || []).length === clansList.length ? 'Clear All' : 'Select All'}
@@ -839,7 +839,7 @@ const UserManagement = () => {
                                                                 style={{ accentColor: 'var(--rh-red)' }}
                                                             />
                                                             <span style={{ fontWeight: isChecked ? 600 : 400 }}>{clan.name}</span>
-                                                            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                                            <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>
                                                                 ({tag})
                                                             </span>
                                                         </label>

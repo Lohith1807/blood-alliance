@@ -46,7 +46,7 @@
     color: var(--rh-red);
     font-size: 0.75rem;
     font-weight: 600;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
     text-transform: uppercase;
     letter-spacing: 0.05em;
     margin-bottom: 1rem;
@@ -83,7 +83,7 @@
     color: var(--text-secondary);
     text-transform: uppercase;
     letter-spacing: 0.05em;
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
 }
 
 .inputWrapper {

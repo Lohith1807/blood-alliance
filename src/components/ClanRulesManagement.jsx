@@ -825,7 +825,7 @@ const ClanRulesManagement = () => {
                                                     {managersCount} Manager{managersCount === 1 ? '' : 's'}
                                                 </span>
                                                 {clan.clanLevel && (
-                                                    <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                                    <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>
                                                         Lvl {clan.clanLevel}
                                                     </span>
                                                 )}
@@ -945,7 +945,7 @@ const ClanRulesManagement = () => {
                                                         <Users size={16} style={{ color: '#c084fc' }} />
                                                         People with Access to Manage {selectedClan.name}
                                                     </div>
-                                                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'JetBrains Mono' }}>
+                                                    <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontFamily: 'var(--font-sans)' }}>
                                                         {accessiblePeople.length} Authorized Manager{accessiblePeople.length === 1 ? '' : 's'}
                                                     </span>
                                                 </div>
@@ -1054,7 +1054,7 @@ const ClanRulesManagement = () => {
                                                                         value={formData.color}
                                                                         onChange={(e) => setFormData({ ...formData, color: e.target.value })}
                                                                         placeholder="#E74C3C"
-                                                                        style={{ fontFamily: 'JetBrains Mono' }}
+                                                                        style={{ fontFamily: 'var(--font-sans)' }}
                                                                     />
                                                                 </div>
                                                             </div>
@@ -1072,7 +1072,7 @@ const ClanRulesManagement = () => {
                                                                             fontSize: '0.68rem',
                                                                             cursor: 'pointer',
                                                                             padding: 0,
-                                                                            fontFamily: 'JetBrains Mono'
+                                                                            fontFamily: 'var(--font-sans)'
                                                                         }}
                                                                     >
                                                                         Use Clan Badge

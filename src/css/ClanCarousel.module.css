@@ -66,7 +66,7 @@
 .clanStats {
     font-size: 0.6rem;
     color: var(--text-muted);
-    font-family: 'JetBrains Mono', monospace;
+    font-family: var(--font-sans);
 }
 
 .glowEffect {
