@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield, FileText, Sliders, Terminal } from 'lucide-react';
+import { Menu, X, ChevronDown, Layers, Ticket, Users, Shield, FileText, Sliders, Terminal, Home, Search } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import styles from '@/css/Navbar.module.css';
@@ -514,173 +514,187 @@ const Navbar = () => {
                 </div>
             </div>
 
-            {/* Mobile Menu Drawer (Sidebar Menu) */}
+            {/* Mobile Bottom Sheet Menu */}
             <AnimatePresence>
                 {isMenuOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        transition={{ duration: 0.2 }}
-                        className={styles.mobileMenuOverlay}
-                    >
-                        <ul className={styles.mobileUl}>
-                            <MobileNavItem
-                                active={isHomePage && activeSection === 'home'}
-                                onClick={() => handleNavClick('/', '#home')}
-                            >
-                                Home
-                            </MobileNavItem>
-                            <MobileNavItem
-                                active={isHomePage && activeSection === 'clans'}
-                                onClick={() => handleNavClick('/', '#clans')}
-                            >
-                                Clans
-                            </MobileNavItem>
-                            <MobileNavItem
-                                active={isHomePage && activeSection === 'cwl-rules'}
-                                onClick={() => handleNavClick('/', '#cwl-rules')}
-                            >
-                                CWL Rules
-                            </MobileNavItem>
-                            <MobileNavItem
-                                active={isHomePage && activeSection === 'rules'}
-                                onClick={() => handleNavClick('/', '#rules')}
-                            >
-                                Rules
-                            </MobileNavItem>
-                            <MobileNavItem
-                                active={location.pathname === '/player'}
-                                onClick={() => handleNavClick('/player')}
-                            >
-                                Search
-                            </MobileNavItem>
+                    <>
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 0.2 }}
+                            className={styles.mobileBackdrop}
+                            onClick={() => setIsMenuOpen(false)}
+                        />
+                        <motion.div
+                            initial={{ y: '100%' }}
+                            animate={{ y: 0 }}
+                            exit={{ y: '100%' }}
+                            transition={{ type: 'spring', damping: 28, stiffness: 320 }}
+                            className={styles.mobileBottomSheet}
+                        >
+                            <div className={styles.mobileHandle} />
 
-                            {/* Beside Search: LOGIN OPTION (when logged out) */}
-                            {!isAuthenticated && (
-                                <MobileNavItem
-                                    active={location.pathname === '/login'}
+                            {/* Top: User Name + Role (if logged in) or Login button */}
+                            {isAuthenticated ? (
+                                <div className={styles.mobileUserCard}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', minWidth: 0 }}>
+                                        <div style={{ fontSize: '0.85rem', color: 'var(--text-primary)', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                            {user?.name || user?.email}
+                                        </div>
+                                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                            <span style={{ display: 'inline-block', width: 6, height: 6, borderRadius: '50%', backgroundColor: '#4ade80' }} />
+                                            <span style={{ fontSize: '0.68rem', color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa', fontFamily: 'var(--font-sans)', fontWeight: 700, textTransform: 'uppercase' }}>
+                                                {user?.role}
+                                            </span>
+                                        </div>
+                                    </div>
+                                    <button
+                                        onClick={handleLogout}
+                                        className="btn btn-secondary"
+                                        style={{ height: 32, fontSize: '0.75rem', padding: '0 0.75rem', borderRadius: 'var(--radius-lg)', flexShrink: 0 }}
+                                    >
+                                        Logout
+                                    </button>
+                                </div>
+                            ) : (
+                                <button
                                     onClick={() => handleNavClick('/login')}
+                                    className={styles.mobileGridBtn}
+                                    style={{ width: '100%', padding: '0.72rem', marginBottom: '0.25rem' }}
                                 >
                                     Login
-                                </MobileNavItem>
+                                </button>
                             )}
 
-                            {/* IN MOBILE SIDEBAR MENU: DISPLAY MODULES DIRECTLY */}
+                            <div className={styles.mobileSectionLabel}>Explore</div>
+                            <div className={styles.mobileGrid2}>
+                                <button
+                                    type="button"
+                                    className={`${styles.mobileGridBtn} ${isHomePage && activeSection === 'home' ? styles.mobileGridBtnActive : ''}`}
+                                    onClick={() => handleNavClick('/', '#home')}
+                                >
+                                    <Home size={20} />
+                                    <span>Home</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.mobileGridBtn} ${isHomePage && activeSection === 'clans' ? styles.mobileGridBtnActive : ''}`}
+                                    onClick={() => handleNavClick('/', '#clans')}
+                                >
+                                    <img src="/images/clan-castle.png" alt="Clans" style={{ width: 26, height: 26, objectFit: 'contain', flexShrink: 0 }} />
+                                    <span>Clans</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.mobileGridBtn} ${isHomePage && activeSection === 'cwl-rules' ? styles.mobileGridBtnActive : ''}`}
+                                    onClick={() => handleNavClick('/', '#cwl-rules')}
+                                >
+                                    <img src="/images/cwl-medal.png" alt="CWL Rules" style={{ width: 26, height: 26, objectFit: 'contain', flexShrink: 0 }} />
+                                    <span>CWL Rules</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.mobileGridBtn} ${isHomePage && activeSection === 'rules' ? styles.mobileGridBtnActive : ''}`}
+                                    onClick={() => handleNavClick('/', '#rules')}
+                                >
+                                    <img src="/images/clan-rules.png" alt="Rules" style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0 }} />
+                                    <span>Rules</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className={`${styles.mobileGridBtn} ${location.pathname === '/player' ? styles.mobileGridBtnActive : ''}`}
+                                    style={{ gridColumn: '1 / -1' }}
+                                    onClick={() => handleNavClick('/player')}
+                                >
+                                    <Search size={20} />
+                                    <span>Search Player</span>
+                                </button>
+                            </div>
+
+                            {/* Modules in 2-column grid when logged in */}
                             {isAuthenticated && (
                                 <>
-                                    <li style={{
-                                        borderTop: '1px solid var(--border-color)',
-                                        margin: '0.5rem 0',
-                                        padding: '0.5rem 1rem 0.2rem',
-                                        fontSize: '0.7rem',
-                                        color: 'var(--text-muted)',
-                                        fontFamily: 'var(--font-sans)',
-                                        textTransform: 'uppercase',
-                                        letterSpacing: '0.05em'
-                                    }}>
-                                        Alliance Modules
-                                    </li>
-                                    {hasModuleAccess('manage-clans') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/manage-clans'}
-                                            onClick={() => handleNavClick('/manage-clans')}
-                                        >
-                                            Manage Clan List & Order
-                                        </MobileNavItem>
-                                    )}
-                                    {hasModuleAccess('ticket-management') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/ticket-management'}
-                                            onClick={() => handleNavClick('/ticket-management')}
-                                        >
-                                            Discord Ticket Management
-                                        </MobileNavItem>
-                                    )}
-                                    {hasModuleAccess('clan-rules') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/clan-rules'}
-                                            onClick={() => handleNavClick('/clan-rules')}
-                                        >
-                                            Clan Rules Management
-                                        </MobileNavItem>
-                                    )}
-                                    {hasModuleAccess('user-management') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/user-management'}
-                                            onClick={() => handleNavClick('/user-management')}
-                                        >
-                                            User Management
-                                        </MobileNavItem>
-                                    )}
-                                    {hasModuleAccess('module-permissions') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/module-permissions'}
-                                            onClick={() => handleNavClick('/module-permissions')}
-                                        >
-                                            Module Permissions (RBAC)
-                                        </MobileNavItem>
-                                    )}
-                                    {hasModuleAccess('audit-logs') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/audit-logs'}
-                                            onClick={() => handleNavClick('/audit-logs')}
-                                        >
-                                            Audit & Activity Logs
-                                        </MobileNavItem>
-                                    )}
-                                    {hasModuleAccess('command-management') && (
-                                        <MobileNavItem
-                                            active={location.pathname === '/command-management'}
-                                            onClick={() => handleNavClick('/command-management')}
-                                        >
-                                            Bot Command Management
-                                        </MobileNavItem>
-                                    )}
-
-                                    {/* User status and Logout in Mobile Drawer */}
-                                    <li style={{
-                                        marginTop: '0.75rem',
-                                        padding: '0.75rem 1rem',
-                                        background: 'rgba(255, 255, 255, 0.03)',
-                                        borderRadius: 4,
-                                        border: '1px solid var(--border-color)',
-                                        display: 'flex',
-                                        justifyContent: 'space-between',
-                                        alignItems: 'center'
-                                    }}>
-                                        <div>
-                                            <div style={{ fontSize: '0.75rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-                                                {user?.name || user?.email}
-                                            </div>
-                                            <div style={{ fontSize: '0.68rem', color: user?.role === 'admin' ? 'var(--rh-red)' : '#60a5fa', fontFamily: 'var(--font-sans)', textTransform: 'uppercase' }}>
-                                                Role: {user?.role}
-                                            </div>
-                                        </div>
-                                        <button
-                                            onClick={handleLogout}
-                                            className="btn btn-secondary"
-                                            style={{ height: 30, fontSize: '0.75rem', padding: '0 0.65rem' }}
-                                        >
-                                            Logout
-                                        </button>
-                                    </li>
+                                    <div className={styles.mobileSectionLabel}>Modules</div>
+                                    <div className={styles.mobileGrid2}>
+                                        {hasModuleAccess('manage-clans') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/manage-clans' ? styles.mobileGridBtnActive : ''}`}
+                                                onClick={() => handleNavClick('/manage-clans')}
+                                            >
+                                                <img src="/images/clan-castle.png" alt="Clans" style={{ width: 26, height: 26, objectFit: 'contain', flexShrink: 0 }} />
+                                                <span>Manage Clans</span>
+                                            </button>
+                                        )}
+                                        {hasModuleAccess('ticket-management') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/ticket-management' ? styles.mobileGridBtnActive : ''}`}
+                                                onClick={() => handleNavClick('/ticket-management')}
+                                            >
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="#5865f2" aria-hidden="true" style={{ flexShrink: 0 }}>
+                                                    <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z" />
+                                                </svg>
+                                                <span>Tickets</span>
+                                            </button>
+                                        )}
+                                        {hasModuleAccess('clan-rules') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/clan-rules' ? styles.mobileGridBtnActive : ''}`}
+                                                onClick={() => handleNavClick('/clan-rules')}
+                                            >
+                                                <img src="/images/clan-rules.png" alt="Clan Rules" style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0 }} />
+                                                <span>Clan Rules</span>
+                                            </button>
+                                        )}
+                                        {hasModuleAccess('user-management') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/user-management' ? styles.mobileGridBtnActive : ''}`}
+                                                onClick={() => handleNavClick('/user-management')}
+                                            >
+                                                <img src="/images/members.png" alt="Users" style={{ width: 26, height: 26, objectFit: 'contain', flexShrink: 0 }} />
+                                                <span>Users</span>
+                                            </button>
+                                        )}
+                                        {hasModuleAccess('module-permissions') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/module-permissions' ? styles.mobileGridBtnActive : ''}`}
+                                                onClick={() => handleNavClick('/module-permissions')}
+                                            >
+                                                <img src="/images/module-perms.png" alt="Permissions" style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0 }} />
+                                                <span>Permissions</span>
+                                            </button>
+                                        )}
+                                        {hasModuleAccess('audit-logs') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/audit-logs' ? styles.mobileGridBtnActive : ''}`}
+                                                onClick={() => handleNavClick('/audit-logs')}
+                                            >
+                                                <img src="/images/audit-logs.png" alt="Audit Logs" style={{ width: 28, height: 28, objectFit: 'contain', flexShrink: 0 }} />
+                                                <span>Audit Logs</span>
+                                            </button>
+                                        )}
+                                        {hasModuleAccess('command-management') && (
+                                            <button
+                                                type="button"
+                                                className={`${styles.mobileGridBtn} ${location.pathname === '/command-management' ? styles.mobileGridBtnActive : ''}`}
+                                                style={{ gridColumn: '1 / -1' }}
+                                                onClick={() => handleNavClick('/command-management')}
+                                            >
+                                                <Terminal size={20} style={{ color: '#ec4899' }} />
+                                                <span>Bot Commands</span>
+                                            </button>
+                                        )}
+                                    </div>
                                 </>
                             )}
-
-                            <li style={{ marginTop: '1rem' }}>
-                                <a
-                                    href="https://discord.gg/gGGEs5SV9z"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="btn btn-primary"
-                                    style={{ width: '100%', height: '40px' }}
-                                >
-                                    Join Discord
-                                </a>
-                            </li>
-                        </ul>
-                    </motion.div>
+                        </motion.div>
+                    </>
                 )}
             </AnimatePresence>
         </header>
