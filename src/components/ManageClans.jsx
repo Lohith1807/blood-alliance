@@ -211,7 +211,7 @@ const ManageClans = () => {
                 <div className={styles.headerRow}>
                     <div className={styles.headerText}>
                         <h1 className={styles.title}>
-                            <Layers size={24} style={{ color: 'var(--rh-red)' }} />
+                            <img src="/images/clan-castle.png" alt="Clans" style={{ width: 30, height: 30, objectFit: 'contain', flexShrink: 0 }} />
                             Manage Clan List & Order
                         </h1>
                         <p className={styles.subtitle}>

@@ -32,10 +32,24 @@ export const ClanProvider = ({ children }) => {
         }
     };
 
-    // Load data on mount
+    // Load data on mount (hydrate immediately from sessionStorage cache if available)
     useEffect(() => {
+        let hasCached = false;
+        try {
+            const raw = sessionStorage.getItem('ba_clans_cache_v1');
+            if (raw) {
+                const parsed = JSON.parse(raw);
+                if (Array.isArray(parsed) && parsed.length > 0) {
+                    setClans(parsed);
+                    setDataSource('mongodb');
+                    setLoading(false);
+                    hasCached = true;
+                }
+            }
+        } catch {}
+
         const loadClanData = async () => {
-            setLoading(true);
+            if (!hasCached) setLoading(true);
             setError(null);
 
             // Always try API (DB source)
@@ -44,8 +58,11 @@ export const ClanProvider = ({ children }) => {
             if (apiData && apiData.length > 0) {
                 setClans(apiData);
                 setDataSource('mongodb');
+                try {
+                    sessionStorage.setItem('ba_clans_cache_v1', JSON.stringify(apiData));
+                } catch {}
                 console.log(`✅ Loaded ${apiData.length} clans via MONGODB`);
-            } else {
+            } else if (!hasCached) {
                 setError('Failed to load clan data from database');
                 setClans([]);
             }

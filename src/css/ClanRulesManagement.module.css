@@ -79,6 +79,32 @@
     box-shadow: 0 8px 30px rgba(218, 7, 10, 0.15);
 }
 
+.skeletonCard {
+    cursor: default;
+    pointer-events: none;
+    min-height: 104px;
+}
+
+.skeletonBadge {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: rgba(255, 255, 255, 0.07);
+    flex-shrink: 0;
+    animation: clanSkeletonPulse 1.4s ease-in-out infinite;
+}
+
+.skeletonLine {
+    border-radius: 4px;
+    background: rgba(255, 255, 255, 0.07);
+    animation: clanSkeletonPulse 1.4s ease-in-out infinite;
+}
+
+@keyframes clanSkeletonPulse {
+    0%, 100% { opacity: 0.45; }
+    50% { opacity: 0.9; }
+}
+
 .rankBadge {
     position: absolute;
     top: 10px;

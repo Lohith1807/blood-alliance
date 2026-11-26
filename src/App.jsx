@@ -1,11 +1,11 @@
-import React, { Component, Suspense, lazy } from 'react';
+import React, { Component, Suspense, lazy, useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Rules from './components/Rules';
 import Footer from './components/Footer';
 import { ClanProvider } from './context/ClanContext';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import ProtectedRoute from './components/ProtectedRoute';
 import { Loader2 } from 'lucide-react';
 
@@ -67,20 +67,85 @@ class RouteErrorBoundary extends Component {
 }
 
 // Lazy Load Heavy Components
-const ClanList = lazyRetry(() => import('./components/ClanList'));
-const PlayerTracker = lazyRetry(() => import('./components/PlayerTracker'));
-const ClanDetail = lazyRetry(() => import('./components/ClanDetail'));
-const PlayerProfile = lazyRetry(() => import('./components/PlayerProfile'));
+const importClanList = () => import('./components/ClanList');
+const importPlayerTracker = () => import('./components/PlayerTracker');
+const importClanDetail = () => import('./components/ClanDetail');
+const importPlayerProfile = () => import('./components/PlayerProfile');
+
+const importLogin = () => import('./components/Login');
+const importManageClans = () => import('./components/ManageClans');
+const importTicketManagement = () => import('./components/TicketManagement');
+const importUserManagement = () => import('./components/UserManagement');
+const importAuditLogs = () => import('./components/AuditLogs');
+const importClanRulesManagement = () => import('./components/ClanRulesManagement');
+const importModulePermissions = () => import('./components/ModulePermissions');
+const importCommandManagement = () => import('./components/CommandManagement');
+
+const ClanList = lazyRetry(importClanList);
+const PlayerTracker = lazyRetry(importPlayerTracker);
+const ClanDetail = lazyRetry(importClanDetail);
+const PlayerProfile = lazyRetry(importPlayerProfile);
 
 // Authenticated & Access Components
-const Login = lazyRetry(() => import('./components/Login'));
-const ManageClans = lazyRetry(() => import('./components/ManageClans'));
-const TicketManagement = lazyRetry(() => import('./components/TicketManagement'));
-const UserManagement = lazyRetry(() => import('./components/UserManagement'));
-const AuditLogs = lazyRetry(() => import('./components/AuditLogs'));
-const ClanRulesManagement = lazyRetry(() => import('./components/ClanRulesManagement'));
-const ModulePermissions = lazyRetry(() => import('./components/ModulePermissions'));
-const CommandManagement = lazyRetry(() => import('./components/CommandManagement'));
+const Login = lazyRetry(importLogin);
+const ManageClans = lazyRetry(importManageClans);
+const TicketManagement = lazyRetry(importTicketManagement);
+const UserManagement = lazyRetry(importUserManagement);
+const AuditLogs = lazyRetry(importAuditLogs);
+const ClanRulesManagement = lazyRetry(importClanRulesManagement);
+const ModulePermissions = lazyRetry(importModulePermissions);
+const CommandManagement = lazyRetry(importCommandManagement);
+
+// Preload route bundles & API data in the background after startup
+const StartupPrefetcher = () => {
+  const { isAuthenticated, token, hasModuleAccess } = useAuth();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      importClanDetail().catch(() => {});
+      importPlayerProfile().catch(() => {});
+      importLogin().catch(() => {});
+
+      if (!isAuthenticated || !token) return;
+
+      const moduleImporters = [
+        ['manage-clans', importManageClans],
+        ['ticket-management', importTicketManagement],
+        ['user-management', importUserManagement],
+        ['audit-logs', importAuditLogs],
+        ['clan-rules', importClanRulesManagement],
+        ['module-permissions', importModulePermissions],
+        ['command-management', importCommandManagement],
+      ];
+
+      moduleImporters.forEach(([key, loader]) => {
+        if (hasModuleAccess(key)) {
+          loader().catch(() => {});
+        }
+      });
+
+      if (hasModuleAccess('clan-rules')) {
+        fetch('/api/clan-rules', {
+          headers: { Authorization: `Bearer ${token}` }
+        })
+          .then(res => (res.ok ? res.json() : null))
+          .then(data => {
+            if (data?.clans) {
+              const sorted = [...data.clans].sort((a, b) => (a.order ?? 999) - (b.order ?? 999));
+              try {
+                sessionStorage.setItem('ba_clan_rules_cache_v1', JSON.stringify(sorted));
+              } catch {}
+            }
+          })
+          .catch(() => {});
+      }
+    }, 600);
+
+    return () => clearTimeout(timer);
+  }, [isAuthenticated, token, hasModuleAccess]);
+
+  return null;
+};
 
 // Loading Fallback Component
 const PageLoader = () => (
@@ -99,6 +164,7 @@ const PageLoader = () => (
 function App() {
   return (
     <AuthProvider>
+      <StartupPrefetcher />
       <ClanProvider>
         <BrowserRouter>
           <div className="min-h-screen" style={{ backgroundColor: 'var(--bg-primary)', position: 'relative', overflow: 'hidden' }}>
