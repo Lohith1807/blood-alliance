@@ -1414,7 +1414,7 @@ const ClanRulesManagement = () => {
                                                             <div className={styles.editorBody}>
                                                                 {/* Header & Title Fields */}
                                                                 <div className={styles.configGrid}>
-                                                                    <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                                                                    <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
                                                                         <label className={styles.label}>Discord Status Header Banner</label>
                                                                         <input
                                                                             type="text"
@@ -1425,7 +1425,7 @@ const ClanRulesManagement = () => {
                                                                         />
                                                                     </div>
 
-                                                                    <div className={styles.formGroup} style={{ gridColumn: 'span 2' }}>
+                                                                    <div className={styles.formGroup} style={{ gridColumn: '1 / -1' }}>
                                                                         <label className={styles.label}>Instructions Section Title</label>
                                                                         <input
                                                                             type="text"
