@@ -1406,9 +1406,6 @@ const ClanRulesManagement = () => {
                                                                     <Edit3 size={16} style={{ color: 'var(--rh-red)' }} />
                                                                     {activeWarTab.toUpperCase()} War Rule Instructions
                                                                 </div>
-                                                                <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)' }}>
-                                                                    Endpoint: <code>/clanrules/:tag/warules</code>
-                                                                </span>
                                                             </div>
 
                                                             <div className={styles.editorBody}>

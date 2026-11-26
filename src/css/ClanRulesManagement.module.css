@@ -422,7 +422,9 @@
 
 @media (max-width: 1100px) {
     .mainLayout {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 100%;
     }
 }
 
@@ -471,7 +473,7 @@
 
 @media (max-width: 700px) {
     .configGrid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
     }
 }
 
@@ -530,6 +532,9 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius-md);
     padding: 1.25rem;
+    min-width: 0;
+    max-width: 100%;
+    box-sizing: border-box;
 }
 
 .ruleList {
@@ -799,11 +804,15 @@
 /* RESPONSIVE MEDIA QUERIES FOR TABLET & MOBILE */
 @media (max-width: 1100px) {
     .mainLayout {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        width: 100%;
+        max-width: 100%;
     }
     .discordContainer {
         position: static;
         margin-top: 1rem;
+        min-width: 0;
+        max-width: 100%;
     }
 }
 
@@ -1174,6 +1183,10 @@
     border: 1px solid rgba(255, 255, 255, 0.08);
     position: sticky;
     top: 0;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .discordWarContent {
@@ -1188,6 +1201,10 @@
     line-height: 1.5;
     border-left: 4px solid #3b82f6;
     margin-top: 0.5rem;
+    min-width: 0;
+    max-width: 100%;
+    overflow: hidden;
+    box-sizing: border-box;
 }
 
 .discordWarBorderWin {
@@ -1213,6 +1230,7 @@
     user-select: none;
     overflow: hidden;
     white-space: nowrap;
+    max-width: 100%;
     opacity: 0.7;
     margin: 0.25rem 0;
 }
