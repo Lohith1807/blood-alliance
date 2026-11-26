@@ -360,14 +360,37 @@
 
     .controlsRight {
         width: 100%;
+        flex-wrap: wrap;
+        gap: 0.5rem;
     }
 
     .searchWrap {
         flex: 1;
-        min-width: 0;
+        min-width: 160px;
     }
 
     .statsGrid {
-        grid-template-columns: repeat(2, 1fr);
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 0.65rem;
+    }
+
+    .statCard {
+        min-width: 0;
+        padding: 0.85rem;
+        gap: 0.65rem;
+    }
+
+    .statIconWrap {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+    }
+
+    .statCard > div {
+        min-width: 0;
+    }
+
+    .immutableBanner svg {
+        flex-shrink: 0;
     }
 }

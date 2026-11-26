@@ -432,6 +432,8 @@
     border-radius: var(--radius-lg);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
     overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .editorHeader {
@@ -490,6 +492,8 @@
 
 .input {
     width: 100%;
+    min-width: 0;
+    box-sizing: border-box;
     padding: 0.6rem 0.8rem;
     background: var(--bg-primary);
     border: 1px solid var(--border-color);
@@ -555,6 +559,8 @@
 
 .ruleInput {
     flex: 1;
+    min-width: 0;
+    width: 100%;
     background: transparent;
     border: none;
     color: var(--text-primary);
@@ -592,6 +598,9 @@
 
 .addRuleInput {
     flex: 1;
+    min-width: 0;
+    width: 100%;
+    box-sizing: border-box;
     background: var(--bg-secondary);
     border: 1px dashed var(--border-color);
     padding: 0.55rem 0.8rem;
@@ -814,7 +823,7 @@
     }
 
     .modalScrollArea {
-        padding: 1.25rem 0.85rem 2.5rem;
+        padding: 1rem 0.75rem 2.25rem;
     }
 
     .modalInnerContent {
@@ -822,12 +831,29 @@
     }
 
     .editorHeader {
-        padding: 1rem;
+        padding: 0.9rem;
     }
 
     .editorBody {
-        padding: 1rem;
-        gap: 1.25rem;
+        padding: 0.9rem;
+        gap: 1.15rem;
+    }
+
+    .ruleListSection {
+        padding: 0.85rem;
+    }
+
+    .warRulesCardHeader {
+        padding: 0.9rem;
+    }
+
+    .warTabsContainer {
+        padding: 0.75rem 0.9rem;
+    }
+
+    .warBody {
+        padding: 0.9rem;
+        gap: 1.15rem;
     }
 
     .peopleCard {
@@ -956,6 +982,8 @@
     border-radius: var(--radius-lg);
     box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
     overflow: hidden;
+    min-width: 0;
+    max-width: 100%;
 }
 
 .warRulesCardHeader {
