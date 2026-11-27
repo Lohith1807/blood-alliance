@@ -100,12 +100,13 @@ export default async function handler(req, res) {
                     clansCollection.findOne({ $or: [{ _id: clanTag }, { tag: clanTag }] }),
                     clanDetailsCollection.findOne(
                         { key: clanTag },
-                        { projection: { key: 1, 'data.rulesConfig': 1, 'data.pinmessage': 1, 'data.warcopy': 1 } }
+                        { projection: { key: 1, 'data.rulesConfig': 1, 'data.pinmessage': 1, 'data.pinmessage2': 1, 'data.warcopy': 1 } }
                     )
                 ]);
 
                 const rulesConfig = detailDoc?.data?.rulesConfig;
                 const pinmessage = normalizeScenarioMap(detailDoc?.data?.pinmessage);
+                const pinmessage2 = normalizeScenarioMap(detailDoc?.data?.pinmessage2);
                 const warcopy = normalizeScenarioMap(detailDoc?.data?.warcopy);
 
                 // If specific warules query requested
@@ -133,6 +134,7 @@ export default async function handler(req, res) {
                         rulesData: ruleData,
                         warrules: warData,
                         pinmessage,
+                        pinmessage2,
                         warcopy
                     }
                 });
@@ -161,19 +163,21 @@ export default async function handler(req, res) {
                 clansCollection.find(mongoFilter).sort({ order: 1, name: 1 }).toArray(),
                 clanDetailsCollection.find(
                     { key: { $regex: /^#/ } },
-                    { projection: { key: 1, 'data.rulesConfig': 1, 'data.pinmessage': 1, 'data.warcopy': 1 } }
+                    { projection: { key: 1, 'data.rulesConfig': 1, 'data.pinmessage': 1, 'data.pinmessage2': 1, 'data.warcopy': 1 } }
                 ).toArray(),
                 db.collection('users').find({}, { projection: { passwordHash: 0, salt: 0 } }).toArray()
             ]);
 
             const detailsByTag = {};
             const pinByTag = {};
+            const pin2ByTag = {};
             const warcopyByTag = {};
             for (const doc of detailDocs) {
                 if (doc?.key) {
                     const k = String(doc.key).toUpperCase();
                     detailsByTag[k] = doc.data?.rulesConfig || null;
                     pinByTag[k] = doc.data?.pinmessage || null;
+                    pin2ByTag[k] = doc.data?.pinmessage2 || null;
                     warcopyByTag[k] = doc.data?.warcopy || null;
                 }
             }
@@ -183,6 +187,7 @@ export default async function handler(req, res) {
                 const dConfig = detailsByTag[cTag] || c.clanRules || {};
                 const clanWarRules = detailsByTag[cTag]?.warrules || c.warRules || defaultWarRules || null;
                 const clanPinMessage = normalizeScenarioMap(pinByTag[cTag]);
+                const clanPinMessage2 = normalizeScenarioMap(pin2ByTag[cTag]);
                 const clanWarCopy = normalizeScenarioMap(warcopyByTag[cTag]);
 
                 // Find users who have access to this specific clan
@@ -217,6 +222,7 @@ export default async function handler(req, res) {
                     rules: Array.isArray(dConfig.rules) ? dConfig.rules : [],
                     warrules: clanWarRules,
                     pinmessage: clanPinMessage,
+                    pinmessage2: clanPinMessage2,
                     warcopy: clanWarCopy
                 };
             });
@@ -233,7 +239,7 @@ export default async function handler(req, res) {
 
         // 2. PUT / POST: UPDATE CLAN RULES AND/OR WAR RULES (discord.clandetails + ClansData.clans)
         if (req.method === 'PUT' || req.method === 'POST') {
-            const { tag, title, color, image, thumbnail, footer, rules, warrules, warRules, pinmessage, warcopy, warmessage } = req.body || {};
+            const { tag, title, color, image, thumbnail, footer, rules, warrules, warRules, pinmessage, pinmessage2, warcopy, warmessage } = req.body || {};
 
             if (!tag) {
                 return res.status(400).json({ error: 'Clan tag is required' });
@@ -260,6 +266,7 @@ export default async function handler(req, res) {
             const existingConfig = detailDoc?.data?.rulesConfig || clanFromDb?.clanRules || {};
             const mongoSet = {};
             const discordSet = {};
+            const discordUnset = {};
             const updatedSummary = [];
 
             // A. Update Clan Embed Rules if provided
@@ -315,6 +322,20 @@ export default async function handler(req, res) {
                 updatedSummary.push('war pin messages');
             }
 
+            // C2. Update optional War Pin Message 2 if provided (save only if non-empty, else unset)
+            if (pinmessage2 && typeof pinmessage2 === 'object') {
+                const cleanPin2 = normalizeScenarioMap(pinmessage2);
+                const hasAnyPin2 = Object.values(cleanPin2).some(v => v.trim().length > 0);
+                if (hasAnyPin2) {
+                    discordSet['data.pinmessage2'] = cleanPin2;
+                    discordSet.updatedAt = new Date();
+                    updatedSummary.push('war pin message 2');
+                } else {
+                    discordUnset['data.pinmessage2'] = '';
+                    discordSet.updatedAt = new Date();
+                }
+            }
+
             // D. Update Clan Mail (warcopy) if provided
             const targetWarCopy = warcopy || warmessage;
             if (targetWarCopy && typeof targetWarCopy === 'object') {
@@ -325,11 +346,14 @@ export default async function handler(req, res) {
             }
 
             const dbWrites = [];
-            if (Object.keys(discordSet).length > 0) {
+            if (Object.keys(discordSet).length > 0 || Object.keys(discordUnset).length > 0) {
+                const discordUpdate = {};
+                if (Object.keys(discordSet).length > 0) discordUpdate.$set = discordSet;
+                if (Object.keys(discordUnset).length > 0) discordUpdate.$unset = discordUnset;
                 dbWrites.push(
                     clanDetailsCollection.updateOne(
                         { key: clanTag },
-                        { $set: discordSet },
+                        discordUpdate,
                         { upsert: true }
                     )
                 );

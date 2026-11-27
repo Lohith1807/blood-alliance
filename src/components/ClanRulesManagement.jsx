@@ -190,6 +190,7 @@ const ClanRulesManagement = () => {
 
     // War Pin Message & Clan Mail state
     const [pinMessage, setPinMessage] = useState({ win: '', lose: '', bl: '', mis: '' });
+    const [pinMessage2, setPinMessage2] = useState({ win: '', lose: '', bl: '', mis: '' });
     const [warCopy, setWarCopy] = useState({ win: '', lose: '', bl: '', mis: '' });
     const [activeMailTab, setActiveMailTab] = useState('win');
 
@@ -330,6 +331,12 @@ const ClanRulesManagement = () => {
             lose: clan.pinmessage?.lose || '',
             bl: clan.pinmessage?.bl || '',
             mis: clan.pinmessage?.mis || ''
+        });
+        setPinMessage2({
+            win: clan.pinmessage2?.win || '',
+            lose: clan.pinmessage2?.lose || '',
+            bl: clan.pinmessage2?.bl || '',
+            mis: clan.pinmessage2?.mis || ''
         });
         setWarCopy({
             win: clan.warcopy?.win || '',
@@ -630,6 +637,7 @@ const ClanRulesManagement = () => {
                     ...formData,
                     warrules: warRules,
                     pinmessage: pinMessage,
+                    pinmessage2: pinMessage2,
                     warcopy: warCopy
                 })
             });
@@ -691,6 +699,7 @@ const ClanRulesManagement = () => {
                 body: JSON.stringify({
                     tag: selectedTag,
                     pinmessage: pinMessage,
+                    pinmessage2: pinMessage2,
                     warcopy: warCopy
                 })
             });
@@ -1887,6 +1896,23 @@ const ClanRulesManagement = () => {
                                                                 />
                                                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
                                                                     Placeholder: <code>{'{opponentclanname}'}</code> is replaced with the opponent clan name.
+                                                                </span>
+                                                            </div>
+
+                                                            <div className={styles.formGroup}>
+                                                                <label className={styles.label} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                                    <Pin size={13} style={{ color: '#60a5fa' }} />
+                                                                    War Pin Message 2 — Optional ({activeMailTab.toUpperCase()})
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className={styles.input}
+                                                                    value={pinMessage2[activeMailTab] || ''}
+                                                                    onChange={(e) => setPinMessage2(prev => ({ ...prev, [activeMailTab]: e.target.value }))}
+                                                                    placeholder="Optional second pin message (leave blank to skip)..."
+                                                                />
+                                                                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                                                                    Optional Pin if u need u can or else skip
                                                                 </span>
                                                             </div>
 
