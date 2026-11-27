@@ -5,6 +5,34 @@ import { logActivity } from '../lib/auditLog.js';
 const DISCORD_DB_NAME = 'discord';
 const CLAN_DETAILS_COLLECTION = 'clandetails';
 
+const DISCORD_EMOJI_MAP = {
+    ':orange_circle:': '🟠',
+    ':purple_circle:': '🟣',
+    ':crossed_swords:': '⚔️',
+    ':white_check_mark:': '✅',
+    ':punch_tone1:': '👊🏻',
+    ':dart:': '🎯'
+};
+
+function normalizeDiscordEmojis(value) {
+    if (typeof value !== 'string') return '';
+    let out = value.replace(/:star:\uFE0F?/g, '⭐');
+    for (const [code, emoji] of Object.entries(DISCORD_EMOJI_MAP)) {
+        out = out.split(code).join(emoji);
+    }
+    return out;
+}
+
+function normalizeScenarioMap(obj) {
+    const src = obj && typeof obj === 'object' ? obj : {};
+    return {
+        win: normalizeDiscordEmojis(src.win ?? ''),
+        lose: normalizeDiscordEmojis(src.lose ?? ''),
+        bl: normalizeDiscordEmojis(src.bl ?? ''),
+        mis: normalizeDiscordEmojis(src.mis ?? '')
+    };
+}
+
 function buildDefaultRules(defaultDoc) {
     const data = defaultDoc?.data || {};
     return {
@@ -72,11 +100,13 @@ export default async function handler(req, res) {
                     clansCollection.findOne({ $or: [{ _id: clanTag }, { tag: clanTag }] }),
                     clanDetailsCollection.findOne(
                         { key: clanTag },
-                        { projection: { key: 1, 'data.rulesConfig': 1 } }
+                        { projection: { key: 1, 'data.rulesConfig': 1, 'data.pinmessage': 1, 'data.warcopy': 1 } }
                     )
                 ]);
 
                 const rulesConfig = detailDoc?.data?.rulesConfig;
+                const pinmessage = normalizeScenarioMap(detailDoc?.data?.pinmessage);
+                const warcopy = normalizeScenarioMap(detailDoc?.data?.warcopy);
 
                 // If specific warules query requested
                 if (type === 'warules' || type === 'warrules') {
@@ -101,7 +131,9 @@ export default async function handler(req, res) {
                         name: clanFromDb?.name || clanTag,
                         badgeUrls: clanFromDb?.badgeUrls,
                         rulesData: ruleData,
-                        warrules: warData
+                        warrules: warData,
+                        pinmessage,
+                        warcopy
                     }
                 });
             }
@@ -129,15 +161,20 @@ export default async function handler(req, res) {
                 clansCollection.find(mongoFilter).sort({ order: 1, name: 1 }).toArray(),
                 clanDetailsCollection.find(
                     { key: { $regex: /^#/ } },
-                    { projection: { key: 1, 'data.rulesConfig': 1 } }
+                    { projection: { key: 1, 'data.rulesConfig': 1, 'data.pinmessage': 1, 'data.warcopy': 1 } }
                 ).toArray(),
                 db.collection('users').find({}, { projection: { passwordHash: 0, salt: 0 } }).toArray()
             ]);
 
             const detailsByTag = {};
+            const pinByTag = {};
+            const warcopyByTag = {};
             for (const doc of detailDocs) {
                 if (doc?.key) {
-                    detailsByTag[String(doc.key).toUpperCase()] = doc.data?.rulesConfig || null;
+                    const k = String(doc.key).toUpperCase();
+                    detailsByTag[k] = doc.data?.rulesConfig || null;
+                    pinByTag[k] = doc.data?.pinmessage || null;
+                    warcopyByTag[k] = doc.data?.warcopy || null;
                 }
             }
 
@@ -145,6 +182,8 @@ export default async function handler(req, res) {
                 const cTag = (c.tag || c._id).toUpperCase();
                 const dConfig = detailsByTag[cTag] || c.clanRules || {};
                 const clanWarRules = detailsByTag[cTag]?.warrules || c.warRules || defaultWarRules || null;
+                const clanPinMessage = normalizeScenarioMap(pinByTag[cTag]);
+                const clanWarCopy = normalizeScenarioMap(warcopyByTag[cTag]);
 
                 // Find users who have access to this specific clan
                 const clanAccessibleUsers = allUsers.filter(u => {
@@ -176,7 +215,9 @@ export default async function handler(req, res) {
                     thumbnail: dConfig.thumbnail || '',
                     footer: dConfig.footer || { text: '', iconURL: '' },
                     rules: Array.isArray(dConfig.rules) ? dConfig.rules : [],
-                    warrules: clanWarRules
+                    warrules: clanWarRules,
+                    pinmessage: clanPinMessage,
+                    warcopy: clanWarCopy
                 };
             });
 
@@ -192,7 +233,7 @@ export default async function handler(req, res) {
 
         // 2. PUT / POST: UPDATE CLAN RULES AND/OR WAR RULES (discord.clandetails + ClansData.clans)
         if (req.method === 'PUT' || req.method === 'POST') {
-            const { tag, title, color, image, thumbnail, footer, rules, warrules, warRules } = req.body || {};
+            const { tag, title, color, image, thumbnail, footer, rules, warrules, warRules, pinmessage, warcopy, warmessage } = req.body || {};
 
             if (!tag) {
                 return res.status(400).json({ error: 'Clan tag is required' });
@@ -264,6 +305,23 @@ export default async function handler(req, res) {
                 mongoSet.warRulesUpdatedAt = new Date();
                 mongoSet.warRulesUpdatedBy = user.email;
                 updatedSummary.push(`war rules (${Object.keys(targetWarRules).join(', ')})`);
+            }
+
+            // C. Update War Pin Message if provided
+            if (pinmessage && typeof pinmessage === 'object') {
+                const cleanPin = normalizeScenarioMap(pinmessage);
+                discordSet['data.pinmessage'] = cleanPin;
+                discordSet.updatedAt = new Date();
+                updatedSummary.push('war pin messages');
+            }
+
+            // D. Update Clan Mail (warcopy) if provided
+            const targetWarCopy = warcopy || warmessage;
+            if (targetWarCopy && typeof targetWarCopy === 'object') {
+                const cleanCopy = normalizeScenarioMap(targetWarCopy);
+                discordSet['data.warcopy'] = cleanCopy;
+                discordSet.updatedAt = new Date();
+                updatedSummary.push('clan mail');
             }
 
             const dbWrites = [];

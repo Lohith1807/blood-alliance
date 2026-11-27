@@ -5,7 +5,7 @@ import {
     FileText, Plus, Trash2, CheckCircle2, AlertCircle, Save,
     Shield, RefreshCw, Layers, Award, Users, Crown, Star,
     ExternalLink, Sparkles, Hash, X, Maximize2, Check, ArrowLeft,
-    Swords, AlertTriangle, ShieldAlert, RotateCcw, Code2, Edit3, Eye
+    Swords, AlertTriangle, ShieldAlert, RotateCcw, Code2, Edit3, Eye, Mail, Pin
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import styles from '@/css/ClanRulesManagement.module.css';
@@ -188,9 +188,15 @@ const ClanRulesManagement = () => {
     const [newWarGoal, setNewWarGoal] = useState('');
     const [newWarNote, setNewWarNote] = useState('');
 
+    // War Pin Message & Clan Mail state
+    const [pinMessage, setPinMessage] = useState({ win: '', lose: '', bl: '', mis: '' });
+    const [warCopy, setWarCopy] = useState({ win: '', lose: '', bl: '', mis: '' });
+    const [activeMailTab, setActiveMailTab] = useState('win');
+
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [savingWar, setSavingWar] = useState(false);
+    const [savingMail, setSavingMail] = useState(false);
     const [feedback, setFeedback] = useState({ message: '', type: '' });
 
     const fetchClanRules = async (silent = false) => {
@@ -319,6 +325,19 @@ const ClanRulesManagement = () => {
         });
 
         setWarRules(initializedWar);
+        setPinMessage({
+            win: clan.pinmessage?.win || '',
+            lose: clan.pinmessage?.lose || '',
+            bl: clan.pinmessage?.bl || '',
+            mis: clan.pinmessage?.mis || ''
+        });
+        setWarCopy({
+            win: clan.warcopy?.win || '',
+            lose: clan.warcopy?.lose || '',
+            bl: clan.warcopy?.bl || '',
+            mis: clan.warcopy?.mis || ''
+        });
+        setActiveMailTab('win');
         setActiveWarTab('win');
         setActiveSection('embed');
         setWarRawMode(false);
@@ -609,7 +628,9 @@ const ClanRulesManagement = () => {
                 body: JSON.stringify({
                     tag: selectedTag,
                     ...formData,
-                    warrules: warRules
+                    warrules: warRules,
+                    pinmessage: pinMessage,
+                    warcopy: warCopy
                 })
             });
 
@@ -652,6 +673,37 @@ const ClanRulesManagement = () => {
             showFeedback(err.message, 'error');
         } finally {
             setSavingWar(false);
+        }
+    };
+
+    // Save War Pin Message & Clan Mail only
+    const handleSaveWarMail = async () => {
+        if (!selectedTag) return;
+        setSavingMail(true);
+
+        try {
+            const res = await fetch('/api/clan-rules', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    tag: selectedTag,
+                    pinmessage: pinMessage,
+                    warcopy: warCopy
+                })
+            });
+
+            const data = await res.json();
+            if (!res.ok) throw new Error(data.error || 'Failed to update War Pin & Clan Mail');
+
+            showFeedback(`War Pin Message & Clan Mail saved for ${selectedClan?.name || selectedTag}!`);
+            fetchClanRules();
+        } catch (err) {
+            showFeedback(err.message, 'error');
+        } finally {
+            setSavingMail(false);
         }
     };
 
@@ -1038,6 +1090,16 @@ const ClanRulesManagement = () => {
                                                     }}
                                                 >
                                                     <Swords size={15} /> War Rules Protocol (Win / Lose / BL / Mismatch)
+                                                </button>
+                                                <button
+                                                    type="button"
+                                                    className={`${styles.sectionNavBtn} ${activeSection === 'mail' ? styles.sectionNavBtnActive : ''}`}
+                                                    onClick={() => {
+                                                        setActiveSection('mail');
+                                                        document.getElementById('clan-war-mail-section')?.scrollIntoView({ behavior: 'smooth' });
+                                                    }}
+                                                >
+                                                    <Mail size={15} /> War Pin & Clan Mail
                                                 </button>
                                             </div>
 
@@ -1746,6 +1808,100 @@ const ClanRulesManagement = () => {
                                                                 styles.discordWarBorderMis
                                                             }`}>
                                                                 {renderFormattedDiscordContent(currentWarScenario.text || generateWarText(activeWarTab, currentWarScenario), activeWarTab)}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            {/* SECTION D: WAR PIN MESSAGE & CLAN MAIL */}
+                                            <div id="clan-war-mail-section" className={styles.warRulesCard}>
+                                                <div className={styles.warRulesCardHeader}>
+                                                    <div className={styles.warRulesTitleGroup}>
+                                                        <div className={styles.warRulesTitle}>
+                                                            <Mail size={20} style={{ color: 'var(--rh-red)' }} />
+                                                            War Pin Message &amp; Clan Mail
+                                                        </div>
+                                                        <div className={styles.warRulesSubtitle}>
+                                                            Manage in-game Clan Mail (<code>warcopy</code>) and War Pin Message (<code>pinmessage</code>) for {selectedClan.name}.
+                                                        </div>
+                                                    </div>
+
+                                                    <button
+                                                        type="button"
+                                                        onClick={handleSaveWarMail}
+                                                        className="btn btn-primary"
+                                                        disabled={savingMail || saving}
+                                                        style={{ height: 34, padding: '0 1rem', fontSize: '0.78rem' }}
+                                                    >
+                                                        <Save size={13} style={{ marginRight: 4 }} />
+                                                        {savingMail ? 'Saving...' : 'Save Pin & Mail'}
+                                                    </button>
+                                                </div>
+
+                                                <div className={styles.warTabsContainer}>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveMailTab('win')}
+                                                        className={`${styles.warTabBtn} ${activeMailTab === 'win' ? styles.warTabActiveWin : ''}`}
+                                                    >
+                                                        <span>🟩</span> Win War
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveMailTab('lose')}
+                                                        className={`${styles.warTabBtn} ${activeMailTab === 'lose' ? styles.warTabActiveLose : ''}`}
+                                                    >
+                                                        <span>🟥</span> Lose War
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveMailTab('bl')}
+                                                        className={`${styles.warTabBtn} ${activeMailTab === 'bl' ? styles.warTabActiveBl : ''}`}
+                                                    >
+                                                        <span>🛡️</span> Blacklisted War
+                                                    </button>
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => setActiveMailTab('mis')}
+                                                        className={`${styles.warTabBtn} ${activeMailTab === 'mis' ? styles.warTabActiveMis : ''}`}
+                                                    >
+                                                        <span>⚠️</span> Mismatch War
+                                                    </button>
+                                                </div>
+
+                                                <div className={styles.warBody}>
+                                                    <div className={styles.editorCard}>
+                                                        <div className={styles.editorBody}>
+                                                            <div className={styles.formGroup}>
+                                                                <label className={styles.label} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                                    <Pin size={13} style={{ color: 'var(--rh-red)' }} />
+                                                                    War Pin Message ({activeMailTab.toUpperCase()})
+                                                                </label>
+                                                                <input
+                                                                    type="text"
+                                                                    className={styles.input}
+                                                                    value={pinMessage[activeMailTab] || ''}
+                                                                    onChange={(e) => setPinMessage(prev => ({ ...prev, [activeMailTab]: e.target.value }))}
+                                                                    placeholder="e.g. ✅️<c70de00>WIN WAR </c> against <c70de00>{opponentclanname}</c>✅️"
+                                                                />
+                                                                <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
+                                                                    Placeholder: <code>{'{opponentclanname}'}</code> is replaced with the opponent clan name.
+                                                                </span>
+                                                            </div>
+
+                                                            <div className={styles.formGroup}>
+                                                                <label className={styles.label} style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                                                                    <Mail size={13} style={{ color: 'var(--rh-red)' }} />
+                                                                    Clan Mail ({activeMailTab.toUpperCase()})
+                                                                </label>
+                                                                <textarea
+                                                                    className={styles.warRawTextarea}
+                                                                    style={{ minHeight: 160 }}
+                                                                    value={warCopy[activeMailTab] || ''}
+                                                                    onChange={(e) => setWarCopy(prev => ({ ...prev, [activeMailTab]: e.target.value }))}
+                                                                    placeholder="Enter in-game Clan Mail text..."
+                                                                />
                                                             </div>
                                                         </div>
                                                     </div>
