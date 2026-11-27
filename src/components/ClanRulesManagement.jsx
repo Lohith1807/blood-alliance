@@ -1887,9 +1887,9 @@ const ClanRulesManagement = () => {
                                                                     <Pin size={13} style={{ color: 'var(--rh-red)' }} />
                                                                     War Pin Message ({activeMailTab.toUpperCase()})
                                                                 </label>
-                                                                <input
-                                                                    type="text"
-                                                                    className={styles.input}
+                                                                <textarea
+                                                                    className={styles.warRawTextarea}
+                                                                    style={{ minHeight: 76 }}
                                                                     value={pinMessage[activeMailTab] || ''}
                                                                     onChange={(e) => setPinMessage(prev => ({ ...prev, [activeMailTab]: e.target.value }))}
                                                                     placeholder="e.g. ✅️<c70de00>WIN WAR </c> against <c70de00>{opponentclanname}</c>✅️"
@@ -1904,12 +1904,12 @@ const ClanRulesManagement = () => {
                                                                     <Pin size={13} style={{ color: '#60a5fa' }} />
                                                                     War Pin Message 2 — Optional ({activeMailTab.toUpperCase()})
                                                                 </label>
-                                                                <input
-                                                                    type="text"
-                                                                    className={styles.input}
+                                                                <textarea
+                                                                    className={styles.warRawTextarea}
+                                                                    style={{ minHeight: 110 }}
                                                                     value={pinMessage2[activeMailTab] || ''}
                                                                     onChange={(e) => setPinMessage2(prev => ({ ...prev, [activeMailTab]: e.target.value }))}
-                                                                    placeholder="Optional second pin message (leave blank to skip)..."
+                                                                    placeholder="Optional second pin message (multi-line supported, leave blank to skip)..."
                                                                 />
                                                                 <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)' }}>
                                                                     Optional Pin if u need u can or else skip
